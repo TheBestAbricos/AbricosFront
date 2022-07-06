@@ -5,14 +5,14 @@
 		type="text"
 		value=""
 		placeholder="Enter keyword"
-		class="text-sm font-medium border-2 p-1 border-gray-700 rounded-md box-border text-gray-500 hover:text-gray-900 hover:cursor-text"
+		class="text-sm font-medium border p-1 border-gray-500 rounded-lg box-border text-gray-500 hover:text-gray-900 hover:cursor-text focus:ring-2 focus:outline-none focus:ring-gray-300"
 	/>
 	<button
 		type="submit"
 		class="p-1.5 ml-2 text-sm font-medium text-white bg-gray-400 rounded-lg border border-gray-300 hover:bg-gray-500 
-        focus:ring-4 focus:outline-none focus:ring-gray-300 "
+        focus:ring-2 focus:outline-none focus:ring-gray-300 "
 		><svg
-			class="w-5 h-5"
+			class="w-4 h-4"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"

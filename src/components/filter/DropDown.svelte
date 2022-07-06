@@ -3,20 +3,22 @@
 	import { tweened } from 'svelte/motion';
 
 	let visible = false;
-	const rotation = tweened(0);
+	const dropdownRotation = tweened(0);
 
 	export let label: string;
 	export let options: string[];
+
+	function handleDropdownClick() {
+		visible = !visible;
+		if (visible) dropdownRotation.set(180);
+		else dropdownRotation.set(0);
+	}
 </script>
 
 <div class="relative inline-block text-center my-2 mx-8">
 	<div>
 		<button
-			on:click={() => {
-				visible = !visible;
-				if (visible) rotation.set(180);
-				else rotation.set(0);
-			}}
+			on:click={handleDropdownClick}
 			class="inline-flex justify-center rounded-xl w-fit px-2 py-1 text-sm font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
 			id="menu-button"
 			aria-expanded="true"
@@ -26,7 +28,7 @@
 
 			<svg
 				class="-mr-1 ml-2 h-5 w-5"
-				style="transform: rotate({$rotation}deg);"
+				style="transform: rotate({$dropdownRotation}deg);"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
