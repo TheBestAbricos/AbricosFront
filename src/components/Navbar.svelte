@@ -1,21 +1,40 @@
 <script lang="ts">
+	import {logOut} from "$lib/firebase"
 	import FilterBar from './filter/FilterBar.svelte';
 	import { tweened } from 'svelte/motion';
+	import { openedPanel } from '$lib/stores';
 
 	let isFilterVisible: boolean = false;
 	const filterRotation = tweened(180);
 
+	openedPanel.subscribe((value) => {
+		console.log(value);
+	});
+
 	function handleFilterClick() {
 		isFilterVisible = !isFilterVisible;
-		if (isFilterVisible) filterRotation.set(0);
-		else filterRotation.set(180);
+		if (isFilterVisible) {
+			filterRotation.set(0);
+			openedPanel.set('filter');
+		} else {
+			filterRotation.set(180);
+			openedPanel.set('');
+		}
+	}
+
+	function handleFolderClick() {
+		openedPanel.set('folder');
+	}
+	async function signOut() {
+		await logOut();
+		window.location.href = "/login";
 	}
 </script>
 
 <nav class="p-3">
 	<div class="nav__el left">
 		<div class="logo">
-			<div class="logo__img" />
+			<div class="logo__img" on:click={handleFolderClick} />
 			<span class="logo__text">ABRICOS</span>
 		</div>
 	</div>
@@ -29,7 +48,7 @@
 				style="transform: rotate({$filterRotation}deg);"
 			/>
 			<div class="menu__el" id="notification" />
-			<div class="menu__el" id="logout" />
+			<div class="menu__el" id="logout" on:click={signOut} />
 
 			<div class="user-logo" />
 		</div>
@@ -40,7 +59,6 @@
 <style>
 	nav {
 		widows: 100%;
-		height: 6%;
 
 		display: flex;
 		flex-direction: row;
