@@ -3,24 +3,27 @@
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today',
 		tags: [
-			{ text: 'must', color: '#ff0000', textColor: '#00ff00' },
+			{ text: 'must', color: '#333', textColor: '#fff' },
 			{ text: 'should' },
 			{ text: 'really woolddldl', color: '#0000ff' },
+			{ text: 're123ally wooldl', color: '#0000ff' },
+			{ text: 're123ally wooldl', color: '#0000ff' },
+			{ text: 're123ally wooldl', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' }
 		],
 		checked: true,
 		date: '02.02.2003',
-		time: '01:22'
+		time: '01 : 22'
 	};
 </script>
 
 <div class="card">
 	<header>
 		<div class="date-div">
-			<div class="date">{card.date}</div>
-			<div class="time">{card.time}</div>
+			<div class="date">{card.date ? card.date : 'Date'}</div>
+			<div class="time">{card.time ? card.time : 'Time'}</div>
 		</div>
-		<div class="image"><img alt="delete" src="images/x.png" /></div>
+		<div class="image"><img alt="delete" src="images/x.svg" /></div>
 	</header>
 	<main>
 		<p>{card.text}</p>
@@ -50,51 +53,54 @@
 	}
 
 	.date-div {
-		padding: 0.3125rem;
-		font-size: 1.25rem;
-		line-height: 1.1;
-		text-align: center;
-		margin: 0 1rem;
+		text-align: left;
+		margin: 0.1rem 1rem;
 	}
 
 	.image {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin: 0 1rem;
+		margin: 0 1.45rem;
 	}
 	img {
-		height: 2rem;
+		height: 1.875rem;
+		transition-duration: 200ms;
+	}
+	img:hover {
+		filter: brightness(0.8);
 	}
 	main {
 		display: flex;
-		flex-basis: 6rem;
+		flex-basis: 5rem;
 		overflow: hidden;
 	}
 	p {
-		padding: 0.5rem 0.5rem 0 1rem;
-		font-size: 1.3rem;
-		line-height: 1.2;
+		padding: 0.5rem 1rem;
+		height: 4rem;
 		flex-grow: 1;
 		margin: 0;
+		overflow: hidden;
 	}
 	span {
 		display: flex;
+		padding-top: 0.75rem;
 		justify-content: center;
-		align-items: center;
-		margin-right: 1rem;
+		margin-right: 1.25rem;
 	}
 	input[type='checkbox'] {
 		cursor: pointer;
-		height: 2rem;
-		width: 2rem;
+		height: 1.875rem;
+		width: 1.875rem;
 	}
 	input[type='checkbox']:hover {
 		background-color: aqua;
 	}
 	footer {
 		box-sizing: border-box;
-		flex-basis: 3rem;
+		height: 2rem;
+		flex-wrap: nowrap;
+		flex-basis: 4rem;
 		overflow: hidden;
 		padding: 0 1rem;
 	}
@@ -103,20 +109,21 @@
 		min-width: 3rem;
 		text-align: center;
 		padding: 0.5rem;
-		margin: 0.5rem 0;
+		margin: 0.2rem 0.5rem 2rem 0;
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
 		border: 1px solid grey;
-		border-radius: 10px;
+		border-radius: 20px;
 		box-sizing: border-box;
 		flex-wrap: nowrap;
 		transition-duration: 300ms;
-		font-weight: 500;
+		font-size: 0.75em;
 	}
 	.tag:hover {
 		transform: scale(1.02);
 		transform: rotate(-1deg);
+		box-shadow: 0 0 10px 0px grey;
 	}
 	.tag:not(:last-child) {
 		margin-right: 0.2rem;
@@ -125,7 +132,8 @@
 		display: flex;
 		flex-direction: column;
 		width: 18.75rem;
-		height: 12rem;
+		height: 10rem;
+		/* width: 14rem; */
 		border: 1px solid grey;
 		border-radius: 30px;
 		box-sizing: border-box;
