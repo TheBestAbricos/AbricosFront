@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {logOut} from "$lib/firebase"
+	import { logOut } from '$lib/firebase';
 	import FilterBar from './filter/FilterBar.svelte';
 	import { tweened } from 'svelte/motion';
 	import { openedPanel } from '$lib/stores';
@@ -7,8 +7,14 @@
 	let isFilterVisible: boolean = false;
 	const filterRotation = tweened(180);
 
+	let isFolderVisible: boolean = false;
+
+	//Close filter if Folder appears
 	openedPanel.subscribe((value) => {
-		console.log(value);
+		if (value == 'folder') {
+			isFilterVisible = false;
+			filterRotation.set(180);
+		}
 	});
 
 	function handleFilterClick() {
@@ -16,6 +22,7 @@
 		if (isFilterVisible) {
 			filterRotation.set(0);
 			openedPanel.set('filter');
+			isFolderVisible = false;
 		} else {
 			filterRotation.set(180);
 			openedPanel.set('');
@@ -23,11 +30,16 @@
 	}
 
 	function handleFolderClick() {
-		openedPanel.set('folder');
+		isFolderVisible = !isFolderVisible;
+		if (isFolderVisible) {
+			openedPanel.set('folder');
+		} else {
+			openedPanel.set('');
+		}
 	}
 	async function signOut() {
 		await logOut();
-		window.location.href = "/login";
+		window.location.href = '/login';
 	}
 </script>
 
