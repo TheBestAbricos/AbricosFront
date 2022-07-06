@@ -3,8 +3,8 @@
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today',
 		tags: [
-			{ text: 'must', color: '#ff0000' },
-			{ text: 'should', color: '#00FF00' },
+			{ text: 'must', color: '#ff0000', textColor: '#00ff00' },
+			{ text: 'should' },
 			{ text: 'really woolddldl', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' }
 		],
@@ -28,7 +28,14 @@
 	</main>
 	<footer>
 		{#each card.tags as tag}
-			<div class="tag" style="background-color:{tag.color}">{tag.text}</div>
+			<div
+				class="tag"
+				style="background-color:{tag.color ? tag.color : '#fff'};color:{tag.textColor
+					? tag.textColor
+					: '#000'}"
+			>
+				{tag.text}
+			</div>
 		{/each}
 	</footer>
 </div>
