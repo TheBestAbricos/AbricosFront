@@ -1,0 +1,19 @@
+<div class=" w-36 opacity-60">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="w-full"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="#000000"
+		stroke-width="0.2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		><circle style="stroke-dasharray: 3" cx="12" cy="12" r="10" /><line
+			x1="12"
+			y1="9.5"
+			x2="12"
+			y2="14.5"
+		/><line x1="9.5" y1="12" x2="14.5" y2="12" /></svg
+	>
+	<p class="w-full text-center mt-3 text-sm font-light">Add card</p>
+</div>
