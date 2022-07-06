@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Card } from '../types/card';
 	export const card: Card = {
-		text: 'Make a dinner today and then then then then then today',
+		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
 		tags: [
 			{ text: 'must', color: '#333' },
 			{ text: 'should', textColor: '#000' },
@@ -27,7 +27,7 @@
 		</div>
 		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
 	</header>
-	<main>
+	<main class="py-1">
 		<p>{card.text}</p>
 		<span class="w-5" for=""><input type="checkbox" name="checked" checked={card.checked} /></span>
 	</main>
@@ -80,11 +80,12 @@
 		overflow: hidden;
 	}
 	p {
-		padding: 0.5rem 1rem;
+		padding: 0rem 1rem;
 		height: 4rem;
 		flex-grow: 1;
 		margin: 0;
-		overflow: hidden;
+		overflow: scroll;
+		scrollbar-width: none;
 	}
 	span {
 		display: flex;
@@ -135,7 +136,7 @@
 	.card {
 		display: flex;
 		flex-direction: column;
-		width: 18rem;
+		/* width: 18rem; */
 		height: 10rem;
 		/* width: 14rem; */
 		border: 1px solid grey;
