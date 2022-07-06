@@ -1,7 +1,7 @@
 import {initializeApp} from 'firebase/app';
 import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserSessionPersistence,
-    type UserCredential, type User
+    signOut, type UserCredential, type User
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -16,7 +16,7 @@ initializeApp(firebaseConfig);
 
 const auth = getAuth();
 
-const init = async () : Promise<void> => {
+const initPersistance = async () : Promise<void> => {
     await setPersistence(auth, browserSessionPersistence);
     isSetPersistance = true;
 }
@@ -31,9 +31,11 @@ export const logIn = async (email: string, password: string) : Promise<UserCrede
     return userCredentaials;
 }
 
+export const logOut = async () : Promise<void> => await signOut(auth);
+
 export const getCurrentUser = async () : Promise<User | null> => {
     if (!isSetPersistance) {
-        await init();
+        await initPersistance();
     } 
     return auth.currentUser;
 }
