@@ -1,4 +1,12 @@
-<div class=" w-36 opacity-60">
+<script lang="ts">
+	let i = 0;
+	function handleClick() {
+		i = i + 1;
+		console.log(i);
+	}
+</script>
+
+<div on:click={handleClick} class="w-32 opacity-60 cursor-pointer">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		class="w-full"

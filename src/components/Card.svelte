@@ -3,39 +3,41 @@
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today',
 		tags: [
-			{ text: 'must', color: '#333', textColor: '#fff' },
-			{ text: 'should' },
-			{ text: 'really woolddldl', color: '#0000ff' },
+			{ text: 'must', color: '#333' },
+			{ text: 'should', textColor: '#000' },
+			{ text: 'really should', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' },
 			{ text: 're123ally wooldl', color: '#0000ff' }
 		],
-		checked: true,
+		checked: false,
 		date: '02.02.2003',
-		time: '01 : 22'
+		time: '01:22'
 	};
 </script>
 
-<div class="card">
+<div
+	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
+>
 	<header>
 		<div class="date-div">
 			<div class="date">{card.date ? card.date : 'Date'}</div>
 			<div class="time">{card.time ? card.time : 'Time'}</div>
 		</div>
-		<div class="image"><img alt="delete" src="images/x.svg" /></div>
+		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
 	</header>
 	<main>
 		<p>{card.text}</p>
-		<span for=""><input type="checkbox" name="checked" checked={card.checked} /></span>
+		<span class="w-5" for=""><input type="checkbox" name="checked" checked={card.checked} /></span>
 	</main>
 	<footer>
 		{#each card.tags as tag}
 			<div
-				class="tag"
+				class="tag rounded-2xl hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
 				style="background-color:{tag.color ? tag.color : '#fff'};color:{tag.textColor
 					? tag.textColor
-					: '#000'}"
+					: '#fff'}"
 			>
 				{tag.text}
 			</div>
@@ -66,9 +68,11 @@
 	img {
 		height: 1.875rem;
 		transition-duration: 200ms;
+		filter: saturate(0);
 	}
 	img:hover {
-		filter: brightness(0.8);
+		filter: brightness(2);
+		filter: saturate(5);
 	}
 	main {
 		display: flex;
@@ -114,16 +118,16 @@
 		justify-content: center;
 		align-items: center;
 		border: 1px solid grey;
-		border-radius: 20px;
+		/* border-radius: 20px; */
 		box-sizing: border-box;
 		flex-wrap: nowrap;
-		transition-duration: 300ms;
+		transition-duration: 200ms;
 		font-size: 0.75em;
 	}
 	.tag:hover {
 		transform: scale(1.02);
 		transform: rotate(-1deg);
-		box-shadow: 0 0 10px 0px grey;
+		/* box-shadow: 0 0 10px 0px grey; */
 	}
 	.tag:not(:last-child) {
 		margin-right: 0.2rem;
@@ -131,7 +135,7 @@
 	.card {
 		display: flex;
 		flex-direction: column;
-		width: 18.75rem;
+		width: 18rem;
 		height: 10rem;
 		/* width: 14rem; */
 		border: 1px solid grey;
