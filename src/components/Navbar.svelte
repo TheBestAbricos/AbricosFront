@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {logOut} from "$lib/firebase"
 	import FilterBar from './filter/FilterBar.svelte';
 	import { tweened } from 'svelte/motion';
 	import { openedPanel } from '$lib/stores';
@@ -24,6 +25,10 @@
 	function handleFolderClick() {
 		openedPanel.set('folder');
 	}
+	async function signOut() {
+		await logOut();
+		window.location.href = "/login";
+	}
 </script>
 
 <nav class="p-3">
@@ -43,7 +48,7 @@
 				style="transform: rotate({$filterRotation}deg);"
 			/>
 			<div class="menu__el" id="notification" />
-			<div class="menu__el" id="logout" />
+			<div class="menu__el" id="logout" on:click={signOut} />
 
 			<div class="user-logo" />
 		</div>
