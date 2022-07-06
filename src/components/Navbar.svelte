@@ -12,7 +12,7 @@
 	}
 </script>
 
-<nav>
+<nav class="p-3">
 	<div class="nav__el left">
 		<div class="logo">
 			<div class="logo__img" />
