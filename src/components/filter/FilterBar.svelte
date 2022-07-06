@@ -11,7 +11,7 @@
 </script>
 
 {#if isActive}
-	<div transition:slide class="flex flex-wrap border-b p-1">
+	<div transition:slide class="flex flex-wrap border-b border-gray-400 p-1">
 		<DropDown label="Tags" options={items} />
 		<DropDown label="Next" options={items} />
 		<CheckBoxFilter text="Completed" />
