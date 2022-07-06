@@ -65,22 +65,22 @@
     }
 
     #filter {
-        background: url('filter.svg') no-repeat center / cover;
+        background: url('images/filter.svg') no-repeat center / cover;
     }
 
     #notification {
-        background: url('notification-off.svg') no-repeat center / cover;
+        background: url('images/notification-off.svg') no-repeat center / cover;
     }
 
     #logout {
-        background: url('logout.svg') no-repeat center / cover;
+        background: url('images/logout.svg') no-repeat center / cover;
     }
 
     .user-logo{
         width: 6em;
         height: 80%;
 
-        background: url('user-default-logo.png') no-repeat center / cover;
+        background: url('images/user-default-logo.png') no-repeat center / cover;
         border-radius: 50%;
     }
 
@@ -100,6 +100,6 @@
         width: 3em;
         height: 3em;
 
-        background: url('abricos.svg') no-repeat center / 90%;
+        background: url('images/abricos.svg') no-repeat center / 90%;
     }
 </style>
