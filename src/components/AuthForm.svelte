@@ -1,23 +1,33 @@
 <script lang="ts">
     import Logo from "./shared/Logo.svelte";
-    import {logIn} from "$lib/firebase"
+    import {logIn, createAccount} from "$lib/firebase"
     import type { User } from "firebase/auth";
     export let isRegister: boolean;
     let email: string;
     let password: string;
-    async function onLoginClick() {
+    async function onLoginClick() : Promise<void> {
         if(email.length == 0 || password.length == 0) return;
         try {
             const user = await logIn(email, password);
             if(user.user) {
                 window.location.href = "/";
             }
-            
         }
-        catch {
-            console.log("huinya parol'");
+        catch(e) {
+            console.log(e);
         }
-        
+    }
+    async function onRegisterClick() : Promise<void> {
+        if(email.length == 0 || password.length == 0) return;
+        try {
+            const user = await createAccount(email, password);
+            if(user.user) {
+                window.location.href = "/";
+            }
+        }
+        catch(e) {
+            console.log(e);
+        }
     }
 </script>
 
@@ -33,7 +43,7 @@
                 <button class="auth_button auth_button_login" on:click={onLoginClick}>Sign in</button>
                 <button class="auth_button auth_button_signup" on:click={() => isRegister = !isRegister}>Sign up</button>
             {:else}
-                <button class="auth_button auth_button_signup">Register</button>
+                <button class="auth_button auth_button_signup" on:click={onRegisterClick}>Register</button>
             {/if}
         </div>
     </div>

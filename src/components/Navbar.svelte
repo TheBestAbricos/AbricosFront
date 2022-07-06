@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {logOut} from "$lib/firebase"
 	import FilterBar from './filter/FilterBar.svelte';
 	import { tweened } from 'svelte/motion';
 
@@ -9,6 +10,10 @@
 		isFilterVisible = !isFilterVisible;
 		if (isFilterVisible) filterRotation.set(0);
 		else filterRotation.set(180);
+	}
+	async function signOut() {
+		await logOut();
+		window.location.href = "/login";
 	}
 </script>
 
@@ -29,7 +34,7 @@
 				style="transform: rotate({$filterRotation}deg);"
 			/>
 			<div class="menu__el" id="notification" />
-			<div class="menu__el" id="logout" />
+			<div class="menu__el" id="logout" on:click={signOut} />
 
 			<div class="user-logo" />
 		</div>
