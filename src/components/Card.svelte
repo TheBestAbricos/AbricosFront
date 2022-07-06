@@ -80,12 +80,26 @@
 		overflow: hidden;
 	}
 	p {
-		padding: 0rem 1rem;
+		padding: 0rem 0rem 0.2rem 1rem;
 		height: 4rem;
 		flex-grow: 1;
-		margin: 0;
-		overflow: scroll;
+		margin: 0 0.5rem 0 0;
+		overflow-y: auto;
+		overflow-x: hidden;
 		scrollbar-width: none;
+	}
+	p::-webkit-scrollbar {
+		width: 3px;
+	}
+	p::-webkit-scrollbar-track {
+		background-color: transparent;
+		border-radius: 100px;
+		margin: 5px;
+	}
+	p::-webkit-scrollbar-thumb {
+		background-color: grey;
+		box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+		border-radius: 100px;
 	}
 	span {
 		display: flex;

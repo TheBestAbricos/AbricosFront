@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { amountTasks } from '../lib/stores.js';
+	import { amountTasks } from '$lib/stores.js';
 
 	function addTask() {
 		amountTasks.update((n) => n + 1);

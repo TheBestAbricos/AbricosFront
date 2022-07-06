@@ -21,8 +21,8 @@
 		isFilterVisible = !isFilterVisible;
 		if (isFilterVisible) {
 			filterRotation.set(0);
-			openedPanel.set('filter');
 			isFolderVisible = false;
+			openedPanel.set('filter');
 		} else {
 			filterRotation.set(180);
 			openedPanel.set('');
