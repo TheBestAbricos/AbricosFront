@@ -18,15 +18,43 @@
 		setTimeout(() => {
 			panel.scrollTop = panel.scrollHeight;
 		}, 0);
+	}
+	function changeFolder(e: KeyboardEvent) {
+		const div = e.target as HTMLDivElement;
 
-		console.log(panel.scrollTop, panel.scrollHeight);
+		if (e.key == 'Enter') {
+			e.preventDefault();
+			div.onblur = null;
+			setTimeout(() => {
+				div.style.boxShadow = temp;
+			}, 1000);
+			div.contentEditable = 'false';
+			const temp = div.style.boxShadow;
+			div.style.boxShadow = '0 0 5px 0px green';
+
+			setTimeout(() => {
+				div.style.boxShadow = temp;
+			}, 1000);
+			return;
+		}
+	}
+	function startEditing(e: MouseEvent) {
+		e.preventDefault();
+		const div = e.target as HTMLDivElement;
+		const initialText = div.innerText;
+		(div.onblur = () => {
+			div.innerText = initialText;
+			div.contentEditable = 'false';
+		}),
+			(div.contentEditable = 'true');
+		div.focus();
 	}
 </script>
 
 {#if isVisible}
 	<div transition:slide class="panel" bind:this={panel}>
 		{#each folders as folder}
-			<div class="folder">{folder}</div>
+			<div class="folder" on:dblclick={startEditing} on:keypress={changeFolder}>{folder}</div>
 		{/each}
 		<div class="folder new-folder" on:click={handleClick}>New folder</div>
 	</div>
