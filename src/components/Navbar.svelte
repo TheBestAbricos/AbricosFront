@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { get } from 'svelte/store';
 	import { noficationStatus } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
@@ -51,7 +50,7 @@
 	}
 
 	function handleNotificationClick() {
-		revealContainer('50%', '50%');
+		revealContainer();
 	}
 
 	async function signOut() {
