@@ -6,7 +6,7 @@
 <div class="flex mt-20 w-full justify-center">
 	<div class="w-60 h-48 mr-20 border border-gray-300 rounded-3xl">
 		<ul
-			class="settings w-full h-full flex flex-col justify-evenly text-center align-middle cursor-pointer"
+			class="settings select-none w-full h-full flex flex-col justify-evenly text-center align-middle cursor-pointer"
 		>
 			<li class="menu-item h-1/3 flex justify-center flex-col border-b-2">
 				<span class="menu-item"> Profile </span>
@@ -22,10 +22,10 @@
 
 	<div class="container w-96 h-96">
 		<div class="label">
-			<p>Profile</p>
+			<p class="select-none">Profile</p>
 		</div>
 		<div class="body flex-auto justify-evenly">
-			<img src="images/user-default-logo.png" alt="user profile" />
+			<img class="select-none" src="images/user-default-logo.png" alt="user profile" />
 			<button
 				class="bg-gray-100 py-2 px-4 rounded-3xl text-gray-600 border-gray-300 border hover:brightness-105 ring-2 ring-gray-200"
 			>

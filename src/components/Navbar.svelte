@@ -5,10 +5,7 @@
 	import { tweened } from 'svelte/motion';
 	import { openedPanel } from '$lib/stores';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification, {
-		hideContainter,
-		revealContainer
-	} from '../components/Notification.svelte';
+	import Notification, { hideContainter, revealContainer } from '../components/Notification.svelte';
 
 	onMount(() => {
 		hideContainter();
@@ -53,29 +50,32 @@
 		revealContainer();
 	}
 
+	function handleProfileClick() {
+		var loc = window.location.pathname;
+		if (loc != '/profile') window.location.href = '/profile';
+	}
+
 	async function signOut() {
 		await logOut();
 		window.location.href = '/login';
 	}
 
-
-	noficationStatus.subscribe(value => {
-		let status = 'off'
+	noficationStatus.subscribe((value) => {
+		let status = 'off';
 		if (value) {
-			status = 'on'
+			status = 'on';
 		}
-		
+
 		if (notification)
 			notification.style.background = `url('notification-${status}.svg') no-repeat center / cover`;
-	})
-
+	});
 </script>
 
 <nav class="p-3">
 	<div class="nav__el left">
-		<div class="logo">
-			<div class="logo__img" on:click={handleFolderClick} />
-			<span class="logo__text">ABRICOS</span>
+		<div on:click={handleFolderClick} class="logo cursor-pointer">
+			<div class="logo__img" />
+			<span class="logo__text select-none">ABRICOS</span>
 		</div>
 	</div>
 
@@ -90,12 +90,12 @@
 			<div
 				bind:this={notification}
 				on:click={handleNotificationClick}
-				class="menu__el"
+				class="menu__el cursor-pointer"
 				id="notification"
 			/>
-			<div class="menu__el" id="logout" on:click={signOut} />
+			<div class="menu__el cursor-pointer" id="logout" on:click={signOut} />
 
-			<div class="user-logo" />
+			<div class="user-logo cursor-pointer" on:click={handleProfileClick} />
 		</div>
 	</div>
 </nav>
