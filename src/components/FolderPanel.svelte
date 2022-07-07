@@ -39,7 +39,6 @@
 		}
 	}
 	function startEditing(e: MouseEvent) {
-		e.preventDefault();
 		const div = e.target as HTMLDivElement;
 		const initialText = div.innerText;
 		(div.onblur = () => {
@@ -54,7 +53,9 @@
 {#if isVisible}
 	<div transition:slide class="panel" bind:this={panel}>
 		{#each folders as folder}
-			<div class="folder" on:dblclick={startEditing} on:keypress={changeFolder}>{folder}</div>
+			<div class="folder" on:dblclick|preventDefault={startEditing} on:keypress={changeFolder}>
+				{folder}
+			</div>
 		{/each}
 		<div class="folder new-folder" on:click={handleClick}>New folder</div>
 	</div>
