@@ -40,10 +40,7 @@ export const logIn = async (email: string, password: string) : Promise<fbAuth.Us
 
 export const logOut = async () : Promise<void> => await fbAuth.signOut(auth);
 
-export const getCurrentUser = async () : Promise<fbAuth.User> => {
-    if (!isSetPersistance) {
-        await initPersistance();
-    } 
+export const getCurrentUser = () : fbAuth.User => {
     return auth.currentUser!;
 }
 
