@@ -15,16 +15,17 @@
     export let toggledChecked: boolean = true
 
     export const hideContainter = () => {
-        container.style.top = `-${container.offsetHeight}px`
+        container.style.display = 'none'
+
         clearContainerInput()
     }
 
-    export const revealContainer = (top: string, left: string) => {
+    export const revealContainer = () => {
         if (container) {
             toggledChecked = get(noficationStatus)
 
-            container.style.top = top
-            container.style.left = left
+            container.style.display = 'flex'
+
             clearContainerInput()
         }
     }
@@ -100,17 +101,19 @@
 </div>
 <style>
     .container {
-        position: absolute;
+        position: absolute; 
         width: 20rem;
         height: 20rem;
         
         border-radius: 10%;
         border: 1px solid rgba(0, 0, 0, 28%);
 
-        display: flex;
+        display: none;
         flex-direction: column;
 
         background-color: white;
+        top: 50%;
+        left: 50%;
         transform: translate(-50%,-50%);
 
         z-index: 10;
