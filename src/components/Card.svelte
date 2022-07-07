@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Card } from '../types/card';
+	import type { Card } from '../lib/types/card';
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
 		tags: [
