@@ -1,16 +1,81 @@
 import {initializeApp} from 'firebase/app';
-import {getAuth, createUserWithEmailAndPassword, type UserCredential} from 'firebase/auth';
+import * as fbAuth from 'firebase/auth';
+import * as fs from "firebase/firestore"; 
 
 const firebaseConfig = {
-    apiKey: 'AIzaSyBzusLOWN7a_sSCbm2TvzO0G3rkNGDnYlE',
-    authDomain: 'project-1007319276577.firebaseapp.com',
-    projectId: 'abicos',
+    apiKey: "AIzaSyBzusLOWN7a_sSCbm2TvzO0G3rkNGDnYlE",
+    authDomain: "abicos.firebaseapp.com",
+    projectId: "abicos",
+    storageBucket: "abicos.appspot.com",
+    messagingSenderId: "1007319276577",
+    appId: "1:1007319276577:web:3ae3d6e77fbbe2779a9760"
 };
 
-initializeApp(firebaseConfig);
-const auth = getAuth();
+let isSetPersistance : boolean;
 
-export const createAccount = async (email: string, password: string) : Promise<UserCredential> => {
-    const userCredentaials = await createUserWithEmailAndPassword(auth, email, password);
+initializeApp(firebaseConfig);
+
+const auth = fbAuth.getAuth();
+const firestore = fs.getFirestore();
+
+const initPersistance = async () : Promise<void> => {
+    await fbAuth.setPersistence(auth, fbAuth.browserSessionPersistence);
+    isSetPersistance = true;
+}
+
+export const createAccount = async (email: string, password: string) : Promise<fbAuth.UserCredential> => {
+    const userCredentaials = await fbAuth.createUserWithEmailAndPassword(auth, email, password);
+    await createUserDocument(userCredentaials);
     return userCredentaials;
 }
+
+
+export const logIn = async (email: string, password: string) : Promise<fbAuth.UserCredential> => {
+    const userCredentaials = await fbAuth.signInWithEmailAndPassword(auth, email, password);
+    return userCredentaials;
+}
+
+export const logOut = async () : Promise<void> => await fbAuth.signOut(auth);
+
+export const getCurrentUser = async () : Promise<fbAuth.User | null> => {
+    if (!isSetPersistance) {
+        await initPersistance();
+    } 
+    return auth.currentUser;
+}
+
+async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
+
+    const userDoc = fs.doc(fs.collection(firestore, "users"), userCredentaials.user.uid); 
+    const folderDoc = fs.doc(fs.collection(userDoc, "folders"), "Folder 1")
+    const itemDoc = fs.doc(fs.collection(folderDoc, "items"));
+    const folderData = {
+        title: "Folder 1"
+    }
+    const userData = {
+        UID: userCredentaials.user.uid,
+        email: userCredentaials.user.email,
+        firstName: "",
+        lastName: "",
+        tags: [
+            {
+                text: "important",
+                color: "#ff1234",
+                colorText: "#000000"
+            }
+        ]
+    }
+    const itemData = {
+        UID: userCredentaials.user.uid,
+        email: userCredentaials.user.email,
+        firstName: "",
+        lastName: "",
+        tags: [
+            "important",
+        ]
+    }
+    await fs.setDoc(userDoc, userData);
+    await fs.setDoc(folderDoc, folderData);
+    await fs.setDoc(itemDoc, itemData);
+}
+
