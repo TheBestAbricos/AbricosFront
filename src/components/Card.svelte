@@ -1,24 +1,11 @@
 <script lang="ts">
-	import { Timestamp } from 'firebase/firestore';
+import { getCurrentUser } from '$lib/firebase';
+
+	import * as fs from 'firebase/firestore';
 
 	import type { Card } from '../lib/types/card';
-	export const card: Card = {
-		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
-		tags: [
-			{ text: 'must', color: '#333' },
-			{ text: 'should', textColor: '#000' },
-			{ text: 'really should', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' }
-		],
-		checked: false,
-		date: Timestamp.fromDate(new Date(
-			2007, 10, 21
-		))
-	};
-
+	export let card: Card;
+	
 	let date: Date | null = null;
 	if (card.date) {
 		date = new Date(card.date?.seconds * 1000 ?? 0);
@@ -29,6 +16,8 @@
 		}
 		return "0" + component.toString();
 	} 
+	
+
 </script>
 
 <div
