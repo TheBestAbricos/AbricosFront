@@ -1,4 +1,6 @@
-<script lang='ts'>
+<script lang='ts' context='module'>
+    import { get } from 'svelte/store';
+    import { noficationStatus } from '$lib/stores'
     import SaveButton from "./shared/SaveButton.svelte";
     import CancelButton from "./shared/CancelButton.svelte";
     import ToggleSwitch from "./shared/ToggleSwitch.svelte";
@@ -11,21 +13,26 @@
     let input: HTMLInputElement;
 
     export let toggledChecked: boolean = true
-    export let isNotificationEnabled: boolean = false;
 
     export const hideContainter = () => {
         container.style.top = `-${container.offsetHeight}px`
         clearContainerInput()
     }
 
-    export const revealContainer = (top: string) => {
-        toggledChecked = isNotificationEnabled
+    export const revealContainer = (top: string, left: string) => {
+        if (container) {
+            toggledChecked = get(noficationStatus)
 
-        container.style.top = top
-        clearContainerInput()
+            container.style.top = top
+            container.style.left = left
+            clearContainerInput()
+        }
     }
 
-    const clearContainerInput = () => input.value = ''
+    const clearContainerInput = () => {
+        if (input)
+            input.value = ''
+    }
 
     const botImgClickHandler = () => window.location.href = url_bot
 
@@ -44,9 +51,9 @@
             return
         }
             
-        isNotificationEnabled = true
+        noficationStatus.set(true)
         toggledChecked = true
-
+        
         hideContainter()
     }
 
@@ -56,7 +63,7 @@
             //TODO: add res handling
         }
 
-        isNotificationEnabled = toggledChecked
+        noficationStatus.set(toggledChecked)
 
         hideContainter()
     }
@@ -68,7 +75,7 @@
         <p>Notifications</p>
     </div>
     <div class='body'>
-        {#if isNotificationEnabled == false}
+        {#if $noficationStatus == false}
             <img on:click={botImgClickHandler} src="tg-bot.svg" alt="tg-bot">
 
             <input bind:this={input} type="text" placeholder="Enter code"> 
@@ -91,7 +98,6 @@
 
     </div>
 </div>
-<p on:click={() => revealContainer('0px')}>Show</p>
 <style>
     .container {
         position: absolute;
@@ -103,6 +109,11 @@
 
         display: flex;
         flex-direction: column;
+
+        background-color: white;
+        transform: translate(-50%,-50%);
+
+        z-index: 10;
     }
 
     .label {
