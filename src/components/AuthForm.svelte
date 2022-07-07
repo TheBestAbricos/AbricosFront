@@ -2,9 +2,14 @@
     import Logo from "./shared/Logo.svelte";
     import {logIn, createAccount} from "$lib/firebase"
     import type { User } from "firebase/auth";
+    import type * as fbApp from "firebase/app";
+    import { codes } from "$lib/errorCodeTranslator";
+
     export let isRegister: boolean;
+    
     let email: string;
     let password: string;
+    let errorMessage: string = "";
     async function onLoginClick() : Promise<void> {
         if(email.length == 0 || password.length == 0) return;
         try {
@@ -14,7 +19,8 @@
             }
         }
         catch(e) {
-            console.log(e);
+            let fbError = e as fbApp.FirebaseError;
+            errorMessage = (codes as any)[fbError.code] ?? fbError.code;
         }
     }
     async function onRegisterClick() : Promise<void> {
@@ -26,7 +32,8 @@
             }
         }
         catch(e) {
-            console.log(e);
+            let fbError = e as fbApp.FirebaseError;
+            errorMessage = (codes as any)[fbError.code] ?? fbError.code;
         }
     }
 </script>
@@ -38,6 +45,11 @@
             <input type="text" class="auth_input" placeholder="Email" bind:value={email}>
             <input type="password" class="auth_input" placeholder="Password" bind:value={password}>
         </form>
+        <div class="error_message">
+            {#if errorMessage !== ""}
+                {errorMessage}
+            {/if}
+        </div>
         <div class="auth_buttons_section">
             {#if !isRegister}
                 <button class="auth_button auth_button_login" on:click={onLoginClick}>Sign in</button>
@@ -52,6 +64,11 @@
 
 
 <style>
+    .error_message {
+        color: red;
+        margin: 10px auto 0 auto;
+        text-align: center;
+    }
     .auth_button {
         padding: 7px 25px;
         display: flex;

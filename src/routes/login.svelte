@@ -5,9 +5,9 @@
     import { prevent_default } from "svelte/internal";
     let email: string; 
     let password: string; 
-    const createAccountButtinClick = async (e: MouseEvent) => {
+    const createAccountButtonClick = async (e: MouseEvent) => {
         console.log(e);
-        createAccount(email, password);
+        await createAccount(email, password);
     }
 </script>
 
