@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Timestamp } from 'firebase/firestore';
+
 	import type { Card } from '../lib/types/card';
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
@@ -12,9 +14,21 @@
 			{ text: 're123ally wooldl', color: '#0000ff' }
 		],
 		checked: false,
-		date: '02.02.2003',
-		time: '01:22'
+		date: Timestamp.fromDate(new Date(
+			2007, 10, 21
+		))
 	};
+
+	let date: Date | null = null;
+	if (card.date) {
+		date = new Date(card.date?.seconds * 1000 ?? 0);
+	}
+	function parseComponent(component: number) : string {
+		if (component > 9) {
+			return component.toString();
+		}
+		return "0" + component.toString();
+	} 
 </script>
 
 <div
@@ -22,8 +36,8 @@
 >
 	<header>
 		<div class="date-div">
-			<div class="date">{card.date ? card.date : 'Date'}</div>
-			<div class="time">{card.time ? card.time : 'Time'}</div>
+			<div class="date">{date ? `${parseComponent(date.getDate())}.${parseComponent(date.getMonth())}.${parseComponent(date.getFullYear())}` : 'Date'}</div>
+			<div class="time">{date ? `${parseComponent(date.getHours())}:${parseComponent(date.getMinutes())}` : 'Time'}</div>
 		</div>
 		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
 	</header>

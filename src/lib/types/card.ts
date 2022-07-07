@@ -1,10 +1,12 @@
+import type { Timestamp } from "firebase/firestore";
+
 export interface Card {
     text: string,
     tags: Tag[],
-    time?: string,
-    date?: string,
+    date?: Timestamp,
     checked: boolean,
 }
+
 
 interface Tag {
     text: string,
