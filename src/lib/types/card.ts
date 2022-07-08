@@ -12,7 +12,6 @@ export interface Card {
 export interface TagType {
     text: string,
     date?: Timestamp,
-    checked: boolean,
     color?: string,
     textColor?: string,
 }
