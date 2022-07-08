@@ -6,6 +6,8 @@ export interface FirestoreUser {
     firstName?: string,
     lastName?: string,
     tags: TagType[]
+    currentFolder: string,
+    telegramToken?: string
 }
 
 

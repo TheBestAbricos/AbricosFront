@@ -1,6 +1,5 @@
 import * as fb from "$lib/firebase"
 import * as fs from "firebase/firestore"; 
-import { orderBy } from "firebase/firestore";
 import type {Card}  from "./types/card";
 import type { Folder } from "./types/folder";
 import type { FirestoreUser } from "./types/user";
@@ -9,9 +8,10 @@ export async function getCurrentUserInfo() : Promise<FirestoreUser> {
     return (await fs.getDoc(fs.doc(fb.firestore, "users", fb.getCurrentUser().uid))).data() as FirestoreUser;
 }
 
-export async function getCardsByFolderName(folderName: string) : Promise<Card[]> {
+export async function getCardsInCurrentFolder() : Promise<Card[]> {
+    const uf = await getCurrentUserInfo();
     const itemsCollection = fs.collection(fb.firestore, 'users',
-        fb.getCurrentUser().uid, "folders", folderName, "items");
+        fb.getCurrentUser().uid, "folders", uf.currentFolder, "items");
     
     const snapshot = await fs.getDocs(
         fs.query(itemsCollection)
@@ -52,3 +52,11 @@ export async function getAllUserFolders() : Promise<Folder[]> {
         return (e.data() as Folder);
     }) as Folder[];
 }
+
+export async function deleteCard(docId: string): Promise<void> {
+    const uf = await getCurrentUserInfo();
+    const itemsCollection = fs.collection(fb.firestore, 'users',
+        fb.getCurrentUser().uid, "folders", uf.currentFolder, "items");
+    fs.deleteDoc(fs.doc(itemsCollection, docId));
+}
+// todo: getCard by docId, change card, current folder, change folder title
