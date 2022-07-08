@@ -1,12 +1,12 @@
 export interface Card {
     text: string,
-    tags: Tag[],
+    tags: TagType[],
     time?: string,
     date?: string,
     checked: boolean,
 }
 
-interface Tag {
+export interface TagType {
     text: string,
     color?: string,
     textColor?: string,
