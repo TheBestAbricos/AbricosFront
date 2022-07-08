@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { getCurrentUserInfo, updateCardInFolder } from '$lib/firestore';
-	import { noficationStatus, userToken } from '$lib/stores';
+	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
 
 	import type { TagType, Card } from '$lib/types/card';
 	import { Timestamp } from 'firebase/firestore';
 	import { createEventDispatcher } from 'svelte';
-	import { get } from 'svelte/store';
 	import MultiSelect from './MultiSelect.svelte';
 	import Tag from './Tag.svelte';
 	const dispatch = createEventDispatcher();
@@ -44,6 +42,30 @@
 			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
 		}
 	}
+
+	async function sendNotification(datetime: number, docId: number) {
+		const token: string | undefined = await getNotificationToken();
+
+		if (token) {
+			const date = new Date(datetime);
+			const data = {
+				time: `${date.getFullYear()}-${
+					date.getMonth() + 1
+				}-${date.getDate()}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+				id: docId,
+				name: description,
+				token: parseInt(token)
+			};
+			fetch(url_server + 'webhooks/schedule/', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		}
+	}
+
 	async function save() {
 		let ts: Timestamp | undefined;
 		if (!description) return;
@@ -75,23 +97,7 @@
 		updateCardInFolder(userInfo.currentFolder, card);
 		dispatch('close');
 
-		if (datetime && get(noficationStatus)) {
-			const data = {
-				time: `${datetime.getFullYear()}-${
-					datetime.getMonth() + 1
-				}-${datetime.getDate()}T${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`,
-				id: '123',
-				name: description,
-				token: get(userToken)
-			};
-			fetch(url_server + 'webhooks/schedule/', {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-		}
+		if (docId && datetime) await sendNotification(parseInt(datetime), parseInt(docId));
 	}
 </script>
 

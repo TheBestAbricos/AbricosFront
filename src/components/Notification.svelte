@@ -1,13 +1,13 @@
 <script lang="ts" context="module">
 	import { get } from 'svelte/store';
-	import { noficationStatus, userToken } from '$lib/stores';
+	import { noficationStatus } from '$lib/stores';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
+	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
 
 	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
 	const url_bot = 'https://t.me/inno_frontend_bot';
-	const url_turn_off_notifications = 'google.com';
 
 	let container: HTMLDivElement;
 	let back: HTMLDivElement;
@@ -55,14 +55,14 @@
 		noficationStatus.set(true);
 		toggledChecked = true;
 
-		userToken.set(parseInt(input.value));
+		setNotificationToken(input.value);
 
 		hideContainter();
 	};
 
 	const sendNotificationStatus = async () => {
 		if (toggledChecked === false) {
-			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + get(userToken) + '/');
+			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + getNotificationToken() + '/');
 			//TODO: add res handling
 		}
 
