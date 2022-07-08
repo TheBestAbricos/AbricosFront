@@ -32,6 +32,7 @@
 </div>
 {#if isCreateCardVisible}
 	<ExpandedCard
+		title="New card"
 		on:close={() => {
 			isCreateCardVisible = false;
 		}}

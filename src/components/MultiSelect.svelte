@@ -12,6 +12,7 @@
 		const checked = input.checked;
 		dispatch('handleChosenTag', { tag, checked });
 	}
+	console.log(chosenTags);
 </script>
 
 {#if isVisible}
@@ -25,7 +26,7 @@
 					value={tag.text}
 					type="checkbox"
 					id={tag.text}
-					checked={chosenTags.includes(tag)}
+					checked={chosenTags.some((item) => item.text == tag.text)}
 				/>
 				<label for={tag.text}> <Tag {tag} /></label>
 			</div>

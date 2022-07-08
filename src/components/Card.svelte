@@ -6,9 +6,12 @@
 	import { deleteCard } from '$lib/firestore';
 
 	import type { Card } from '../lib/types/card';
+	import ExpandedCard from './ExpandedCard.svelte';
 	export let card: Card;
 
 	let date: Date | null = null;
+	let isEditableCardVisible = false;
+
 	if (card.date) {
 		date = new Date(card.date?.seconds * 1000 ?? 0);
 	}
@@ -33,6 +36,7 @@
 <div
 	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
 	data-id={card.docId}
+	on:click={() => (isEditableCardVisible = true)}
 >
 	<header>
 		<div class="date-div" style="color:{colorDate};">
@@ -53,7 +57,9 @@
 	</header>
 	<main class="py-1">
 		<p>{card.text}</p>
-		<span class="w-5" for=""><input type="checkbox" name="checked" checked={card.checked} /></span>
+		<span class="w-5" for=""
+			><input type="checkbox" on:click|preventDefault name="checked" checked={card.checked} /></span
+		>
 	</main>
 	<footer>
 		{#each card.tags as tag}
@@ -63,6 +69,17 @@
 		{/each}
 	</footer>
 </div>
+{#if isEditableCardVisible}
+	<ExpandedCard
+		on:close={() => (isEditableCardVisible = false)}
+		title="Edit card"
+		chosenTags={card.tags}
+		done={card.checked}
+		description={card.text}
+		ts={card.date}
+		docId={card.docId}
+	/>
+{/if}
 
 <style>
 	header {
