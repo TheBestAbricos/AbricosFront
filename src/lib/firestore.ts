@@ -71,7 +71,6 @@ export async function getAllUserFolders() : Promise<Folder[]> {
         return (e.data() as Folder);
     }) as Folder[];
 }
-
 export async function deleteCard(docId: string): Promise<void> {
 
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
@@ -80,7 +79,6 @@ export async function deleteCard(docId: string): Promise<void> {
 
     fs.deleteDoc(fs.doc(itemsCollection, docId));
 }
-
 export async function getCardByDocId(docId: string): Promise<Card> {
 
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
@@ -91,16 +89,18 @@ export async function getCardByDocId(docId: string): Promise<Card> {
 
     return await (await fs.getDoc(fs.doc(itemsCollection, docId))).data() as Card;
 }
-
-export async function changeFolderTitle(oldFolderTitle: string, newFolderTitle: string) {
+export async function updateFolder(folder: Folder) {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
-    const foldersQuery = (await fs.getDocs(
-        fs.query(foldersCollection, fs.where("title", "==", oldFolderTitle))
-    ));
-    if(foldersQuery.empty) return;
-    const oldFolderId = foldersQuery.docs[0].id;
-    const folderDoc = fs.doc(foldersCollection, oldFolderId);
-    await fs.updateDoc(folderDoc, {title: newFolderTitle}); 
+    if (folder.docId) {
+        const folderDoc = fs.doc(foldersCollection);
+        folder.docId = folderDoc.id;
+        await fs.setDoc(folderDoc, folder, {merge: true}); 
+    }
+    else {
+        const folderDoc = fs.doc(foldersCollection, folder.docId);
+        await fs.setDoc(folderDoc, folder, {merge: true}); 
+    }
+
 }
 export async function setNotificationToken(token: string): Promise<void> {
     const userCollection = fs.collection(fb.firestore, 'users');
@@ -112,4 +112,12 @@ export async function getNotificationToken(): Promise<string | undefined> {
     const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
     const data = (await fs.getDoc(userDoc)).data() as FirestoreUser;
     return data.telegramToken;
+}
+export async function switchFolder(docId: string): Promise<void> {
+    const userDoc = fs.doc(fs.collection(fb.firestore, 'users'), fb.getCurrentUser().uid);
+    fs.updateDoc(userDoc, {currentFolder: docId});
+}
+export async function deleteFolder(docId: string): Promise<void> {
+    const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
+    fs.deleteDoc(fs.doc(foldersCollection, docId));
 }
