@@ -7,7 +7,6 @@
 	}
 	let isCreateCardVisible = false;
 	function handleAddClick() {
-		console.log(isCreateCardVisible);
 		isCreateCardVisible = !isCreateCardVisible;
 	}
 </script>

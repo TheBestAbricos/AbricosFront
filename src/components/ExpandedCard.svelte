@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { addCardInFolder, getCurrentUserInfo } from '$lib/firestore';
+	import { noficationStatus, userToken } from '$lib/stores';
 
 	import type { TagType, Card } from '$lib/types/card';
 	import { Timestamp } from 'firebase/firestore';
 	import { createEventDispatcher } from 'svelte';
+	import { get } from 'svelte/store';
 	import MultiSelect from './MultiSelect.svelte';
 	import Tag from './Tag.svelte';
 	const dispatch = createEventDispatcher();
@@ -11,6 +13,9 @@
 	let datetime: Date;
 	let description: string;
 	let tags: TagType[] = [];
+
+	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
+
 	getCurrentUserInfo().then((data) => (tags = data.tags));
 	export let chosenTags: TagType[] = [];
 	let isMultiSelectVisible = false;
@@ -46,6 +51,24 @@
 		console.log('save');
 		addCardInFolder('Folder 1', card);
 		dispatch('close');
+
+		if (get(noficationStatus)) {
+			const data = {
+				time: `${datetime.getFullYear()}-${
+					datetime.getMonth() + 1
+				}-${datetime.getDate()}T${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`,
+				id: '123',
+				name: description,
+				token: get(userToken)
+			};
+			fetch(url_server + 'webhooks/schedule/', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		}
 	}
 </script>
 

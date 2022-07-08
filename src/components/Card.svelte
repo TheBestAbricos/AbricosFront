@@ -3,6 +3,7 @@
 	import Tag from './Tag.svelte';
 
 	import * as fs from 'firebase/firestore';
+	import { deleteCard } from '$lib/firestore';
 
 	import type { Card } from '../lib/types/card';
 	export let card: Card;
@@ -17,25 +18,37 @@
 		}
 		return '0' + component.toString();
 	}
+
+	let colorDate = card.date
+		? card.date.seconds * 1000 - Date.now() > 0
+			? 'black'
+			: 'red'
+		: 'black';
+	function deleteCard() {
+		deleteCard(card.docId);
+	}
 </script>
 
 <div
 	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
+	data-id={card.docId}
 >
 	<header>
-		<div class="date-div">
+		<div class="date-div" style="color:{colorDate};">
 			<div class="date">
 				{date
-					? `${parseComponent(date.getDate())}.${parseComponent(date.getMonth())}.${parseComponent(
-							date.getFullYear()
-					  )}`
+					? `${parseComponent(date.getDate())}.${parseComponent(
+							date.getMonth() + 1
+					  )}.${parseComponent(date.getFullYear())}`
 					: 'Date'}
 			</div>
 			<div class="time">
 				{date ? `${parseComponent(date.getHours())}:${parseComponent(date.getMinutes())}` : 'Time'}
 			</div>
 		</div>
-		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
+		<div class="image">
+			<img on:click|stopPropagation={deleteCard} class="w-4" alt="delete" src="images/x.svg" />
+		</div>
 	</header>
 	<main class="py-1">
 		<p>{card.text}</p>
