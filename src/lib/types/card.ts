@@ -8,8 +8,7 @@ export interface Card {
     checked: boolean,
 }
 
-
-interface Tag {
+export interface Tag {
     text: string,
     color?: string,
     textColor?: string,
