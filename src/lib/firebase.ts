@@ -2,6 +2,7 @@ import {initializeApp} from 'firebase/app';
 import * as fbAuth from 'firebase/auth';
 import * as fs from "firebase/firestore"; 
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyBzusLOWN7a_sSCbm2TvzO0G3rkNGDnYlE",
     authDomain: "abicos.firebaseapp.com",
@@ -11,17 +12,19 @@ const firebaseConfig = {
     appId: "1:1007319276577:web:3ae3d6e77fbbe2779a9760"
 };
 
-let isSetPersistance : boolean;
-
 initializeApp(firebaseConfig);
 
-const auth = fbAuth.getAuth();
-const firestore = fs.getFirestore();
+export const auth = fbAuth.getAuth();
+export const firestore = fs.getFirestore();
 
+
+let isSetPersistance : boolean;
 const initPersistance = async () : Promise<void> => {
     await fbAuth.setPersistence(auth, fbAuth.browserSessionPersistence);
     isSetPersistance = true;
 }
+
+await initPersistance();
 
 export const createAccount = async (email: string, password: string) : Promise<fbAuth.UserCredential> => {
     const userCredentaials = await fbAuth.createUserWithEmailAndPassword(auth, email, password);
@@ -37,11 +40,8 @@ export const logIn = async (email: string, password: string) : Promise<fbAuth.Us
 
 export const logOut = async () : Promise<void> => await fbAuth.signOut(auth);
 
-export const getCurrentUser = async () : Promise<fbAuth.User | null> => {
-    if (!isSetPersistance) {
-        await initPersistance();
-    } 
-    return auth.currentUser;
+export const getCurrentUser = () : fbAuth.User => {
+    return auth.currentUser!;
 }
 
 async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
@@ -66,13 +66,7 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
         ]
     }
     const itemData = {
-        UID: userCredentaials.user.uid,
-        email: userCredentaials.user.email,
-        firstName: "",
-        lastName: "",
-        tags: [
-            "important",
-        ]
+
     }
     await fs.setDoc(userDoc, userData);
     await fs.setDoc(folderDoc, folderData);

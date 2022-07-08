@@ -1,21 +1,21 @@
 <script lang="ts">
+	import { getCurrentUser } from '$lib/firebase';
+
+	import * as fs from 'firebase/firestore';
+
 	import type { Card } from '../lib/types/card';
-	import Tag from './Tag.svelte';
-	export const card: Card = {
-		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
-		tags: [
-			{ text: 'must', color: '#333' },
-			{ text: 'should', textColor: '#000' },
-			{ text: 'really should', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' },
-			{ text: 're123ally wooldl', color: '#0000ff' }
-		],
-		checked: false,
-		date: '02.02.2003',
-		time: '01:22'
-	};
+	export let card: Card;
+
+	let date: Date | null = null;
+	if (card.date) {
+		date = new Date(card.date?.seconds * 1000 ?? 0);
+	}
+	function parseComponent(component: number): string {
+		if (component > 9) {
+			return component.toString();
+		}
+		return '0' + component.toString();
+	}
 </script>
 
 <div
@@ -23,8 +23,16 @@
 >
 	<header>
 		<div class="date-div">
-			<div class="date">{card.date ? card.date : 'Date'}</div>
-			<div class="time">{card.time ? card.time : 'Time'}</div>
+			<div class="date">
+				{date
+					? `${parseComponent(date.getDate())}.${parseComponent(date.getMonth())}.${parseComponent(
+							date.getFullYear()
+					  )}`
+					: 'Date'}
+			</div>
+			<div class="time">
+				{date ? `${parseComponent(date.getHours())}:${parseComponent(date.getMinutes())}` : 'Time'}
+			</div>
 		</div>
 		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
 	</header>
