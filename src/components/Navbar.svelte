@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {get} from 'svelte/store'
+	import { get } from 'svelte/store';
 	import { noficationStatus } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
@@ -10,11 +10,11 @@
 
 	onMount(() => {
 		hideContainter();
-		
+
 		if (get(noficationStatus)) {
-			switchNotificationIconTo('on')
+			switchNotificationIconTo('on');
 		} else {
-			switchNotificationIconTo('off')
+			switchNotificationIconTo('off');
 		}
 	});
 
@@ -51,6 +51,9 @@
 		} else {
 			openedPanel.set('');
 		}
+
+		var loc = window.location.pathname;
+		if (loc != '/') window.location.href = '/';
 	}
 
 	function handleNotificationClick() {
@@ -63,8 +66,7 @@
 	}
 
 	function switchNotificationIconTo(status: string) {
-		if (status !== 'off' && status !== 'on')
-			new Error('Incorrect notification status')
+		if (status !== 'off' && status !== 'on') new Error('Incorrect notification status');
 
 		if (notification)
 			notification.style.background = `url('images/notification-${status}.svg') no-repeat center / cover`;
@@ -81,7 +83,7 @@
 			status = 'on';
 		}
 
-		switchNotificationIconTo(status)
+		switchNotificationIconTo(status);
 	});
 </script>
 
