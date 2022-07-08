@@ -7,7 +7,7 @@
 <div class="body flex flex-col w-full items-center gap-4 flex-auto justify-evenly">
 	<img
 		class="select-none w-4/12 rounded-full"
-		src="images/user-default-logo.png"
+		src="images/profile-images/user-default-logo.png"
 		alt="user profile"
 	/>
 	<button
