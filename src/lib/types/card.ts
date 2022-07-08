@@ -10,14 +10,9 @@ export interface Card {
 }
 
 export interface TagType {
-    tags: Tag[],
+    text: string,
     date?: Timestamp,
     checked: boolean,
-}
-
-
-interface Tag {
-    text: string,
     color?: string,
     textColor?: string,
 }

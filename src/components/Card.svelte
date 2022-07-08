@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getCurrentUser } from '$lib/firebase';
+	import Tag from './Tag.svelte';
 
 	import * as fs from 'firebase/firestore';
 
