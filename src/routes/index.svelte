@@ -5,7 +5,7 @@
 	import { amountTasks } from '$lib/stores';
 	import * as fs from "firebase/firestore";
 	import Card from '../components/Card.svelte';
-	import * as CardType from "$lib/types/card";
+	import type * as CardType from "$lib/types/card";
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
 	import { getCardsByFolderName } from '$lib/firestore';
@@ -15,12 +15,12 @@
 	amountTasks.subscribe((value) => {
 		countValue = value;
 	});
-
-	let cardsPromise = getCardsByFolderName("Folder 1");
-	fs.onSnapshot(fs.collection(fs.getFirestore(), "users", getCurrentUser().uid, "folders", "Folder 1", "items"), (snapshot) => {
-		cardsPromise = getCardsByFolderName("Folder 1");
-	});
-	
+	let cardsPromise: Promise<CardType.Card[]>;
+	if(getCurrentUser()){
+		fs.onSnapshot(fs.collection(fs.getFirestore(), "users", getCurrentUser().uid, "folders", "Folder 1", "items"), (snapshot) => {
+			cardsPromise = getCardsByFolderName("Folder 1");
+		});
+	}
 
 </script>
 
@@ -28,7 +28,7 @@
 	<Navbar />
 	<FolderPanel />
 
-	{#await cardsPromise}
+	{#await cardsPromise = getCardsByFolderName("Folder 1")}
 		<ProgressIndicator />
 	{:then cards} 
 		<div class="flex flex-wrap justify-center lg:p-12 mg:p-6 p-3">

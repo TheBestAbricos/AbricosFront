@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {get} from 'svelte/store'
 	import { noficationStatus } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
@@ -9,6 +10,12 @@
 
 	onMount(() => {
 		hideContainter();
+		
+		if (get(noficationStatus)) {
+			switchNotificationIconTo('on')
+		} else {
+			switchNotificationIconTo('off')
+		}
 	});
 
 	let notification: HTMLDivElement;
@@ -55,6 +62,14 @@
 		if (loc != '/profile') window.location.href = '/profile';
 	}
 
+	function switchNotificationIconTo(status: string) {
+		if (status !== 'off' && status !== 'on')
+			new Error('Incorrect notification status')
+
+		if (notification)
+			notification.style.background = `url('notification-${status}.svg') no-repeat center / cover`;
+	}
+
 	async function signOut() {
 		await logOut();
 		window.location.href = '/login';
@@ -66,8 +81,7 @@
 			status = 'on';
 		}
 
-		if (notification)
-			notification.style.background = `url('notification-${status}.svg') no-repeat center / cover`;
+		switchNotificationIconTo(status)
 	});
 </script>
 
