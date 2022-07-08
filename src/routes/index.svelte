@@ -8,7 +8,7 @@
 	import type * as CardType from "$lib/types/card";
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import { changeFolderTitle, deleteCard, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
+	import { getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 
 	let countValue: number;
 
