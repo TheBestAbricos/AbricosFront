@@ -1,16 +1,32 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 	import Tag from './Tag.svelte';
 	import type { TagType } from '$lib/types/card';
 	export let tags: TagType[];
+	export let chosenTags: TagType[];
 	export let isVisible = false;
+	function addTagAsChosen(tag: TagType, e: MouseEvent) {
+		const input = e.target as HTMLInputElement;
+		const checked = input.checked;
+		dispatch('handleChosenTag', { tag, checked });
+	}
 </script>
 
 {#if isVisible}
-	<div transition:slide class="multiselect">
+	<div transition:slide class="multiselect" on:click|stopPropagation>
 		{#each tags as tag}
 			<div class="tag-item">
-				<input type="checkbox" id={tag.text} />
+				<input
+					on:click={(e) => {
+						addTagAsChosen(tag, e);
+					}}
+					value={tag.text}
+					type="checkbox"
+					id={tag.text}
+					checked={chosenTags.includes(tag)}
+				/>
 				<label for={tag.text}> <Tag {tag} /></label>
 			</div>
 		{/each}
