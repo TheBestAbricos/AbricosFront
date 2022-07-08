@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { addCardInFolder, getCurrentUserInfo } from '$lib/firestore';
-	import { userToken } from '$lib/stores';
+	import { noficationStatus, userToken } from '$lib/stores';
 
 	import type { TagType, Card } from '$lib/types/card';
 	import { Timestamp } from 'firebase/firestore';
@@ -52,21 +52,23 @@
 		addCardInFolder('Folder 1', card);
 		dispatch('close');
 
-		const data = {
-			time: `${datetime.getFullYear()}-${
-				datetime.getMonth() + 1
-			}-${datetime.getDate()}T${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`,
-			id: '123',
-			name: description,
-			token: get(userToken)
-		};
-		fetch(url_server + 'webhooks/schedule/', {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		if (get(noficationStatus)) {
+			const data = {
+				time: `${datetime.getFullYear()}-${
+					datetime.getMonth() + 1
+				}-${datetime.getDate()}T${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`,
+				id: '123',
+				name: description,
+				token: get(userToken)
+			};
+			fetch(url_server + 'webhooks/schedule/', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		}
 	}
 </script>
 

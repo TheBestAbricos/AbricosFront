@@ -6,7 +6,7 @@
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
 
 	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
-	const url_bot = 'https://web.telegram.org/k/#@volunsup_bot';
+	const url_bot = 'https://t.me/inno_frontend_bot';
 	const url_turn_off_notifications = 'google.com';
 
 	let container: HTMLDivElement;
@@ -35,7 +35,7 @@
 		if (input) input.value = '';
 	};
 
-	const botImgClickHandler = () => (window.location.href = url_bot);
+	const botImgClickHandler = () => window.open(url_bot, '_blank')!.focus();
 
 	const sendId = async () => {
 		if (!input.value) {
@@ -73,13 +73,18 @@
 </script>
 
 <div bind:this={back} on:click|stopPropagation={hideContainter} class="back">
-	<div bind:this={container} on:click|stopPropagation class="container">
+	<div bind:this={container} on:click|stopPropagation class="container select-none">
 		<div class="label">
 			<p>Notifications</p>
 		</div>
 		<div class="body">
 			{#if $noficationStatus == false}
-				<img on:click={botImgClickHandler} src="images/tg-bot.svg" alt="tg-bot" />
+				<img
+					class=" hover:ring-cyan-600 hover:ring-1 hover:shadow-md cursor-pointer"
+					on:click={botImgClickHandler}
+					src="images/tg-bot.svg"
+					alt="tg-bot"
+				/>
 
 				<input bind:this={input} type="text" placeholder="Enter code" />
 
