@@ -48,9 +48,8 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
 
     const userDoc = fs.doc(fs.collection(firestore, "users"), userCredentaials.user.uid); 
     const folderDoc = fs.doc(fs.collection(userDoc, "folders"), "Folder 1")
-    const itemDoc = fs.doc(fs.collection(folderDoc, "items"));
     const folderData = {
-        title: "Folder 1"
+        title: "Folder 1",
     }
     const userData = {
         UID: userCredentaials.user.uid,
@@ -65,11 +64,7 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
             }
         ]
     }
-    const itemData = {
-
-    }
     await fs.setDoc(userDoc, userData);
     await fs.setDoc(folderDoc, folderData);
-    await fs.setDoc(itemDoc, itemData);
 }
 
