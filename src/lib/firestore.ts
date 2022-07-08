@@ -95,4 +95,14 @@ export async function changeFolderTitle(oldFolderTitle: string, newFolderTitle: 
     const folderDoc = fs.doc(foldersCollection, oldFolderId);
     await fs.updateDoc(folderDoc, {title: newFolderTitle}); 
 }
-// todo: change folder title
+export async function setNotificationToken(token: string): Promise<void> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    await fs.updateDoc(userDoc, {token: token});
+}
+export async function getNotificationToken(): Promise<string | undefined> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const data = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    return data.telegramToken;
+}
