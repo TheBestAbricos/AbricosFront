@@ -30,7 +30,11 @@
 		/><line x1="9.5" y1="12" x2="14.5" y2="12" /></svg
 	>
 	<p class="w-full text-center mt-3 text-sm font-light">Add card</p>
-	{#if isCreateCardVisible}
-		<ExpandedCard />
-	{/if}
 </div>
+{#if isCreateCardVisible}
+	<ExpandedCard
+		on:close={() => {
+			isCreateCardVisible = false;
+		}}
+	/>
+{/if}
