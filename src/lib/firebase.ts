@@ -53,6 +53,7 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
     }
     const userData = {
         UID: userCredentaials.user.uid,
+        currentFolder: "Folder 1",
         email: userCredentaials.user.email,
         firstName: "",
         lastName: "",
