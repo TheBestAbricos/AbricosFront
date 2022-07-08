@@ -9,20 +9,38 @@
 	import MultiSelect from './MultiSelect.svelte';
 	import Tag from './Tag.svelte';
 	const dispatch = createEventDispatcher();
-	let done = false;
-	let datetime: Date;
-	let description: string;
+	export let done = false;
+	export let datetime: string | undefined = undefined;
+	export let ts: Timestamp | undefined = undefined;
+	export let description = '';
+	export let chosenTags: TagType[] = [];
+	export let title: string;
 	let tags: TagType[] = [];
+
+	function setDatetime(ts: Timestamp) {
+		const date = new Date(ts.seconds * 1000);
+		const year: string = date.getFullYear() + '';
+		let month = date.getMonth() + 1 + '';
+		if (month.length == 1) month = '0' + month;
+		let days = date.getDate() + '';
+		if (days.length == 1) days = '0' + days;
+		let hours = date.getHours() + '';
+		if (hours.length == 1) hours = '0' + hours;
+		let minutes = date.getMinutes() + '';
+		if (minutes.length == 1) minutes = '0' + minutes;
+		console.log(`${year}-${month}-${days}T${hours}:${minutes}`);
+		datetime = `${year}-${month}-${days}T${hours}:${minutes}`;
+	}
+	if (ts) setDatetime(ts);
 
 	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
 
 	getCurrentUserInfo().then((data) => (tags = data.tags));
-	export let chosenTags: TagType[] = [];
 	let isMultiSelectVisible = false;
 	function handleChosenTag(event: { detail: { checked: boolean; tag: TagType } }) {
 		if (event.detail.checked) chosenTags = [...chosenTags, event.detail.tag];
 		else {
-			chosenTags = chosenTags.filter((item) => item != event.detail.tag);
+			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
 		}
 	}
 	async function save() {
@@ -33,6 +51,7 @@
 			text: description,
 			tags: chosenTags
 		};
+		console.log('save', datetime);
 		if (datetime) {
 			datetime = new Date(datetime);
 			ts = Timestamp.fromDate(
@@ -48,12 +67,12 @@
 		if (ts) card.date = ts;
 
 		console.log(JSON.stringify(card));
-		console.log('save');
+
 		const uf = await getCurrentUserInfo();
 		addCardInFolder(uf.currentFolder, card);
 		dispatch('close');
 
-		if (get(noficationStatus)) {
+		if (datetime && get(noficationStatus)) {
 			const data = {
 				time: `${datetime.getFullYear()}-${
 					datetime.getMonth() + 1
@@ -73,7 +92,7 @@
 	}
 </script>
 
-<div class="background" on:click|stopPropagation={() => dispatch('close')}>
+<div class="background">
 	<div
 		class="center-block"
 		on:click|stopPropagation={() => {
@@ -81,7 +100,7 @@
 		}}
 	>
 		<header>
-			<span>Short description...</span>
+			<span>{title}</span>
 		</header>
 
 		<main>
@@ -118,6 +137,7 @@
 		</main>
 		<footer>
 			<button type="submit" on:click={save}>Save</button>
+			<button type="button" on:click={() => dispatch('close')}>Cancel</button>
 		</footer>
 	</div>
 </div>
@@ -157,17 +177,18 @@
 	}
 	label {
 		display: block;
+		width: fit-content;
 		margin: 0.5rem 0;
 	}
 	label span {
 		display: inline-block;
 		width: 6rem;
 	}
-	input[type='date'] {
-		width: 6.8rem;
+	input[type='datetime-local'] {
+		width: 10rem;
 		outline: none;
 	}
-	input[type='date']:hover {
+	input[type='datetime-local']:hover {
 		cursor: pointer;
 		outline: none;
 	}
@@ -209,6 +230,10 @@
 	footer button[type='submit'] {
 		margin-right: 0.5rem;
 		background-color: aquamarine;
+	}
+	footer button[type='button'] {
+		margin-right: 0.5rem;
+		background-color: indianred;
 	}
 	.tag-tag {
 		display: inline-block;
