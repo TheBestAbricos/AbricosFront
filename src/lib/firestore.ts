@@ -45,9 +45,16 @@ export async function updateCardInFolder(folderName: string, card: Card) : Promi
 
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
         currentFolderId, "items");
-    const newDoc = fs.doc(itemsCollection); 
-    card.docId = newDoc.id;
-    fs.setDoc(newDoc, card, {merge: true});
+    if(card.docId){
+        const newDoc = fs.doc(itemsCollection, card.docId); 
+        fs.setDoc(newDoc, card, {merge: true});
+    }
+    else {
+        const newDoc = fs.doc(itemsCollection); 
+        card.docId = newDoc.id;
+        fs.setDoc(newDoc, card, {merge: true});
+    }
+    
 }
 export async function getAllUserFolders() : Promise<Folder[]> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
