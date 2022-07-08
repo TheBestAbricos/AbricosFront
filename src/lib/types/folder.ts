@@ -1,5 +1,6 @@
 export interface Folder {
-    text: string,
+    docId: string,
+    title: string,
     color?: string,
     textColor?: string,
 }
