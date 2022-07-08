@@ -78,7 +78,7 @@
     </div>
     <div class='body'>
         {#if $noficationStatus == false}
-            <img on:click={botImgClickHandler} src="tg-bot.svg" alt="tg-bot">
+            <img on:click={botImgClickHandler} src="images/tg-bot.svg" alt="tg-bot">
 
             <input bind:this={input} type="text" placeholder="Enter code"> 
 
