@@ -8,13 +8,7 @@
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import {
-		changeFolderTitle,
-		deleteCard,
-		getAllUserFolders,
-		getCardsInCurrentFolder,
-		getCurrentUserInfo
-	} from '$lib/firestore';
+	import { getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 
 	let folders: Folder[];

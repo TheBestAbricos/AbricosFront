@@ -1,13 +1,13 @@
 <script lang="ts" context="module">
 	import { get } from 'svelte/store';
-	import { noficationStatus, userToken } from '$lib/stores';
+	import { noficationStatus } from '$lib/stores';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
+	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
 
 	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
 	const url_bot = 'https://t.me/inno_frontend_bot';
-	const url_turn_off_notifications = 'google.com';
 
 	let container: HTMLDivElement;
 	let back: HTMLDivElement;
@@ -55,14 +55,14 @@
 		noficationStatus.set(true);
 		toggledChecked = true;
 
-		userToken.set(parseInt(input.value));
+		setNotificationToken(input.value);
 
 		hideContainter();
 	};
 
 	const sendNotificationStatus = async () => {
 		if (toggledChecked === false) {
-			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + get(userToken) + '/');
+			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + getNotificationToken() + '/');
 			//TODO: add res handling
 		}
 
@@ -77,10 +77,10 @@
 		<div class="label">
 			<p>Notifications</p>
 		</div>
-		<div class="body">
+		<div class="body mt-8">
 			{#if $noficationStatus == false}
 				<img
-					class=" hover:ring-cyan-600 hover:ring-1 hover:shadow-md cursor-pointer"
+					class="pulse cursor-pointer mt-3 mb-3"
 					on:click={botImgClickHandler}
 					src="images/tg-bot.svg"
 					alt="tg-bot"
@@ -111,6 +111,30 @@
 </div>
 
 <style>
+	.pulse {
+		animation: epileptic-pulse 2s infinite;
+	}
+	@keyframes epileptic-pulse {
+		0% {
+			transform: scale(1);
+			box-shadow: 0px 0px 2px rgb(104, 104, 104);
+		}
+		33% {
+			transform: scale(1.05);
+			box-shadow: 0px 0px 5px rgb(104, 104, 104);
+		}
+		50% {
+			box-shadow: 0px 0px 10px rgb(104, 104, 104);
+		}
+		66% {
+			transform: scale(1.05);
+			box-shadow: 0px 0px 5px rgb(104, 104, 104);
+		}
+		100% {
+			transform: scale(1);
+			box-shadow: 0px 0px 2px rgb(104, 104, 104);
+		}
+	}
 	.back {
 		top: 0;
 		left: 0;
@@ -155,9 +179,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 1rem;
+		gap: 1.5rem;
 
-		margin-top: 3rem;
+		/* margin-top: 3rem; */
 	}
 
 	.body input {
