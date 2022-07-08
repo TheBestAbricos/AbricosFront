@@ -8,6 +8,9 @@
 	import FilterBar from './filter/FilterBar.svelte';
 	import Notification, { hideContainter, revealContainer } from '../components/Notification.svelte';
 
+	let filterIcon: HTMLDivElement;
+	let forbidden: boolean = false;
+
 	onMount(() => {
 		hideContainter();
 
@@ -34,6 +37,14 @@
 	});
 
 	function handleFilterClick() {
+		var loc = window.location.pathname;
+		if (loc != '/') {
+			if (filterIcon) {
+				forbidden = true;
+				setTimeout(() => (forbidden = false), 300);
+			}
+			return;
+		}
 		isFilterVisible = !isFilterVisible;
 		if (isFilterVisible) {
 			filterRotation.set(0);
@@ -87,10 +98,9 @@
 		switchNotificationIconTo(status);
 	});
 
-	logoSrc.subscribe(src => {
-		if (logo)
-			logo.style.background = `url('${src}') no-repeat center / cover`;
-	})
+	logoSrc.subscribe((src) => {
+		if (logo) logo.style.background = `url('${src}') no-repeat center / cover`;
+	});
 </script>
 
 <nav class="p-3">
@@ -105,6 +115,8 @@
 		<div class="menu">
 			<div
 				on:click={handleFilterClick}
+				bind:this={filterIcon}
+				class:spinner={forbidden == true}
 				class="menu__el cursor-pointer"
 				id="filter"
 				style="transform: rotate({$filterRotation}deg);"
@@ -204,5 +216,27 @@
 		height: 3em;
 
 		background: url('images/abricos.svg') no-repeat center / 90%;
+	}
+
+	.spinner {
+		animation: spin 0.3s linear 1;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(180deg);
+		}
+		25% {
+			transform: rotate(170deg);
+		}
+		50% {
+			transform: rotate(180deg);
+		}
+		75% {
+			transform: rotate(190deg);
+		}
+		100% {
+			transform: rotate(180deg);
+		}
 	}
 </style>

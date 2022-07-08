@@ -14,7 +14,7 @@
 <div on:click={handleAddClick} class="w-32 opacity-60 cursor-pointer">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		class="w-full spinner"
+		class="w-full spinner-hover"
 		viewBox="0 0 24 24"
 		fill="none"
 		stroke="#000000"
@@ -40,6 +40,10 @@
 {/if}
 
 <style>
+	.spinner-hover:hover {
+		animation: spin 0.3s linear 1;
+	}
+
 	@keyframes spin {
 		0% {
 			transform: rotate(0deg);
@@ -56,8 +60,5 @@
 		100% {
 			transform: rotate(0deg);
 		}
-	}
-	.spinner:hover {
-		animation: spin 0.3s linear 1;
 	}
 </style>
