@@ -1,7 +1,7 @@
 <script>
-	import UserProfile from '../components/UserProfile.svelte';
+	import ProfileComponent from '../components/profile/ProfileComponent.svelte';
 	import Navbar from '../components/Navbar.svelte';
 </script>
 
 <Navbar />
-<UserProfile />
+<ProfileComponent />
