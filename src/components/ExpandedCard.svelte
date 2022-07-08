@@ -53,14 +53,15 @@
 		};
 		console.log('save', datetime);
 		if (datetime) {
-			datetime = new Date(datetime);
+			const date = new Date(datetime);
+			console.log(`Date: ${date}`);
 			ts = Timestamp.fromDate(
 				new Date(
-					datetime.getFullYear(),
-					datetime.getMonth(),
-					datetime.getDate(),
-					datetime.getHours(),
-					datetime.getMinutes()
+					date.getFullYear(),
+					date.getMonth(),
+					date.getDate(),
+					date.getHours(),
+					date.getMinutes()
 				)
 			);
 		}
