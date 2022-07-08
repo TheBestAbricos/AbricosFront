@@ -24,7 +24,8 @@
 			? 'black'
 			: 'red'
 		: 'black';
-	function deleteCard() {
+	function cardDelete() {
+		if (!card.docId) return;
 		deleteCard(card.docId);
 	}
 </script>
@@ -47,7 +48,7 @@
 			</div>
 		</div>
 		<div class="image">
-			<img on:click|stopPropagation={deleteCard} class="w-4" alt="delete" src="images/x.svg" />
+			<img on:click|stopPropagation={cardDelete} class="w-4" alt="delete" src="images/x.svg" />
 		</div>
 	</header>
 	<main class="py-1">
@@ -105,6 +106,8 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		scrollbar-width: none;
+		/* word-break: break-all; */
+		line-break: auto;
 	}
 	p::-webkit-scrollbar {
 		width: 3px;
@@ -151,7 +154,7 @@
 		flex-direction: column;
 		/* width: 18rem; */
 		height: 10rem;
-		/* width: 14rem; */
+		width: 14rem;
 		border: 1px solid grey;
 		border-radius: 30px;
 		box-sizing: border-box;

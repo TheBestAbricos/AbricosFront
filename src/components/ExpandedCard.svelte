@@ -25,7 +25,7 @@
 			chosenTags = chosenTags.filter((item) => item != event.detail.tag);
 		}
 	}
-	function save() {
+	async function save() {
 		let ts: Timestamp | undefined;
 		if (!description) return;
 		const card: Card = {
@@ -49,7 +49,8 @@
 
 		console.log(JSON.stringify(card));
 		console.log('save');
-		addCardInFolder('Folder 1', card);
+		const uf = await getCurrentUserInfo();
+		addCardInFolder(uf.currentFolder, card);
 		dispatch('close');
 
 		if (get(noficationStatus)) {
