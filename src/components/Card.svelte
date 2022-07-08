@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Card } from '../lib/types/card';
+	import Tag from './Tag.svelte';
 	export const card: Card = {
 		text: 'Make a dinner today and then then then then then today Make a dinner today and then then then then then today',
 		tags: [
@@ -33,13 +34,8 @@
 	</main>
 	<footer>
 		{#each card.tags as tag}
-			<div
-				class="tag rounded-2xl hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
-				style="background-color:{tag.color ? tag.color : '#fff'};color:{tag.textColor
-					? tag.textColor
-					: '#fff'}"
-			>
-				{tag.text}
+			<div class="tag-wrapper">
+				<Tag {tag} />
 			</div>
 		{/each}
 	</footer>
@@ -115,6 +111,10 @@
 	input[type='checkbox']:hover {
 		background-color: aqua;
 	}
+	.tag-wrapper {
+		display: inline-block;
+		margin: 0.2rem 0.5rem 2rem 0;
+	}
 	footer {
 		box-sizing: border-box;
 		height: 2rem;
@@ -123,30 +123,7 @@
 		overflow: hidden;
 		padding: 0 1rem;
 	}
-	.tag {
-		height: 2rem;
-		min-width: 3rem;
-		text-align: center;
-		padding: 0.5rem;
-		margin: 0.2rem 0.5rem 2rem 0;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid grey;
-		/* border-radius: 20px; */
-		box-sizing: border-box;
-		flex-wrap: nowrap;
-		transition-duration: 200ms;
-		font-size: 0.75em;
-	}
-	.tag:hover {
-		transform: scale(1.02);
-		transform: rotate(-1deg);
-		/* box-shadow: 0 0 10px 0px grey; */
-	}
-	.tag:not(:last-child) {
-		margin-right: 0.2rem;
-	}
+
 	.card {
 		display: flex;
 		flex-direction: column;
