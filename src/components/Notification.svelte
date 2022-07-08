@@ -71,8 +71,8 @@
     }
 
 </script>
-<div bind:this={back} on:click|stopPropagation class='back'>
-<div bind:this={container} class='container'>
+<div bind:this={back} on:click|stopPropagation = {hideContainter} class='back'>
+<div bind:this={container} on:click|stopPropagation class='container'>
     <div class='label'>
         <p>Notifications</p>
     </div>
