@@ -77,6 +77,7 @@
 		done={card.checked}
 		description={card.text}
 		ts={card.date}
+		docId={card.docId}
 	/>
 {/if}
 

@@ -15,6 +15,7 @@
 	export let description = '';
 	export let chosenTags: TagType[] = [];
 	export let title: string;
+	export let docId: string | undefined = undefined;
 	let tags: TagType[] = [];
 
 	function setDatetime(ts: Timestamp) {
@@ -66,11 +67,12 @@
 			);
 		}
 		if (ts) card.date = ts;
+		if (docId) card.docId = docId;
 
 		console.log(JSON.stringify(card));
 
-		const uf = await getCurrentUserInfo();
-		updateCardInFolder(uf.currentFolder, card);
+		const userInfo = await getCurrentUserInfo();
+		updateCardInFolder(userInfo.currentFolder, card);
 		dispatch('close');
 
 		if (datetime && get(noficationStatus)) {
