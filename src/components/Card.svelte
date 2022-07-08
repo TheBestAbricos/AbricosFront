@@ -122,6 +122,8 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		scrollbar-width: none;
+		/* word-break: break-all; */
+		line-break: auto;
 	}
 	p::-webkit-scrollbar {
 		width: 3px;
@@ -168,7 +170,7 @@
 		flex-direction: column;
 		/* width: 18rem; */
 		height: 10rem;
-		/* width: 14rem; */
+		width: 14rem;
 		border: 1px solid grey;
 		border-radius: 30px;
 		box-sizing: border-box;
