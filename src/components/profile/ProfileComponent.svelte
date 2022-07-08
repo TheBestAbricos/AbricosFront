@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
+	import { getCurrentUserInfo } from '$lib/firestore';
 	import { logoChoiceMode } from '$lib/stores';
 	import ProfileContent from './ProfileContent.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
