@@ -24,7 +24,8 @@
 			? 'black'
 			: 'red'
 		: 'black';
-	function deleteCard() {
+	function cardDelete() {
+		if (!card.docId) return;
 		deleteCard(card.docId);
 	}
 </script>
@@ -47,7 +48,7 @@
 			</div>
 		</div>
 		<div class="image">
-			<img on:click|stopPropagation={deleteCard} class="w-4" alt="delete" src="images/x.svg" />
+			<img on:click|stopPropagation={cardDelete} class="w-4" alt="delete" src="images/x.svg" />
 		</div>
 	</header>
 	<main class="py-1">
