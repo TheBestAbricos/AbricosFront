@@ -1,7 +1,7 @@
 import type { Timestamp } from "firebase/firestore";
 
 export interface Card {
-    docId: string,
+    docId?: string,
     text: string,
     tags: TagType[],
     date?: Timestamp,

@@ -1,87 +1,113 @@
 <script lang="ts">
-	import type { TagType } from '$lib/types/card';
+	import { addCardInFolder, getCurrentUserInfo } from '$lib/firestore';
+
+	import type { TagType, Card } from '$lib/types/card';
+	import { Timestamp } from 'firebase/firestore';
+	import { createEventDispatcher } from 'svelte';
 	import MultiSelect from './MultiSelect.svelte';
 	import Tag from './Tag.svelte';
-	export let isVisible = true;
-	export let tags: TagType[] = [
-		{ text: 'hi3s', color: '#123456' },
-		{ text: 'h1123123131i' },
-		{ text: '1' },
-		{ text: '2' },
-		{ text: '3' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		// { text: 'hello world' },
-		{ text: '4' },
-		{ text: '5' },
-		{ text: 'he6rld' },
-		{ text: 'he7orld' },
-		{ text: 'he8rld' }
-	];
+	const dispatch = createEventDispatcher();
+	let done = false;
+	let datetime: Date;
+	let description: string;
+	let tags: TagType[] = [];
+	getCurrentUserInfo().then((data) => (tags = data.tags));
+	export let chosenTags: TagType[] = [];
 	let isMultiSelectVisible = false;
+	function handleChosenTag(event: { detail: { checked: boolean; tag: TagType } }) {
+		if (event.detail.checked) chosenTags = [...chosenTags, event.detail.tag];
+		else {
+			chosenTags = chosenTags.filter((item) => item != event.detail.tag);
+		}
+	}
+	function save() {
+		let ts: Timestamp | undefined;
+		if (!description) return;
+		const card: Card = {
+			checked: done,
+			text: description,
+			tags: chosenTags
+		};
+		if (datetime) {
+			datetime = new Date(datetime);
+			ts = Timestamp.fromDate(
+				new Date(
+					datetime.getFullYear(),
+					datetime.getMonth(),
+					datetime.getDate(),
+					datetime.getHours(),
+					datetime.getMinutes()
+				)
+			);
+		}
+		if (ts) card.date = ts;
+
+		console.log(JSON.stringify(card));
+		console.log('save');
+		addCardInFolder('Folder 1', card);
+		dispatch('close');
+	}
 </script>
 
-{#if isVisible}
+<div class="background" on:click|stopPropagation={() => dispatch('close')}>
 	<div
-		class="background"
-		on:click={() => {
-			isVisible = false;
+		class="center-block"
+		on:click|stopPropagation={() => {
+			isMultiSelectVisible = false;
 		}}
 	>
-		<div class="center-block" on:click|stopPropagation>
-			<header>
-				<span>Short description...</span>
-			</header>
+		<header>
+			<span>Short description...</span>
+		</header>
 
-			<main>
-				<label for="done">
-					<span>Done:</span>
-					<input id="done" type="checkbox" />
-				</label>
-				<label for="notify">
-					<span>Notification:</span>
-					<input id="notify" type="date" />
-				</label>
-				<label for="tags">
-					<span>Tags:</span>
-					<img
-						alt="plus"
-						src="images/plus.svg"
-						on:click={() => (isMultiSelectVisible = !isMultiSelectVisible)}
-					/>
-					<MultiSelect {tags} isVisible={isMultiSelectVisible} />
-				</label>
-				<div class="changeable">
-					<div class="tags">
-						{#each tags as tag}
-							<div class="tag-tag"><Tag {tag} /></div>
-						{/each}
-					</div>
-					<textarea placeholder="Enter description" />
+		<main>
+			<label for="done">
+				<span>Done:</span>
+				<input id="done" type="checkbox" bind:checked={done} />
+			</label>
+			<label for="notify">
+				<span>Notification:</span>
+				<input id="notify" type="datetime-local" bind:value={datetime} />
+			</label>
+			<label for="tags">
+				<span>Tags:</span>
+				<img
+					alt="plus"
+					src="images/plus.svg"
+					on:click|stopPropagation={() => (isMultiSelectVisible = !isMultiSelectVisible)}
+				/>
+				<MultiSelect
+					on:handleChosenTag={handleChosenTag}
+					{chosenTags}
+					{tags}
+					isVisible={isMultiSelectVisible}
+				/>
+			</label>
+			<div class="changeable">
+				<div class="tags">
+					{#each chosenTags as tag}
+						<div class="tag-tag"><Tag {tag} /></div>
+					{/each}
 				</div>
-			</main>
-			<footer>
-				<button type="submit">Save</button>
-				<button type="button" class="cancel">Cancel</button>
-			</footer>
-		</div>
+				<textarea placeholder="Enter description" bind:value={description} />
+			</div>
+		</main>
+		<footer>
+			<button type="submit" on:click={save}>Save</button>
+		</footer>
 	</div>
-{/if}
+</div>
 
 <style>
 	.background {
+		cursor: auto;
 		position: absolute;
 		width: 100vw;
 		height: 100vh;
 		top: 0;
 		left: 0;
-		box-shadow: 0 0 100px -100px red;
 		background-color: transparent;
+		z-index: 1000;
 	}
 	.center-block {
 		display: flex;
@@ -92,14 +118,12 @@
 		box-shadow: 0 0 5px -1px grey;
 		width: 500px;
 		min-height: 500px;
-
 		position: fixed;
 		top: 50%;
 		left: 50%;
-		z-index: 10000;
+		z-index: 100000;
 		transform: translate(-50%, -50%);
 	}
-
 	header {
 		display: flex;
 		align-items: center;
@@ -135,6 +159,9 @@
 		margin: 0.2rem;
 		height: 1.5rem;
 		width: 1.5rem;
+	}
+	label[for='done'] input:hover {
+		cursor: pointer;
 	}
 
 	main {
@@ -181,9 +208,6 @@
 		}
 	}
 
-	.cancel {
-		background-color: lightcoral;
-	}
 	.tags {
 		height: 6.825rem;
 		box-sizing: border-box;
