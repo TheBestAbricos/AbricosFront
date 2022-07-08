@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addCardInFolder, getCurrentUserInfo } from '$lib/firestore';
+	import { getCurrentUserInfo, updateCardInFolder } from '$lib/firestore';
 	import { noficationStatus, userToken } from '$lib/stores';
 
 	import type { TagType, Card } from '$lib/types/card';
@@ -69,7 +69,7 @@
 		console.log(JSON.stringify(card));
 
 		const uf = await getCurrentUserInfo();
-		addCardInFolder(uf.currentFolder, card);
+		updateCardInFolder(uf.currentFolder, card);
 		dispatch('close');
 
 		if (datetime && get(noficationStatus)) {

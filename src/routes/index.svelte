@@ -8,7 +8,7 @@
 	import type * as CardType from "$lib/types/card";
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import { deleteCard, getCardsInCurrentFolder } from '$lib/firestore';
+	import { changeFolderTitle, deleteCard, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 
 	let countValue: number;
 
@@ -17,13 +17,14 @@
 	});
 	let cardsPromise: Promise<CardType.Card[]>;
 
-	if(getCurrentUser()){
-
-		fs.onSnapshot(fs.collection(fs.getFirestore(), "users", getCurrentUser().uid, "folders", "Folder 1", "items"), (snapshot) => {
-			cardsPromise = getCardsInCurrentFolder();
-		});
+	async function init(){
+		if(getCurrentUser()){
+			fs.onSnapshot(fs.collection(fs.getFirestore(), "users", getCurrentUser().uid, "folders", (await getCurrentUserInfo()).currentFolder, "items"), (snapshot) => {
+				cardsPromise = getCardsInCurrentFolder();
+			});
+		}
 	}
-	
+	init();	
 
 </script>
 
