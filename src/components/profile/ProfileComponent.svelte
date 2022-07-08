@@ -1,7 +1,11 @@
 <script lang="ts">
+	import { getCurrentUserInfo } from '$lib/firestore';
+	import { logoChoiceMode } from '$lib/stores';
 	import ProfileContent from './ProfileContent.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
 	import TagsContent from './TagsContent.svelte';
+	import LogoChoice from './LogoChoice.svelte'
+	import Security from './Security.svelte'
 
 	let contentType: String = 'profile';
 
@@ -10,18 +14,22 @@
 	}
 </script>
 
-<div class="flex mt-20 w-full justify-center p-10">
+<div class="flex mt-4 w-full justify-center p-10">
 	<ProfileMenu on:message={handleMessage} />
 	<div class="container w-96 h-96">
 		<div class="label">
 			<p class="select-none">{contentType}</p>
 		</div>
 		{#if contentType.toLowerCase() == 'profile'}
-			<ProfileContent />
+			{#if !$logoChoiceMode}
+				<ProfileContent />
+			{:else}
+				<LogoChoice/>
+			{/if}
 		{:else if contentType.toLowerCase() == 'security'}
-			<!-- <TagsContent /> -->
+			<Security/>
 		{:else if contentType.toLowerCase() == 'tags'}
-			<TagsContent />
+			<TagsContent/>
 		{/if}
 	</div>
 </div>

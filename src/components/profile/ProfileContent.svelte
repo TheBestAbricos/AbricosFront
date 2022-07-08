@@ -1,22 +1,49 @@
-<script>
+<script lang="ts">
+	import { logoChoiceMode, logoSrc } from '$lib/stores';
+	import { get } from 'svelte/store';
 	import CancelButton from '../shared/CancelButton.svelte';
-
 	import SaveButton from '../shared/SaveButton.svelte';
+
+	function hanldeChangeLogoClick() {
+		logoChoiceMode.set(true)
+		console.log(get(logoChoiceMode));
+	}
 </script>
 
-<div class="body flex flex-col w-full items-center gap-4 flex-auto justify-evenly">
-	<img
-		class="select-none w-4/12 rounded-full"
-		src="images/user-default-logo.png"
-		alt="user profile"
-	/>
-	<button
-		class="bg-gray-100 py-2 px-4 rounded-3xl text-gray-600 border-gray-300 border hover:brightness-105 ring-2 ring-gray-200"
-	>
-		Pick profile image
+<div class="container">
+	<img src={get(logoSrc)} alt="user profile"/>
+	<button on:click = {hanldeChangeLogoClick}>
+		Change
 	</button>
-	<div class="buttons w-full flex flex-row items-center justify-center gap-4">
-		<SaveButton />
-		<CancelButton />
-	</div>
 </div>
+
+<style>
+	.container {
+		width: 100%;
+		height: 100%;
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		
+		gap: 1em;
+	}
+
+	button {
+		height: 30px;
+		width: 90px;
+
+		border-radius: 30px;
+		border: 1px solid rgba(0, 0, 0, 28%);
+
+		background: #CFA7E7;
+	}
+
+	img {
+		width: 10em;
+		height: 10em;
+
+		border-radius: 50%;
+	}
+</style>
