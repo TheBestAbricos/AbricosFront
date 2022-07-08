@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { addCardInFolder, getCurrentUserInfo } from '$lib/firestore';
+
 	import type { TagType, Card } from '$lib/types/card';
 	import { Timestamp } from 'firebase/firestore';
 	import { createEventDispatcher } from 'svelte';
@@ -8,18 +10,8 @@
 	let done = false;
 	let datetime: Date;
 	let description: string;
-	let tags: TagType[] = [
-		{ text: 'hi3s', color: '#123456' },
-		{ text: 'h1123123131i' },
-		{ text: '1' },
-		{ text: '2' },
-		{ text: '3' },
-		{ text: '4' },
-		{ text: '5' },
-		{ text: 'he6rld' },
-		{ text: 'he7orld' },
-		{ text: 'he8rld' }
-	];
+	let tags: TagType[] = [];
+	getCurrentUserInfo().then((data) => (tags = data.tags));
 	export let chosenTags: TagType[] = [];
 	let isMultiSelectVisible = false;
 	function handleChosenTag(event: { detail: { checked: boolean; tag: TagType } }) {
@@ -29,18 +21,30 @@
 		}
 	}
 	function save() {
-		datetime = new Date(datetime);
-		let ts: Timestamp = Timestamp.fromDate(
-			new Date(datetime.getFullYear(), datetime.getMonth(), datetime.getDate())
-		);
+		let ts: Timestamp | undefined;
+		if (!description) return;
 		const card: Card = {
 			checked: done,
 			text: description,
-			tags: chosenTags,
-			date: ts
+			tags: chosenTags
 		};
+		if (datetime) {
+			datetime = new Date(datetime);
+			ts = Timestamp.fromDate(
+				new Date(
+					datetime.getFullYear(),
+					datetime.getMonth(),
+					datetime.getDate(),
+					datetime.getHours(),
+					datetime.getMinutes()
+				)
+			);
+		}
+		if (ts) card.date = ts;
+
 		console.log(JSON.stringify(card));
 		console.log('save');
+		addCardInFolder('Folder 1', card);
 		dispatch('close');
 	}
 </script>
