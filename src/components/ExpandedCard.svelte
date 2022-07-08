@@ -15,6 +15,7 @@
 	export let description = '';
 	export let chosenTags: TagType[] = [];
 	export let title: string;
+	export let docId: string | undefined = undefined;
 	let tags: TagType[] = [];
 
 	function setDatetime(ts: Timestamp) {
@@ -53,23 +54,25 @@
 		};
 		console.log('save', datetime);
 		if (datetime) {
-			datetime = new Date(datetime);
+			const date = new Date(datetime);
+			console.log(`Date: ${date}`);
 			ts = Timestamp.fromDate(
 				new Date(
-					datetime.getFullYear(),
-					datetime.getMonth(),
-					datetime.getDate(),
-					datetime.getHours(),
-					datetime.getMinutes()
+					date.getFullYear(),
+					date.getMonth(),
+					date.getDate(),
+					date.getHours(),
+					date.getMinutes()
 				)
 			);
 		}
 		if (ts) card.date = ts;
+		if (docId) card.docId = docId;
 
 		console.log(JSON.stringify(card));
 
-		const uf = await getCurrentUserInfo();
-		updateCardInFolder(uf.currentFolder, card);
+		const userInfo = await getCurrentUserInfo();
+		updateCardInFolder(userInfo.currentFolder, card);
 		dispatch('close');
 
 		if (datetime && get(noficationStatus)) {

@@ -13,7 +13,7 @@
 	let back: HTMLDivElement;
 	let input: HTMLInputElement;
 
-	export let toggledChecked: boolean = true;
+	export let toggledChecked = true;
 
 	export const hideContainter = () => {
 		back.style.display = 'none';

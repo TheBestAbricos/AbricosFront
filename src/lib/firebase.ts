@@ -50,6 +50,7 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
     const folderDoc = fs.doc(fs.collection(userDoc, "folders"))
     const folderData = {
         title: "Main",
+        docId: folderDoc.id
     }
     const userData = {
         UID: userCredentaials.user.uid,

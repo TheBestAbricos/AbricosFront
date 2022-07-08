@@ -40,14 +40,28 @@ export async function getCardsInCurrentFolder() : Promise<Card[]> {
         else return 0;
     });
 }
+export async function changeChecked(docId: string, checked: boolean) {
+    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
+    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
+        currentFolderId, "items");
+
+    fs.updateDoc(fs.doc(itemsCollection, docId), {checked});
+} 
 export async function updateCardInFolder(folderName: string, card: Card) : Promise<void> {
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
 
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
         currentFolderId, "items");
-    const newDoc = fs.doc(itemsCollection); 
-    card.docId = newDoc.id;
-    fs.setDoc(newDoc, card, {merge: true});
+    if(card.docId){
+        const newDoc = fs.doc(itemsCollection, card.docId); 
+        fs.setDoc(newDoc, card, {merge: true});
+    }
+    else {
+        const newDoc = fs.doc(itemsCollection); 
+        card.docId = newDoc.id;
+        fs.setDoc(newDoc, card, {merge: true});
+    }
+    
 }
 export async function getAllUserFolders() : Promise<Folder[]> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
@@ -88,4 +102,14 @@ export async function changeFolderTitle(oldFolderTitle: string, newFolderTitle: 
     const folderDoc = fs.doc(foldersCollection, oldFolderId);
     await fs.updateDoc(folderDoc, {title: newFolderTitle}); 
 }
-// todo: change folder title
+export async function setNotificationToken(token: string): Promise<void> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    await fs.updateDoc(userDoc, {token: token});
+}
+export async function getNotificationToken(): Promise<string | undefined> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const data = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    return data.telegramToken;
+}
