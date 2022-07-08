@@ -82,6 +82,7 @@
 	.panel::-webkit-scrollbar-track {
 		background-color: transparent;
 		border-radius: 100px;
+		margin: 0.3rem 0;
 	}
 	.panel::-webkit-scrollbar-thumb {
 		background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
