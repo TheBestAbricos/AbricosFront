@@ -19,10 +19,10 @@
 	});
 
 	let notification: HTMLDivElement;
-	let isFilterVisible: boolean = false;
+	let isFilterVisible = false;
 	const filterRotation = tweened(180);
 
-	let isFolderVisible: boolean = false;
+	let isFolderVisible = false;
 
 	//Close filter if Folder appears
 	openedPanel.subscribe((value) => {
