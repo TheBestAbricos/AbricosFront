@@ -1,17 +1,21 @@
 <script lang="ts">
+	import {get} from 'svelte/store'
 	import { noficationStatus } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
 	import { tweened } from 'svelte/motion';
 	import { openedPanel } from '$lib/stores';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification, {
-		hideContainter,
-		revealContainer
-	} from '../components/Notification.svelte';
+	import Notification, { hideContainter, revealContainer } from '../components/Notification.svelte';
 
 	onMount(() => {
 		hideContainter();
+		
+		if (get(noficationStatus)) {
+			switchNotificationIconTo('on')
+		} else {
+			switchNotificationIconTo('off')
+		}
 	});
 
 	let notification: HTMLDivElement;
@@ -53,29 +57,39 @@
 		revealContainer();
 	}
 
+	function handleProfileClick() {
+		var loc = window.location.pathname;
+		if (loc != '/profile') window.location.href = '/profile';
+	}
+
+	function switchNotificationIconTo(status: string) {
+		if (status !== 'off' && status !== 'on')
+			new Error('Incorrect notification status')
+
+		if (notification)
+			notification.style.background = `url('images/notification-${status}.svg') no-repeat center / cover`;
+	}
+
 	async function signOut() {
 		await logOut();
 		window.location.href = '/login';
 	}
 
-
-	noficationStatus.subscribe(value => {
-		let status = 'off'
+	noficationStatus.subscribe((value) => {
+		let status = 'off';
 		if (value) {
-			status = 'on'
+			status = 'on';
 		}
-		
-		if (notification)
-			notification.style.background = `url('notification-${status}.svg') no-repeat center / cover`;
-	})
 
+		switchNotificationIconTo(status)
+	});
 </script>
 
 <nav class="p-3">
 	<div class="nav__el left">
-		<div class="logo">
-			<div class="logo__img" on:click={handleFolderClick} />
-			<span class="logo__text">ABRICOS</span>
+		<div on:click={handleFolderClick} class="logo cursor-pointer">
+			<div class="logo__img" />
+			<span class="logo__text select-none">ABRICOS</span>
 		</div>
 	</div>
 
@@ -90,12 +104,12 @@
 			<div
 				bind:this={notification}
 				on:click={handleNotificationClick}
-				class="menu__el"
+				class="menu__el cursor-pointer"
 				id="notification"
 			/>
-			<div class="menu__el" id="logout" on:click={signOut} />
+			<div class="menu__el cursor-pointer" id="logout" on:click={signOut} />
 
-			<div class="user-logo" />
+			<div class="user-logo cursor-pointer" on:click={handleProfileClick} />
 		</div>
 	</div>
 </nav>
@@ -146,22 +160,22 @@
 	}
 
 	#filter {
-		background: url('filter.svg') no-repeat center / cover;
+		background: url('images/filter.svg') no-repeat center / cover;
 	}
 
 	#notification {
-		background: url('notification-off.svg') no-repeat center / cover;
+		background: url('images/notification-off.svg') no-repeat center / cover;
 	}
 
 	#logout {
-		background: url('logout.svg') no-repeat center / cover;
+		background: url('images/logout.svg') no-repeat center / cover;
 	}
 
 	.user-logo {
 		width: 6em;
 		height: 80%;
 
-		background: url('user-default-logo.png') no-repeat center / cover;
+		background: url('images/profile-images/user-default-logo.png') no-repeat center / cover;
 		border-radius: 50%;
 	}
 
@@ -181,6 +195,6 @@
 		width: 3em;
 		height: 3em;
 
-		background: url('abricos.svg') no-repeat center / 90%;
+		background: url('images/abricos.svg') no-repeat center / 90%;
 	}
 </style>

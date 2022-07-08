@@ -1,23 +1,22 @@
 <script lang="ts">
-import { getCurrentUser } from '$lib/firebase';
+	import { getCurrentUser } from '$lib/firebase';
+	import Tag from './Tag.svelte';
 
 	import * as fs from 'firebase/firestore';
 
 	import type { Card } from '../lib/types/card';
 	export let card: Card;
-	
+
 	let date: Date | null = null;
 	if (card.date) {
 		date = new Date(card.date?.seconds * 1000 ?? 0);
 	}
-	function parseComponent(component: number) : string {
+	function parseComponent(component: number): string {
 		if (component > 9) {
 			return component.toString();
 		}
-		return "0" + component.toString();
-	} 
-	
-
+		return '0' + component.toString();
+	}
 </script>
 
 <div
@@ -25,8 +24,16 @@ import { getCurrentUser } from '$lib/firebase';
 >
 	<header>
 		<div class="date-div">
-			<div class="date">{date ? `${parseComponent(date.getDate())}.${parseComponent(date.getMonth())}.${parseComponent(date.getFullYear())}` : 'Date'}</div>
-			<div class="time">{date ? `${parseComponent(date.getHours())}:${parseComponent(date.getMinutes())}` : 'Time'}</div>
+			<div class="date">
+				{date
+					? `${parseComponent(date.getDate())}.${parseComponent(date.getMonth())}.${parseComponent(
+							date.getFullYear()
+					  )}`
+					: 'Date'}
+			</div>
+			<div class="time">
+				{date ? `${parseComponent(date.getHours())}:${parseComponent(date.getMinutes())}` : 'Time'}
+			</div>
 		</div>
 		<div class="image"><img class="w-4" alt="delete" src="images/x.svg" /></div>
 	</header>
@@ -36,13 +43,8 @@ import { getCurrentUser } from '$lib/firebase';
 	</main>
 	<footer>
 		{#each card.tags as tag}
-			<div
-				class="tag rounded-2xl hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
-				style="background-color:{tag.color ? tag.color : '#fff'};color:{tag.textColor
-					? tag.textColor
-					: '#fff'}"
-			>
-				{tag.text}
+			<div class="tag-wrapper">
+				<Tag {tag} />
 			</div>
 		{/each}
 	</footer>
@@ -118,6 +120,10 @@ import { getCurrentUser } from '$lib/firebase';
 	input[type='checkbox']:hover {
 		background-color: aqua;
 	}
+	.tag-wrapper {
+		display: inline-block;
+		margin: 0.2rem 0.5rem 2rem 0;
+	}
 	footer {
 		box-sizing: border-box;
 		height: 2rem;
@@ -126,30 +132,7 @@ import { getCurrentUser } from '$lib/firebase';
 		overflow: hidden;
 		padding: 0 1rem;
 	}
-	.tag {
-		height: 2rem;
-		min-width: 3rem;
-		text-align: center;
-		padding: 0.5rem;
-		margin: 0.2rem 0.5rem 2rem 0;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid grey;
-		/* border-radius: 20px; */
-		box-sizing: border-box;
-		flex-wrap: nowrap;
-		transition-duration: 200ms;
-		font-size: 0.75em;
-	}
-	.tag:hover {
-		transform: scale(1.02);
-		transform: rotate(-1deg);
-		/* box-shadow: 0 0 10px 0px grey; */
-	}
-	.tag:not(:last-child) {
-		margin-right: 0.2rem;
-	}
+
 	.card {
 		display: flex;
 		flex-direction: column;

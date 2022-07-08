@@ -10,12 +10,13 @@
     const url_turn_off_notifications = 'google.com'
 
     let container: HTMLDivElement;
+    let back: HTMLDivElement;
     let input: HTMLInputElement;
 
     export let toggledChecked: boolean = true
 
     export const hideContainter = () => {
-        container.style.display = 'none'
+        back.style.display = 'none'
 
         clearContainerInput()
     }
@@ -23,8 +24,8 @@
     export const revealContainer = () => {
         if (container) {
             toggledChecked = get(noficationStatus)
-
-            container.style.display = 'flex'
+            
+            back.style.display = 'block'
 
             clearContainerInput()
         }
@@ -70,14 +71,14 @@
     }
 
 </script>
-
+<div bind:this={back} on:click|stopPropagation class='back'>
 <div bind:this={container} class='container'>
     <div class='label'>
         <p>Notifications</p>
     </div>
     <div class='body'>
         {#if $noficationStatus == false}
-            <img on:click={botImgClickHandler} src="tg-bot.svg" alt="tg-bot">
+            <img on:click={botImgClickHandler} src="images/tg-bot.svg" alt="tg-bot">
 
             <input bind:this={input} type="text" placeholder="Enter code"> 
 
@@ -99,16 +100,27 @@
 
     </div>
 </div>
+</div>
 <style>
+    .back {
+        top: 0;
+        left: 0;
+        position: absolute;
+        z-index: 100000000;
+
+        width: 100vw;
+        height: 100vh;
+    }
+
     .container {
-        position: absolute; 
+        position: absolute;
         width: 20rem;
         height: 20rem;
         
         border-radius: 10%;
         border: 1px solid rgba(0, 0, 0, 28%);
 
-        display: none;
+        display: flex;
         flex-direction: column;
 
         background-color: white;
@@ -116,7 +128,6 @@
         left: 50%;
         transform: translate(-50%,-50%);
 
-        z-index: 10;
     }
 
     .label {
