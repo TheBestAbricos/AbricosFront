@@ -154,6 +154,7 @@
 		position: absolute;
 		top: 10.5rem;
 		left: 4.8rem;
+		z-index: 100000000000;
 	}
 	.center-block {
 		display: flex;
