@@ -1,33 +1,32 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
-	import { noficationStatus, logoSrc } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import { logOut } from '$lib/firebase';
+	import { get } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
-	import { openedPanel } from '$lib/stores';
+	import { logOut } from '$lib/firebase';
+	import { getNotificationToken } from '$lib/firestore';
+	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification, { hideContainter, revealContainer } from '../components/Notification.svelte';
+	import Notification from '../components/Notification.svelte';
+
+	const filterRotation = tweened(180);
 
 	let filterIcon: HTMLDivElement;
+	let isFilterVisible = false;
+	let isFolderVisible = false;
 	let isForbidden: boolean = false;
 	let isTutorialOn: boolean = window.location.pathname == '/';
 
-	onMount(() => {
-		hideContainter();
+	let logo: HTMLDivElement;
 
-		if (get(noficationStatus)) {
-			switchNotificationIconTo('on');
-		} else {
-			switchNotificationIconTo('off');
-		}
+	let notification: HTMLDivElement;
+	let isNotificationVisible: boolean = false
+
+
+	onMount(async() => {
+		await checkNotificationStatus()
 	});
 
-	let logo: HTMLDivElement;
-	let notification: HTMLDivElement;
-	let isFilterVisible = false;
-	const filterRotation = tweened(180);
-
-	let isFolderVisible = false;
+	notificationStatus.subscribe(() => checkNotificationStatus())
 
 	//Close filter if Folder appears
 	openedPanel.subscribe((value) => {
@@ -36,6 +35,16 @@
 			filterRotation.set(180);
 		}
 	});
+
+	function checkNotificationStatus() {
+		getNotificationToken().then(token => {
+			if (token === undefined) {
+				switchNotificationIconTo('off');
+			} else {
+				switchNotificationIconTo('on'); 
+			}
+		})
+	}
 
 	function handleFilterClick() {
 		var loc = window.location.pathname;
@@ -74,7 +83,8 @@
 	}
 
 	function handleNotificationClick() {
-		revealContainer();
+		checkNotificationStatus()
+		isNotificationVisible = !isNotificationVisible
 	}
 
 	function handleProfileClick() {
@@ -93,15 +103,6 @@
 		await logOut();
 		window.location.href = '/login';
 	}
-
-	noficationStatus.subscribe((value) => {
-		let status = 'off';
-		if (value) {
-			status = 'on';
-		}
-
-		switchNotificationIconTo(status);
-	});
 
 	logoSrc.subscribe((src) => {
 		if (logo) logo.style.background = `url('${src}') no-repeat center / cover`;
@@ -139,9 +140,9 @@
 	</div>
 </nav>
 <div class="notification-container">
-	<Notification />
+	<Notification bind:isVisible={isNotificationVisible}/>
 </div>
-<FilterBar isActive={isFilterVisible} />
+<FilterBar isActive={isFilterVisible}/>
 
 <style>
 	nav {
