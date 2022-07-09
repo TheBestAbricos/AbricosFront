@@ -1,9 +1,9 @@
 <script lang="ts">
+	import * as fs from 'firebase/firestore';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
 	import { getCurrentUser, logIn } from '$lib/firebase';
 	import { amountTasks } from '$lib/stores';
-	import * as fs from 'firebase/firestore';
 	import Card from '../components/Card.svelte';
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
@@ -38,14 +38,6 @@
 				(snapshot) => {
 					cardsPromise = getCardsInCurrentFolder();
 				}
-			);
-			fs.onSnapshot(
-				fs.collection(fs.getFirestore(), 'users', getCurrentUser().uid, 'folders'),
-				() =>
-					getAllUserFolders().then((data) => {
-						folders = data;
-						console.log(folders);
-					})
 			);
 		}
 	}

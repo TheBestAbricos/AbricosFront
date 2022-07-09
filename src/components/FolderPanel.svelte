@@ -1,60 +1,84 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { openedPanel } from '$lib/stores';
 	import { onMount } from 'svelte';
+	import { openedPanel } from '$lib/stores';
+	import type { Folder } from '$lib/types/folder';
+	import { deleteFolder, getAllUserFolders, updateFolder } from '$lib/firestore';
 
-	export let folders = ['Study', 'University', 'University2', ' University3 University3'];
+	export let folders: Folder[] = [];
 	export let isVisible = false;
 	let panel: HTMLDivElement;
 	onMount(() => {
 		openedPanel.subscribe((value) => {
-			if (value == 'folder') {
+			if (value === 'folder') {
 				isVisible = true;
 			} else isVisible = false;
 		});
 	});
 	function handleClick() {
-		folders = [...folders, 'Unnamed'];
+		folders = [...folders, { title: '' }];
 		setTimeout(() => {
 			panel.scrollTop = panel.scrollHeight;
+			const newFolder = panel.children[panel.children.length - 2] as HTMLDivElement;
+			newFolder.dispatchEvent(new Event('dblclick'));
 		}, 0);
 	}
-	function changeFolder(e: KeyboardEvent) {
+	async function changeFolder(e: KeyboardEvent) {
 		const div = e.target as HTMLDivElement;
-
-		if (e.key == 'Enter') {
+		if (e.key === 'Enter') {
 			e.preventDefault();
 			div.onblur = null;
-			setTimeout(() => {
-				div.style.boxShadow = temp;
-			}, 1000);
 			div.contentEditable = 'false';
+			if (div.innerText === '') {
+				deleteFolder(div.getAttribute('data-id') as string);
+				div.remove();
+				console.log('Enter with empty');
+				return;
+			}
+
 			const temp = div.style.boxShadow;
 			div.style.boxShadow = '0 0 5px 0px green';
-
+			if (div.getAttribute('data-id'))
+				updateFolder({ docId: div.getAttribute('data-id') as string, title: div.innerText });
+			else {
+				const text = div.innerText;
+				updateFolder({ title: text }).then((data) => div.setAttribute('dadta-id', data));
+			}
 			setTimeout(() => {
 				div.style.boxShadow = temp;
 			}, 1000);
-			return;
 		}
 	}
 	function startEditing(e: MouseEvent) {
 		const div = e.target as HTMLDivElement;
+		div.focus();
 		const initialText = div.innerText;
-		(div.onblur = () => {
-			div.innerText = initialText;
+		div.onblur = async () => {
 			div.contentEditable = 'false';
-		}),
-			(div.contentEditable = 'true');
+			if (!initialText) {
+				deleteFolder(div.getAttribute('data-id') as string);
+				div.remove();
+			}
+		};
+		div.contentEditable = 'true';
 		div.focus();
 	}
+
+	getAllUserFolders().then((data) => {
+		folders = data;
+	});
 </script>
 
 {#if isVisible}
 	<div transition:slide class="panel" bind:this={panel}>
 		{#each folders as folder}
-			<div class="folder" on:dblclick|preventDefault={startEditing} on:keypress={changeFolder}>
-				{folder}
+			<div
+				data-id={folder.docId}
+				class="folder"
+				on:dblclick|preventDefault={startEditing}
+				on:keypress={changeFolder}
+			>
+				{folder.title}
 			</div>
 		{/each}
 		<div class="folder new-folder" on:click={handleClick}>New folder</div>
