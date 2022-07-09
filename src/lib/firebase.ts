@@ -1,6 +1,7 @@
 import {initializeApp} from 'firebase/app';
 import * as fbAuth from 'firebase/auth';
 import * as fs from "firebase/firestore"; 
+import { Timestamp } from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -50,7 +51,8 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
     const folderDoc = fs.doc(fs.collection(userDoc, "folders"))
     const folderData = {
         title: "Main",
-        docId: folderDoc.id
+        docId: folderDoc.id,
+        creationDate: Timestamp.fromMillis(Date.now())
     }
     const userData = {
         UID: userCredentaials.user.uid,

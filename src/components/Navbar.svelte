@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
-	import { noficationStatus, logoSrc } from '$lib/stores.js';
+	import { noficationStatus, logoSrc } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
 	import { tweened } from 'svelte/motion';
