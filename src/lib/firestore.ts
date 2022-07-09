@@ -92,8 +92,8 @@ export async function getCardByDocId(docId: string): Promise<Card> {
 }
 export async function updateFolder(folder: Folder): Promise<string> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
-    folder.creationDate = Timestamp.fromMillis(Date.now());
     if (!folder.docId) {
+        folder.creationDate = Timestamp.fromMillis(Date.now());
         const folderDoc = fs.doc(foldersCollection);
         folder.docId = folderDoc.id;
         await fs.setDoc(folderDoc, folder, { merge: true });
