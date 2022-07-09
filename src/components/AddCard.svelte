@@ -1,10 +1,6 @@
 <script lang="ts">
-	import { amountTasks } from '$lib/stores';
 	import ExpandedCard from './ExpandedCard.svelte';
 
-	function addTask() {
-		amountTasks.update((n) => n + 1);
-	}
 	let isCreateCardVisible = false;
 	function handleAddClick() {
 		isCreateCardVisible = !isCreateCardVisible;
