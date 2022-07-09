@@ -1,14 +1,19 @@
 <script lang="ts">
+	import * as fs from 'firebase/firestore';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
 	import { getCurrentUser, logIn } from '$lib/firebase';
 	import { amountTasks } from '$lib/stores';
-	import * as fs from 'firebase/firestore';
 	import Card from '../components/Card.svelte';
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import { getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
+	import {
+		getAllUserFolders,
+		getCardsInCurrentFolder,
+		getCurrentUserInfo,
+		setNotificationToken
+	} from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 
 	let folders: Folder[];
@@ -26,27 +31,22 @@
 
 	async function init() {
 		if (getCurrentUser()) {
-			fs.onSnapshot(
-				fs.collection(
-					fs.getFirestore(),
-					'users',
-					getCurrentUser().uid,
-					'folders',
-					(await getCurrentUserInfo()).currentFolder,
-					'items'
-				),
-				(snapshot) => {
-					cardsPromise = getCardsInCurrentFolder();
-				}
-			);
-			fs.onSnapshot(
-				fs.collection(fs.getFirestore(), 'users', getCurrentUser().uid, 'folders'),
-				() =>
-					getAllUserFolders().then((data) => {
-						folders = data;
-						console.log(folders);
-					})
-			);
+			fs.onSnapshot(fs.doc(fs.getFirestore(), 'users', getCurrentUser().uid), async () => {
+				cardsPromise = getCardsInCurrentFolder();
+				fs.onSnapshot(
+					fs.collection(
+						fs.getFirestore(),
+						'users',
+						getCurrentUser().uid,
+						'folders',
+						(await getCurrentUserInfo()).currentFolder,
+						'items'
+					),
+					(snapshot) => {
+						cardsPromise = getCardsInCurrentFolder();
+					}
+				);
+			});
 		}
 	}
 	init();
@@ -54,7 +54,9 @@
 
 {#if getCurrentUser()}
 	<Navbar />
-	<FolderPanel {folders} />
+	{#await getCurrentUserInfo() then data}
+		<FolderPanel {folders} currentFolder={{ docId: data.currentFolder, title: '' }} />
+	{/await}
 
 	{#await (cardsPromise = getCardsInCurrentFolder())}
 		<ProgressIndicator />

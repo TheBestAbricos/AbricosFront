@@ -4,5 +4,8 @@
 		"overrideConfigFile": ".eslintrc.cjs"
 	},
 	"eslint.format.enable": true,
-	"editor.codeActionsOnSave": { "source.fixAll.eslint": true }
+	"editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	  },
 }

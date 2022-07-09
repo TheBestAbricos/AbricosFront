@@ -63,7 +63,7 @@
 	const sendNotificationStatus = async () => {
 		if (toggledChecked === false) {
 			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + getNotificationToken() + '/');
-			//TODO: add res handling
+			setNotificationToken(undefined);
 		}
 
 		noficationStatus.set(toggledChecked);
