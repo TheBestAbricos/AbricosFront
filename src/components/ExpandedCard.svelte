@@ -1,34 +1,36 @@
 <script lang="ts">
+	import { Timestamp } from 'firebase/firestore';
+	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
 
 	import type { TagType, Card } from '$lib/types/card';
-	import { Timestamp } from 'firebase/firestore';
-	import { createEventDispatcher } from 'svelte';
 	import MultiSelect from './MultiSelect.svelte';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import Tag from './Tag.svelte';
+
 	const dispatch = createEventDispatcher();
 	export let done = false;
-	export let datetime: string | undefined = undefined;
-	export let ts: Timestamp | undefined = undefined;
+	export let datetime: string | undefined;
+	export let ts: Timestamp | undefined;
 	export let description = '';
 	export let chosenTags: TagType[] = [];
 	export let title: string;
-	export let docId: string | undefined = undefined;
+	export let docId: string | undefined;
 	let tags: TagType[] = [];
 
 	function setDatetime(ts: Timestamp) {
 		const date = new Date(ts.seconds * 1000);
-		const year: string = date.getFullYear() + '';
-		let month = date.getMonth() + 1 + '';
-		if (month.length == 1) month = '0' + month;
-		let days = date.getDate() + '';
-		if (days.length == 1) days = '0' + days;
-		let hours = date.getHours() + '';
-		if (hours.length == 1) hours = '0' + hours;
-		let minutes = date.getMinutes() + '';
-		if (minutes.length == 1) minutes = '0' + minutes;
+		const year = `${date.getFullYear()}`;
+		let month = `${date.getMonth() + 1}`;
+		if (month.length == 1) month = `0${month}`;
+		let days = `${date.getDate()}`;
+		if (days.length == 1) days = `0${days}`;
+		let hours = `${date.getHours()}`;
+		if (hours.length == 1) hours = `0${hours}`;
+		let minutes = `${date.getMinutes()}`;
+		if (minutes.length == 1) minutes = `0${minutes}`;
 		console.log(`${year}-${month}-${days}T${hours}:${minutes}`);
 		datetime = `${year}-${month}-${days}T${hours}:${minutes}`;
 	}
@@ -58,7 +60,7 @@
 				name: description,
 				token: parseInt(token)
 			};
-			fetch(url_server + 'webhooks/schedule/', {
+			fetch(`${url_server}webhooks/schedule/`, {
 				method: 'POST',
 				body: JSON.stringify(data),
 				headers: {
@@ -95,8 +97,7 @@
 
 		console.log(JSON.stringify(card));
 
-		const userInfo = await getCurrentUserInfo();
-		updateCardInFolder(userInfo.currentFolder, card);
+		updateCardInFolder(card);
 		dispatch('close');
 
 		if (docId && datetime) await sendNotification(parseInt(datetime), parseInt(docId));
@@ -105,6 +106,7 @@
 
 <div class="background">
 	<div
+		transition:fade
 		class="center-block"
 		on:click|stopPropagation={() => {
 			isMultiSelectVisible = false;
@@ -148,8 +150,8 @@
 		</main>
 		<footer>
 			<div class="buttons">
-				<SaveButton on:click={save}/>
-				<CancelButton on:click={() => dispatch('close')}/>
+				<SaveButton on:click={save} />
+				<CancelButton on:click={() => dispatch('close')} />
 			</div>
 		</footer>
 	</div>
@@ -186,7 +188,7 @@
 		align-items: center;
 		justify-content: center;
 		height: 3rem;
-		border-bottom: 1px solid rgba(0, 0, 0, 28%)
+		border-bottom: 1px solid rgba(0, 0, 0, 28%);
 	}
 	label {
 		display: block;
@@ -231,7 +233,7 @@
 		text-align: center;
 		padding: 1rem 1rem;
 	}
-	
+
 	.tag-tag {
 		display: inline-block;
 		margin-bottom: 0.3rem;

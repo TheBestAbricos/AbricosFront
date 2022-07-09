@@ -3,10 +3,11 @@
 	import { onMount } from 'svelte';
 	import { openedPanel } from '$lib/stores';
 	import type { Folder } from '$lib/types/folder';
-	import { deleteFolder, getAllUserFolders, updateFolder } from '$lib/firestore';
+	import { deleteFolder, getAllUserFolders, switchFolder, updateFolder } from '$lib/firestore';
 
 	export let folders: Folder[] = [];
 	export let isVisible = false;
+	export let currentFolder: Folder;
 	let panel: HTMLDivElement;
 	onMount(() => {
 		openedPanel.subscribe((value) => {
@@ -70,6 +71,13 @@
 		div.contentEditable = 'true';
 		div.focus();
 	}
+	function toAnotherFolder(e: MouseEvent) {
+		const div = e.target as HTMLDivElement;
+		if (!div.getAttribute('data-id')) return;
+		switchFolder(div.getAttribute('data-id') as string);
+		currentFolder.docId = div.getAttribute('data-id') as string;
+		console.log('Switched to', div.innerText);
+	}
 </script>
 
 {#if isVisible}
@@ -77,9 +85,11 @@
 		{#each folders as folder}
 			<div
 				data-id={folder.docId}
+				style={folder.docId === currentFolder.docId ? 'background-color: lightgrey' : ''}
 				class="folder"
-				on:dblclick|preventDefault={startEditing}
+				on:dblclick|preventDefault|stopPropagation={startEditing}
 				on:keypress={changeFolder}
+				on:click|preventDefault={toAnotherFolder}
 			>
 				{folder.title}
 			</div>
@@ -129,6 +139,8 @@
 	.folder:hover {
 		transform: scale(1.05);
 		cursor: pointer;
+		background-color: lightgray;
+		opacity: 0.9;
 	}
 	.folder:not(:last-child) {
 		margin-bottom: 0.1rem;
