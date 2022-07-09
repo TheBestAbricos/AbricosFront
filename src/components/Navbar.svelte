@@ -9,7 +9,8 @@
 	import Notification, { hideContainter, revealContainer } from '../components/Notification.svelte';
 
 	let filterIcon: HTMLDivElement;
-	let forbidden: boolean = false;
+	let isForbidden: boolean = false;
+	let isTutorialOn: boolean = window.location.pathname == '/';
 
 	onMount(() => {
 		hideContainter();
@@ -40,8 +41,8 @@
 		var loc = window.location.pathname;
 		if (loc != '/') {
 			if (filterIcon) {
-				forbidden = true;
-				setTimeout(() => (forbidden = false), 300);
+				isForbidden = true;
+				setTimeout(() => (isForbidden = false), 300);
 			}
 			return;
 		}
@@ -65,7 +66,11 @@
 		}
 
 		var loc = window.location.pathname;
-		if (loc != '/') window.location.href = '/';
+		if (loc != '/') {
+			window.location.href = '/';
+		} else {
+			isTutorialOn = false;
+		}
 	}
 
 	function handleNotificationClick() {
@@ -106,7 +111,7 @@
 <nav class="p-3">
 	<div class="nav__el left">
 		<div on:click={handleFolderClick} class="logo cursor-pointer">
-			<div class="logo__img" />
+			<div class:spinner={isTutorialOn == true} class="logo__img" />
 			<span class="logo__text select-none">ABRICOS</span>
 		</div>
 	</div>
@@ -116,7 +121,7 @@
 			<div
 				on:click={handleFilterClick}
 				bind:this={filterIcon}
-				class:spinner={forbidden == true}
+				class:reverse-spinner={isForbidden == true}
 				class="menu__el cursor-pointer"
 				id="filter"
 				style="transform: rotate({$filterRotation}deg);"
@@ -219,10 +224,14 @@
 	}
 
 	.spinner {
-		animation: spin 0.3s linear 1;
+		animation: spin 3s linear infinite;
 	}
 
-	@keyframes spin {
+	.reverse-spinner {
+		animation: reverse-spin 0.3s linear 1;
+	}
+
+	@keyframes reverse-spin {
 		0% {
 			transform: rotate(180deg);
 		}
@@ -237,6 +246,24 @@
 		}
 		100% {
 			transform: rotate(180deg);
+		}
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		2.5% {
+			transform: rotate(15deg);
+		}
+		5% {
+			transform: rotate(0deg);
+		}
+		7.5% {
+			transform: rotate(-15deg);
+		}
+		10% {
+			transform: rotate(0deg);
 		}
 	}
 </style>
