@@ -71,13 +71,21 @@ export async function changeChecked(docId: string, checked: boolean) {
         { checked }
     );
 }
-export async function updateCardInFolder(card: Card): Promise<string> {
-    let newDoc: fs.DocumentReference;
-    if (card.docId) {
-        newDoc = fs.doc(await getItemsCollection(), card.docId);
+export async function updateCardInFolder(card: Card, folderId: string | undefined = undefined): Promise<string> {
+    let itemsCollection: fs.CollectionReference<fs.DocumentData>;
+    if(folderId) {
+        itemsCollection = fs.collection(getFolderCollection(), folderId, "items");
     }
     else {
-        newDoc = fs.doc(await getItemsCollection());
+        itemsCollection = await getItemsCollection();
+    }
+
+    let newDoc: fs.DocumentReference;
+    if (card.docId) {
+        newDoc = fs.doc(itemsCollection, card.docId);
+    }
+    else {
+        newDoc = fs.doc(itemsCollection);
         card.docId = newDoc.id;
     }
     fs.setDoc(newDoc, card, { merge: true });
@@ -161,4 +169,17 @@ export async function removeTag(tag: TagType): Promise<void> {
         return value.text != tag.text
     });
     await fs.updateDoc(userDoc, {tags});
+}
+export async function changeCardLocation(cardDocId: string, newFolderDocId: string): Promise<void> {
+    const card = await getCardByDocId(cardDocId);
+    if(!card.docId) return;
+
+    const currentItemsCollection = await getItemsCollection();
+    const newItemsCollection = fs.collection(getFolderCollection(), newFolderDocId, "items");
+    
+    await deleteCard(card.docId);
+
+    card.docId = undefined;
+    
+    await updateCardInFolder(card, newFolderDocId);
 }
