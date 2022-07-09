@@ -129,19 +129,20 @@ export async function switchFolder(docId: string): Promise<void> {
     fs.updateDoc(userDoc, { currentFolder: docId });
 }
 export async function deleteFolder(docId: string): Promise<void> {
+    const userCollection = fs.collection(fb.firestore, 'users');
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
         docId, "items");
-    
     const docs = await fs.getDocs(
         fs.query(itemsCollection)
     );
-
     docs.docs.forEach(e => {
         deleteCard(e.id);
     });
-    
     fs.deleteDoc(fs.doc(foldersCollection, docId));
+
+    fs.updateDoc(fs.doc(userCollection, fb.getCurrentUser().uid), {currentFolder: ""});
+
 }
 export async function addTag(tag: TagType): Promise<void> {
     const userCollection = fs.collection(fb.firestore, 'users');
