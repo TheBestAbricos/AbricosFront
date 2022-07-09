@@ -48,7 +48,7 @@ export async function changeChecked(docId: string, checked: boolean) {
 
     fs.updateDoc(fs.doc(itemsCollection, docId), { checked });
 }
-export async function updateCardInFolder(folderName: string, card: Card): Promise<void> {
+export async function updateCardInFolder(card: Card): Promise<void> {
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
 
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
