@@ -13,13 +13,13 @@
 
 	const dispatch = createEventDispatcher();
 	export let done = false;
-	export let datetime: string | undefined = undefined;
-	export let ts: Timestamp | undefined = undefined;
+	export let datetime: string | undefined;
+	export let ts: Timestamp | undefined;
 	export let description: string;
 	export let chosenTags: TagType[] = [];
 	export let title: string;
-	export let docId: string | undefined = undefined;
-	let oldDescription = description;
+	export let docId: string | undefined;
+	const oldDescription = description;
 	let tags: TagType[] = [];
 
 	function setDatetime(ts: Timestamp) {
@@ -112,12 +112,14 @@
 					src="images/plus.svg"
 					on:click|stopPropagation={() => (isMultiSelectVisible = !isMultiSelectVisible)}
 				/>
-				<MultiSelect
-					on:handleChosenTag={handleChosenTag}
-					{chosenTags}
-					{tags}
-					isVisible={isMultiSelectVisible}
-				/>
+				<div class="multiselect">
+					<MultiSelect
+						on:handleChosenTag={handleChosenTag}
+						{chosenTags}
+						{tags}
+						isVisible={isMultiSelectVisible}
+					/>
+				</div>
 			</label>
 			<div class="changeable">
 				<div class="tags">
@@ -147,6 +149,11 @@
 		left: 0;
 		background-color: transparent;
 		z-index: 1000;
+	}
+	.multiselect {
+		position: absolute;
+		top: 10.5rem;
+		left: 4.8rem;
 	}
 	.center-block {
 		display: flex;
