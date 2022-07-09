@@ -1,15 +1,13 @@
 <script lang="ts">
-	import * as fs from 'firebase/firestore';
-	import { getCurrentUser } from '$lib/firebase';
+	import { changeChecked, deleteCard } from '$lib/firestore';
+	import { deleteNotification } from '$lib/notificationManager';
+	import type * as CardType from '$lib/types/card';
+	import ExpandedCard from './ExpandedCard.svelte';
 	import Tag from './Tag.svelte';
 
-	import { changeChecked, deleteCard } from '$lib/firestore';
+	let colorDate: string;
 
-	import type { Card } from '../lib/types/card';
-	import ExpandedCard from './ExpandedCard.svelte';
-	import { deleteNotification } from '$lib/notificationManager';
-
-	export let card: Card;
+	export let card: CardType.Card;
 
 	let date: Date | null = null;
 	let isEditableCardVisible = false;
@@ -94,7 +92,10 @@
 </div>
 {#if isEditableCardVisible}
 	<ExpandedCard
-		on:close={() => (isEditableCardVisible = false)}
+		on:close={() => {
+			isEditableCardVisible = false;
+		}}
+		datetime={undefined}
 		title="Edit card"
 		chosenTags={card.tags}
 		done={card.checked}
