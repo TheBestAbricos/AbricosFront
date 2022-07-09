@@ -7,6 +7,7 @@
 
 	import type { Card } from '../lib/types/card';
 	import ExpandedCard from './ExpandedCard.svelte';
+	import { deleteNotification } from '$lib/notificationManager';
 	export let card: Card;
 
 	let date: Date | null = null;
@@ -30,6 +31,9 @@
 	function cardDelete() {
 		if (!card.docId) return;
 		deleteCard(card.docId);
+		if (card.date) {
+			deleteNotification(card.docId, card.text);
+		}
 	}
 
 	function switchChecked() {

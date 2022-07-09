@@ -27,25 +27,27 @@
 	amountTasks.subscribe((value) => {
 		countValue = value;
 	});
-	let cardsPromise: Promise<CardType.Card[]>;
+	let cardsPromise: Promise<CardType.Card[] | undefined>;
 
 	async function init() {
 		if (getCurrentUser()) {
 			fs.onSnapshot(fs.doc(fs.getFirestore(), 'users', getCurrentUser().uid), async () => {
 				cardsPromise = getCardsInCurrentFolder();
-				fs.onSnapshot(
-					fs.collection(
-						fs.getFirestore(),
-						'users',
-						getCurrentUser().uid,
-						'folders',
-						(await getCurrentUserInfo()).currentFolder,
-						'items'
-					),
-					(snapshot) => {
-						cardsPromise = getCardsInCurrentFolder();
-					}
-				);
+				if ((await getCurrentUserInfo()).currentFolder) {
+					fs.onSnapshot(
+						fs.collection(
+							fs.getFirestore(),
+							'users',
+							getCurrentUser().uid,
+							'folders',
+							(await getCurrentUserInfo()).currentFolder,
+							'items'
+						),
+						(snapshot) => {
+							cardsPromise = getCardsInCurrentFolder();
+						}
+					);
+				}
 			});
 		}
 	}
@@ -61,16 +63,20 @@
 	{#await (cardsPromise = getCardsInCurrentFolder())}
 		<ProgressIndicator />
 	{:then cards}
-		<div class="flex flex-wrap justify-center lg:p-12 mg:p-6 p-3">
-			<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
-				<AddCard on:click />
-			</div>
-			{#each cards as i}
+		{#if cards}
+			<div class="flex flex-wrap justify-center lg:p-12 mg:p-6 p-3">
 				<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
-					<Card card={i} />
+					<AddCard on:click />
 				</div>
-			{/each}
-		</div>
+				{#each cards as i}
+					<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
+						<Card card={i} />
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<div class="card md:p-5 p-2 w-72">Нажми на жопу сверху</div>
+		{/if}
 	{/await}
 {:else}
 	{(window.location.href = '/login')}
