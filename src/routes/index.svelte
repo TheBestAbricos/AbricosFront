@@ -48,7 +48,6 @@
 					})
 			);
 		}
-		await setNotificationToken(undefined);
 	}
 	init();
 
