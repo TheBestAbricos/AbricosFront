@@ -1,7 +1,7 @@
 import * as fs from "firebase/firestore";
 import { deleteField, Timestamp } from "firebase/firestore";
 import * as fb from "$lib/firebase"
-import type { Card } from "./types/card";
+import type { Card, TagType } from "./types/card";
 import type { Folder } from "./types/folder";
 import type { FirestoreUser } from "./types/user";
 
@@ -48,7 +48,7 @@ export async function changeChecked(docId: string, checked: boolean) {
 
     fs.updateDoc(fs.doc(itemsCollection, docId), { checked });
 }
-export async function updateCardInFolder(card: Card): Promise<void> {
+export async function updateCardInFolder(card: Card): Promise<string> {
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
 
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
@@ -56,11 +56,13 @@ export async function updateCardInFolder(card: Card): Promise<void> {
     if (card.docId) {
         const newDoc = fs.doc(itemsCollection, card.docId);
         fs.setDoc(newDoc, card, { merge: true });
+        return card.docId;
     }
     else {
         const newDoc = fs.doc(itemsCollection);
         card.docId = newDoc.id;
         fs.setDoc(newDoc, card, { merge: true });
+        return newDoc.id;
     }
 
 }
@@ -128,5 +130,34 @@ export async function switchFolder(docId: string): Promise<void> {
 }
 export async function deleteFolder(docId: string): Promise<void> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
+    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
+        docId, "items");
+    
+    const docs = await fs.getDocs(
+        fs.query(itemsCollection)
+    );
+
+    docs.docs.forEach(e => {
+        deleteCard(e.id);
+    });
+    
     fs.deleteDoc(fs.doc(foldersCollection, docId));
+}
+export async function addTag(tag: TagType): Promise<void> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const user = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    const tags = user.tags;
+    tags.push(tag);
+    await fs.updateDoc(userDoc, {tags});
+}
+export async function removeTag(tag: TagType): Promise<void> {
+    const userCollection = fs.collection(fb.firestore, 'users');
+    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const user = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    let tags = user.tags;
+    tags = tags.filter((value: TagType) => {
+        return value != tag
+    });
+    await fs.updateDoc(userDoc, {tags});
 }
