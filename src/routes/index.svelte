@@ -39,6 +39,16 @@
 					cardsPromise = getCardsInCurrentFolder();
 				}
 			);
+			fs.onSnapshot(
+				fs.collection(
+					fs.getFirestore(),
+					'users',
+					getCurrentUser().uid,
+				),
+				(snapshot) => {
+					cardsPromise = getCardsInCurrentFolder();
+				}
+			);
 		}
 	}
 	init();
