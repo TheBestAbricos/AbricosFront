@@ -75,5 +75,5 @@
 		{/each}
 	</div>
 {:else}
-	<div class="card md:p-5 p-2 w-72">Нажми на жопу сверху</div>
+	<div class="card md:p-5 p-2 w-72">Нажми на жопу сверхуй</div>
 {/if}
