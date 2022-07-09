@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { Timestamp } from 'firebase/firestore';
+	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
 
 	import type { TagType, Card } from '$lib/types/card';
 	import { updateNotification } from '$lib/notificationManager';
-	import { Timestamp } from 'firebase/firestore';
-	import { createEventDispatcher } from 'svelte';
 	import MultiSelect from './MultiSelect.svelte';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import Tag from './Tag.svelte';
+
 	const dispatch = createEventDispatcher();
 	export let done = false;
 	export let datetime: string | undefined = undefined;
@@ -22,15 +24,15 @@
 
 	function setDatetime(ts: Timestamp) {
 		const date = new Date(ts.seconds * 1000);
-		const year: string = date.getFullYear() + '';
-		let month = date.getMonth() + 1 + '';
-		if (month.length == 1) month = '0' + month;
-		let days = date.getDate() + '';
-		if (days.length == 1) days = '0' + days;
-		let hours = date.getHours() + '';
-		if (hours.length == 1) hours = '0' + hours;
-		let minutes = date.getMinutes() + '';
-		if (minutes.length == 1) minutes = '0' + minutes;
+		const year = `${date.getFullYear()}`;
+		let month = `${date.getMonth() + 1}`;
+		if (month.length == 1) month = `0${month}`;
+		let days = `${date.getDate()}`;
+		if (days.length == 1) days = `0${days}`;
+		let hours = `${date.getHours()}`;
+		if (hours.length == 1) hours = `0${hours}`;
+		let minutes = `${date.getMinutes()}`;
+		if (minutes.length == 1) minutes = `0${minutes}`;
 		console.log(`${year}-${month}-${days}T${hours}:${minutes}`);
 		datetime = `${year}-${month}-${days}T${hours}:${minutes}`;
 	}
@@ -72,8 +74,8 @@
 
 		console.log(JSON.stringify(card));
 
-		const userInfo = await getCurrentUserInfo();
-		updateCardInFolder(userInfo.currentFolder, card);
+		updateCardInFolder(card);
+		dispatch('close');
 
 		console.log(card.docId);
 		console.log(datetime);
@@ -87,6 +89,7 @@
 
 <div class="background">
 	<div
+		transition:fade
 		class="center-block"
 		on:click|stopPropagation={() => {
 			isMultiSelectVisible = false;
