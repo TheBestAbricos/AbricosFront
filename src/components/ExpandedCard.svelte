@@ -74,14 +74,14 @@
 
 		console.log(JSON.stringify(card));
 
-		updateCardInFolder(card);
+		const cardId = await updateCardInFolder(card);
 		dispatch('close');
 
 		console.log(card.docId);
 		console.log(datetime);
 
 		if (card.docId && datetime)
-			await updateNotification(parseInt(datetime), card.docId, description, oldDescription);
+			await updateNotification(parseInt(datetime), cardId, description, oldDescription);
 
 		dispatch('close');
 	}
