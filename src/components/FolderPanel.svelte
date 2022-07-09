@@ -88,21 +88,16 @@
 		console.log('Switched to', div.innerText, currentFolder);
 	}
 
-	function scalseBack() {
-		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
-		console.log(element);
-		if (element) {
-			element.style.transform = 'scale(1)';
-			element.style.filter = 'brightness(1)';
-			isDroppedCardScaled.set(false);
-		}
-	}
-
 	function onMouseUp(e: MouseEvent, folderId: string | undefined) {
 		const cardId = $droppedCard;
 		if (folderId && cardId) {
 			changeCardLocation(cardId, folderId);
-			scalseBack();
+			const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+			console.log(element);
+			if (element) {
+				element.style.display = 'none';
+				isDroppedCardScaled.set(false);
+			}
 		}
 	}
 
@@ -117,7 +112,13 @@
 	}
 
 	function onMouseLeave() {
-		scalseBack();
+		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+		console.log(element);
+		if (element) {
+			element.style.transform = 'scale(1)';
+			element.style.filter = 'brightness(1)';
+			isDroppedCardScaled.set(false);
+		}
 	}
 </script>
 
