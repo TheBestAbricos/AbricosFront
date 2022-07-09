@@ -3,7 +3,13 @@
 	import { onMount } from 'svelte';
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
 	import type { Folder } from '$lib/types/folder';
-	import { deleteFolder, getAllUserFolders, switchFolder, updateFolder } from '$lib/firestore';
+	import {
+		changeCardLocation,
+		deleteFolder,
+		getAllUserFolders,
+		switchFolder,
+		updateFolder
+	} from '$lib/firestore';
 	import { get } from 'svelte/store';
 
 	export let folders: Folder[] = [];
@@ -82,9 +88,22 @@
 		console.log('Switched to', div.innerText, currentFolder);
 	}
 
-	function onMouseUp(e: MouseEvent, docId: string | undefined) {
-		if (docId) console.log(docId);
-		console.log($droppedCard);
+	function scalseBack() {
+		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+		console.log(element);
+		if (element) {
+			element.style.transform = 'scale(1)';
+			element.style.filter = 'brightness(1)';
+			isDroppedCardScaled.set(false);
+		}
+	}
+
+	function onMouseUp(e: MouseEvent, folderId: string | undefined) {
+		const cardId = $droppedCard;
+		if (folderId && cardId) {
+			changeCardLocation(cardId, folderId);
+			scalseBack();
+		}
 	}
 
 	function onMouseEnter() {
@@ -98,13 +117,7 @@
 	}
 
 	function onMouseLeave() {
-		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
-		console.log(element);
-		if (element) {
-			element.style.transform = 'scale(1)';
-			element.style.filter = 'brightness(1)';
-			isDroppedCardScaled.set(false);
-		}
+		scalseBack();
 	}
 </script>
 
