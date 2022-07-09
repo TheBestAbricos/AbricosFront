@@ -1,5 +1,5 @@
 import * as fs from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { deleteField, Timestamp } from "firebase/firestore";
 import * as fb from "$lib/firebase"
 import type { Card } from "./types/card";
 import type { Folder } from "./types/folder";
@@ -104,10 +104,15 @@ export async function updateFolder(folder: Folder): Promise<string> {
 
 
 }
-export async function setNotificationToken(token: string): Promise<void> {
+export async function setNotificationToken(token?: string): Promise<void> {
     const userCollection = fs.collection(fb.firestore, 'users');
     const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
-    await fs.updateDoc(userDoc, { token });
+    if(token){
+        await fs.updateDoc(userDoc, { token });
+    }
+    else {
+        await fs.updateDoc(userDoc, { token: deleteField() });
+    }
 }
 export async function getNotificationToken(): Promise<string | undefined> {
     const userCollection = fs.collection(fb.firestore, 'users');
