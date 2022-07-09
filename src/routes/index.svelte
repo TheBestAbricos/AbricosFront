@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as fs from 'firebase/firestore';
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 	import { getCurrentUser } from '$lib/firebase';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
@@ -10,10 +11,24 @@
 	import FolderPanel from '../components/FolderPanel.svelte';
 	import { getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
+	import type { FilterData } from '$lib/types/filter';
+	import { isFiltered } from '$lib/stores';
 
 	let folders: Folder[];
 	let cards: CardType.Card[] | undefined;
 	let isInProgress = true;
+	let myFilter: FilterData;
+
+	function applyfilter(filter: FilterData) {
+		cards = cards?.filter(
+			(card) =>
+				(filter.completed ? card.checked === filter.completed : true) &&
+				(card.date ? (filter.till ? card.date <= filter.till : true) : !filter.till) &&
+				filter.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
+				(filter.text ? card.text.includes(filter.text) : true)
+		);
+		console.log(cards);
+	}
 
 	onMount(async () => {
 		if (getCurrentUser()) {
@@ -21,6 +36,7 @@
 				isInProgress = true;
 				getCardsInCurrentFolder().then((data) => {
 					cards = data;
+					if (get(isFiltered)) applyfilter(myFilter);
 					isInProgress = false;
 				});
 				// Current folder exists
@@ -38,6 +54,7 @@
 							isInProgress = true;
 							getCardsInCurrentFolder().then((data) => {
 								cards = data;
+								if (get(isFiltered)) applyfilter(myFilter);
 								isInProgress = false;
 							});
 						}
@@ -54,9 +71,24 @@
 			folders = data;
 		});
 	});
+
+	isFiltered.subscribe(async (value) => {
+		if (value) {
+			applyfilter(myFilter);
+			console.log(myFilter);
+		} else cards = await getCardsInCurrentFolder();
+	});
+
+	// TEST
+	myFilter = { completed: true, tags: [] };
+	isFiltered.set(true);
 </script>
 
-<Navbar />
+<Navbar
+	on:filter={(e) => {
+		myFilter = e.detail;
+	}}
+/>
 {#await getCurrentUserInfo() then data}
 	<FolderPanel {folders} currentFolder={{ docId: data.currentFolder, title: '' }} />
 {/await}
@@ -77,3 +109,9 @@
 {:else}
 	<div class="card md:p-5 p-2 w-72">Нажми на жопу сверхуй</div>
 {/if}
+<button
+	style="background-color: red;"
+	on:click={() => {
+		isFiltered.set(!get(isFiltered));
+	}}>CLICK</button
+>
