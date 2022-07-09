@@ -37,16 +37,15 @@
 <style>
 	.multiselect {
 		position: absolute;
-		top: 9.5rem;
-		left: 4.1rem;
-
+		top: 10.5rem;
+		left: 4.8rem;
 		height: 10rem;
 		overflow-y: auto;
 		background-color: transparent;
 		padding: 0.3rem;
-		background-color: #eee;
+		background-color: white;
 		border-radius: 10px;
-		border: 1px solid grey;
+		border: 1px solid rgba(0, 0, 0, 28%);
 		z-index: 1000000;
 	}
 	.multiselect::-webkit-scrollbar {

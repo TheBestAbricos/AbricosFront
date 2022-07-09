@@ -16,4 +16,9 @@
 
     background: rgba(237, 106, 106, 0.72);
    } 
+
+   button:hover {
+    box-shadow: 0 0 2px 0px grey;
+    transform: scale(1.01);
+   }
 </style>
