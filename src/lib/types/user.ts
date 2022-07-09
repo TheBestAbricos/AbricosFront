@@ -7,7 +7,8 @@ export interface FirestoreUser {
     lastName?: string,
     tags: TagType[]
     currentFolder: string,
-    token?: string
+    token?: string,
+    avatar: string
 }
 
 

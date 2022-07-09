@@ -9,7 +9,7 @@
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import { getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
+	import { changeCardLocation, getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 	import type { FilterData } from '$lib/types/filter';
 	import { isFiltered } from '$lib/stores';
@@ -70,6 +70,7 @@
 		getAllUserFolders().then((data) => {
 			folders = data;
 		});
+		changeCardLocation("GwRrwqR7gL6nsMgyZL8Y", "UqFa5TUcSSj4XV7t8w2A");
 	});
 
 	isFiltered.subscribe(async (value) => {
