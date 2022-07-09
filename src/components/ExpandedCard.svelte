@@ -77,11 +77,8 @@
 		const cardId = await updateCardInFolder(card);
 		dispatch('close');
 
-		console.log(card.docId);
-		console.log(datetime);
-
 		if (card.docId && datetime)
-			await updateNotification(parseInt(datetime), cardId, description, oldDescription);
+			await updateNotification(datetime, cardId, description, oldDescription);
 
 		dispatch('close');
 	}

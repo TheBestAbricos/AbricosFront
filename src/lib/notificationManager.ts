@@ -3,13 +3,13 @@ import { getNotificationToken } from '$lib/firestore';
 const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
 
 export async function updateNotification(
-	datetime: number,
+	datetime: string,
 	docId: string,
 	description: string,
 	oldDescription: string
 ) {
 	deleteNotification(docId, oldDescription);
-	updateNotification(datetime, docId, description, oldDescription);
+	setNotification(datetime, docId, description);
 }
 
 export async function deleteNotification(docId: string, oldDescription: string) {
@@ -34,16 +34,14 @@ export async function deleteNotification(docId: string, oldDescription: string) 
 	}
 }
 
-export async function setNotification(datetime: number, docId: string, description: string) {
+export async function setNotification(datetime: string, docId: string, description: string) {
 	const token: string | undefined = await getNotificationToken();
 
 	console.log(token);
 
 	if (token) {
-		const date = new Date(datetime);
-		const time = `${date.getFullYear()}-${
-			date.getMonth() + 1
-		}-${date.getDate()}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+		const time = datetime + ':00';
+		console.log(time);
 		const updateData = {
 			time: time,
 			id: docId,
