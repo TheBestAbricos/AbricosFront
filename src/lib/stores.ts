@@ -4,7 +4,7 @@ export const openedPanel = writable('initial');
 
 export const amountTasks = writable(0);
 
-export const noficationStatus = writable(false);
+export const notificationStatus = writable(false);
 
 export const logoChoiceMode = writable(false); // not to store
 

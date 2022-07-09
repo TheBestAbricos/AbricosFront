@@ -1,117 +1,142 @@
-<script lang="ts" context="module">
-	import { get } from 'svelte/store';
-	import { noficationStatus } from '$lib/stores';
-	import SaveButton from './shared/SaveButton.svelte';
+<script lang="ts">
+    import { get } from 'svelte/store';
+    import { notificationStatus } from '$lib/stores';
+	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
+    import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
-	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
 
-	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
-	const url_bot = 'https://t.me/inno_frontend_bot';
+    export let isVisible: boolean = false;
 
-	let container: HTMLDivElement;
-	let back: HTMLDivElement;
-	let input: HTMLInputElement;
+    $: isVisible, checkNotificationToken()
 
-	export let toggledChecked = true;
+	const server_url = 'https://a321-188-130-155-167.eu.ngrok.io';
+	const bot_url = 'https://t.me/inno_frontend_bot';
 
-	export const hideContainter = () => {
-		back.style.display = 'none';
+	let token_input: HTMLInputElement;
+    let notificationState: boolean = false; 
+    let toggleState: boolean = true
 
-		clearContainerInput();
-	};
+    const checkNotificationToken = () => {
+        getNotificationToken().then(token => {
+            if (token === undefined) {
+                toggleState = false
+                notificationState = false
+                notificationStatus.set(false)
+            } else {
+                toggleState = true
+                notificationState = true
+                notificationStatus.set(true)
+            }
+        })
+    }
 
-	export const revealContainer = () => {
-		toggledChecked = get(noficationStatus);
+	const botImgClickHandler = (): void => {
+        // redirect to tg bot
+        window.open(bot_url, '_blank')!.focus();
+    }
 
-		back.style.display = 'block';
+    const backClickHanlder = (): void => {
+        // hide notification form
+        isVisible = false
+    }
 
-		clearContainerInput();
-	};
+    const cancelButtonClickHandler = () => {
+        isVisible = false
 
-	const clearContainerInput = () => {
-		if (input) input.value = '';
-	};
+        if (token_input)
+            token_input.value = ''
+    }
 
-	const botImgClickHandler = () => window.open(url_bot, '_blank')!.focus();
-
-	const sendId = async () => {
-		if (!input.value) {
-			input.focus();
+    const saveButtonInitClickHanlder = async() => {              
+        if (!token_input.value) {
+			token_input.focus();
 			return;
 		}
 
-		let res = await fetch(url_server + 'webhooks/verifyToken/' + input.value + '/');
+        try {
+            await sendTokenToTgBot()       
+            await setNotificationToken(token_input.value)   // set token in firebase  for current user    
 
-		if (!res.ok) {
-			input.value = '';
-			input.placeholder = 'Wrong code';
+            isVisible = false
+        } catch (err) {            
+            token_input.value = '';
+			token_input.placeholder = 'Wrong token';
+        }
+    }
 
-			return;
+    const saveButtonToggleClickHanlder = async() => {
+        if (!toggleState) {
+            await deleteTokenFromTgBot()
+            await setNotificationToken(undefined)   // delete token from firebase for current user
+        }
+
+        isVisible = false
+    }
+
+	const sendTokenToTgBot = async () => {
+        let token = token_input.value
+		let response = await fetch(`${server_url}/webhooks/verifyToken/${token}/`);
+
+		if (!response.ok) {            
+			throw Error('Invalid token')
 		}
 
-		noficationStatus.set(true);
-		toggledChecked = true;
-
-		let oldInputValue = input.value;
-
-		hideContainter();
-
-		setNotificationToken(oldInputValue);
+        await setNotificationToken(token)
 	};
 
-	const sendNotificationStatus = async () => {
-		if (toggledChecked === false) {
-			console.log(await getNotificationToken());
-			let res = await fetch(
-				url_server + 'webhooks/unlinkTelegram/' + (await getNotificationToken()) + '/'
-			);
-			setNotificationToken(undefined);
-		}
+    const deleteTokenFromTgBot = async() => {
+        let token = await getNotificationToken()
 
-		noficationStatus.set(toggledChecked);
-
-		hideContainter();
-	};
+        let res = await fetch(`${server_url}/webhooks/unlinkTelegram/${token}`)
+        console.log(res);
+    }
 </script>
 
-<div bind:this={back} on:click|stopPropagation={hideContainter} class="back">
-	<div bind:this={container} on:click|stopPropagation class="container select-none">
-		<div class="label">
-			<p>Notifications</p>
-		</div>
-		<div class="body mt-8">
-			{#if $noficationStatus == false}
-				<img
-					class="pulse cursor-pointer mt-3 mb-3"
-					on:click={botImgClickHandler}
-					src="images/tg-bot.svg"
-					alt="tg-bot"
-				/>
+{#if isVisible}
+    <div on:click|stopPropagation={backClickHanlder} class="back">
+        <div on:click|stopPropagation class="container select-none">
+            <div class="label">
+                <p>Notifications</p>
+            </div>
 
-				<input bind:this={input} type="text" placeholder="Enter code" />
+            <div class="body mt-8">
+                {#if !notificationState}
+                    <img
+                        class="pulse cursor-pointer mt-3 mb-3"
+                        on:click={botImgClickHandler}
+                        src="images/tg-bot.svg"
+                        alt="tg-bot"
+                    />
 
-				<div class="buttons">
-					<SaveButton on:click={sendId} />
-					<CancelButton on:click={hideContainter} />
-				</div>
-			{:else}
-				<div class="notifications-on">
-					Notification enabled
-					<ToggleSwitch
-						on:change={() => (toggledChecked = !toggledChecked)}
-						bind:checked={toggledChecked}
-					/>
-				</div>
+                    <input bind:this={token_input} type="text" placeholder="Enter code" />
 
-				<div class="buttons">
-					<SaveButton on:click={sendNotificationStatus} />
-					<CancelButton on:click={hideContainter} />
-				</div>
-			{/if}
-		</div>
-	</div>
-</div>
+                    <div class="buttons">
+                        <SaveButton on:click={saveButtonInitClickHanlder} />
+                        <CancelButton on:click={cancelButtonClickHandler} />
+                    </div>
+                {:else}
+                    <div class="notification-status">
+                        {#if toggleState}
+                            Notification enabled
+                        {:else}
+                            Notification will be disabled
+                        {/if}
+
+                        <ToggleSwitch
+                            bind:checked={toggleState} on:change = {() => toggleState = !toggleState}
+                        />
+                    </div>
+
+                    <div class="buttons">
+                        <SaveButton on:click={saveButtonToggleClickHanlder} />
+                        <CancelButton on:click={cancelButtonClickHandler} />
+                    </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+{/if}
 
 <style>
 	.pulse {
@@ -209,7 +234,7 @@
 		gap: 1rem;
 	}
 
-	.notifications-on {
+	.notification-status {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
