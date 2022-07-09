@@ -1,24 +1,28 @@
 <script lang="ts">
 	import { getCurrentUserInfo } from "$lib/firestore";
 	import type { TagType } from "$lib/types/card";
+	import { addTag, removeTag } from "$lib/firestore";
 	import PaletteIcon from '../shared/PaletteIcon.svelte'
 	import TletterIcon from '../shared/TletterIcon.svelte'
-	import CancelIcon from '../shared/CancelIcon.svelte'
 	import BinIcon from '../shared/BinIcon.svelte'
+import { onMount } from "svelte";
 
-	let T_color: string = "grey"	//text color
-	let B_color: string = "grey"	//background
+	let T_color: string = "black"	//text color
+	let B_color: string = "red"	//background
 
 	let tag_input: HTMLInputElement;
-	let tag: HTMLDivElement;
-	let tagBack: HTMLDivElement;
 	let tags: Array<TagType>;
-	let isTagVisible: boolean = false
+	let isIninStage: boolean = true
 
 	const tagExistsText = 'Tag exists'		// error message for existing tag
 	const tagsMaxCount = 4					// max tags count
 	const tagsMaxCountText = 'Max tags'		// error message for existing tag
 	
+	onMount(() => {
+		tag_input.style.backgroundColor = B_color
+		tag_input.style.color = T_color
+	})
+
 	getCurrentUserInfo().then(data => {
 		tags = data.tags
 	})
@@ -26,12 +30,16 @@
 	const resetColorPicker = () => {
 		T_color = "grey"	
 		B_color = "grey"
+
+		isIninStage = true
 	}
 
 	const handlTextColorPickerChange = (e: Event) => {
 		if (tag_input && e.target instanceof HTMLInputElement) {
 			tag_input.style.color = e.target.value
 			T_color = e.target.value
+
+			isIninStage = false
 		}
 	}
 
@@ -39,6 +47,8 @@
 		if (tag_input && e.target instanceof HTMLInputElement) {
 			tag_input.style.backgroundColor = e.target.value
 			B_color = e.target.value
+
+			isIninStage = false
 		}
 	}
 
@@ -50,10 +60,6 @@
 		}
 	}
 
-	const getCurrentTagStyle = () => {
-		return `color: ${tag.style.color}; background-color: ${tag.style.backgroundColor}`
-	}
-
 	const handleTagFocus = () => {
 		if (tag_input) {
 			if (tag_input.value == tagExistsText || tag_input.value == tagsMaxCountText) {
@@ -63,15 +69,14 @@
 	}
 	
 	const handleBinClick = (tag: TagType) => {
-		console.log(tag);
-		
-		// update tags
-		getCurrentUserInfo().then(data => {
-			tags = data.tags
+		removeTag(tag).then(() => {
+			getCurrentUserInfo().then(data => {
+				tags = data.tags
+			})
 		})
 	}
 
-	const handleAddTagClick = () => {
+	const handleAddTagClick = (tag: TagType) => {
 		if (tags) {
 			if (tags.length > tagsMaxCount) {
 				clearTagInput()
@@ -94,7 +99,18 @@
 			}
 		}
 		
-		// send tagCreate requests
+		if (isIninStage) {
+			tag.color = 'white'
+			tag.textColor = 'black'
+		}
+
+		addTag(tag).then( () => {
+			getCurrentUserInfo().then(data => {
+				tags = data.tags
+			})
+		})
+
+
 		clearTagInput()
 		resetColorPicker()
 	}
@@ -110,18 +126,6 @@
 						<BinIcon on:click={() => handleBinClick(tag)} color='red'/>
 					</div>
 				{/each}
-			{/if}
-		</div>
-
-		<div>
-			{#if isTagVisible}
-				{#if tag} 
-					<div class='tag' style={getCurrentTagStyle()}>{tag.innerText}</div>
-					<div class='tag-change'>
-						<CancelIcon color='red'/>
-						<BinIcon color='red'/>
-					</div>
-				{/if}
 			{/if}
 		</div>
 	</div>
@@ -140,7 +144,7 @@
 			<label for="palette"><PaletteIcon bind:color={B_color}/></label>
 		</div>
 	</div>
-	<div on:click={handleAddTagClick} class='add-tag'>
+	<div on:click={() => handleAddTagClick({text: tag_input.value, textColor: T_color, color: B_color})} class='add-tag'>
 		<img src="images/plus.svg" alt="">
 	</div>
 </div>
@@ -174,12 +178,14 @@
 
 	.tags {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 
 		padding: 0.2rem;
 		margin-left: 0.7rem;
 		width: 12rem;
+		gap: 0.5rem;
 
 		border: 1px solid rgba(0, 0, 0, 28%);
 		border-radius: 1rem;
