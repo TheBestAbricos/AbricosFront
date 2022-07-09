@@ -120,7 +120,7 @@ export async function getNotificationToken(): Promise<string | undefined> {
     const userCollection = fs.collection(fb.firestore, 'users');
     const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
     const data = (await fs.getDoc(userDoc)).data() as FirestoreUser;
-    return data.telegramToken;
+    return data.token;
 }
 export async function switchFolder(docId: string): Promise<void> {
     const userDoc = fs.doc(fs.collection(fb.firestore, 'users'), fb.getCurrentUser().uid);
