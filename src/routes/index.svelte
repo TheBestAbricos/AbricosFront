@@ -26,27 +26,28 @@
 
 	async function init() {
 		if (getCurrentUser()) {
-			fs.onSnapshot(
-				fs.collection(
-					fs.getFirestore(),
-					'users',
-					getCurrentUser().uid,
-					'folders',
-					(await getCurrentUserInfo()).currentFolder,
-					'items'
-				),
-				(snapshot) => {
-					cardsPromise = getCardsInCurrentFolder();
-				}
-			);
+			
 			fs.onSnapshot(
 				fs.doc(
 					fs.getFirestore(),
 					'users',
 					getCurrentUser().uid,
 				),
-				(snapshot) => {
+				async () => {
 					cardsPromise = getCardsInCurrentFolder();
+					fs.onSnapshot(
+						fs.collection(
+							fs.getFirestore(),
+							'users',
+							getCurrentUser().uid,
+							'folders',
+							(await getCurrentUserInfo()).currentFolder,
+							'items'
+						),
+						(snapshot) => {
+							cardsPromise = getCardsInCurrentFolder();
+						}
+					);
 				}
 			);
 		}
