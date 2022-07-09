@@ -12,7 +12,13 @@
 		openedPanel.subscribe((value) => {
 			if (value === 'folder') {
 				isVisible = true;
-			} else isVisible = false;
+			} else {
+				isVisible = false;
+				getAllUserFolders().then((data) => {
+					console.log(folders);
+					folders = data;
+				});
+			}
 		});
 	});
 	function handleClick() {
@@ -31,18 +37,17 @@
 			div.contentEditable = 'false';
 			if (div.innerText === '') {
 				deleteFolder(div.getAttribute('data-id') as string);
-				div.remove();
+				div.style.display = 'none';
 				console.log('Enter with empty');
 				return;
 			}
-
 			const temp = div.style.boxShadow;
 			div.style.boxShadow = '0 0 5px 0px green';
 			if (div.getAttribute('data-id'))
 				updateFolder({ docId: div.getAttribute('data-id') as string, title: div.innerText });
 			else {
 				const text = div.innerText;
-				updateFolder({ title: text }).then((data) => div.setAttribute('dadta-id', data));
+				updateFolder({ title: text }).then((data) => div.setAttribute('data-id', data));
 			}
 			setTimeout(() => {
 				div.style.boxShadow = temp;
@@ -56,17 +61,15 @@
 		div.onblur = async () => {
 			div.contentEditable = 'false';
 			if (!initialText) {
-				deleteFolder(div.getAttribute('data-id') as string);
-				div.remove();
+				console.log(initialText);
+				div.style.display = 'none';
+			} else {
+				div.innerText = initialText;
 			}
 		};
 		div.contentEditable = 'true';
 		div.focus();
 	}
-
-	getAllUserFolders().then((data) => {
-		folders = data;
-	});
 </script>
 
 {#if isVisible}
