@@ -39,7 +39,7 @@
 			if (div.innerText === '') {
 				deleteFolder(div.getAttribute('data-id') as string);
 				div.style.display = 'none';
-				console.log('Enter with empty');
+				console.log('Enter with empty', div);
 				return;
 			}
 			const temp = div.style.boxShadow;
@@ -76,7 +76,9 @@
 		if (!div.getAttribute('data-id')) return;
 		switchFolder(div.getAttribute('data-id') as string);
 		currentFolder.docId = div.getAttribute('data-id') as string;
-		console.log('Switched to', div.innerText);
+		document.querySelectorAll('.chosenFolder').forEach((el) => el.classList.remove('chosenFolder'));
+		div.classList.add('chosenFolder');
+		console.log('Switched to', div.innerText, currentFolder);
 	}
 </script>
 
@@ -85,8 +87,7 @@
 		{#each folders as folder}
 			<div
 				data-id={folder.docId}
-				style={folder.docId === currentFolder.docId ? 'background-color: lightgrey' : ''}
-				class="folder"
+				class="folder {currentFolder.docId === folder.docId ? 'chosenFolder' : ''}"
 				on:dblclick|preventDefault|stopPropagation={startEditing}
 				on:keypress={changeFolder}
 				on:click|preventDefault={toAnotherFolder}
@@ -139,11 +140,13 @@
 	.folder:hover {
 		transform: scale(1.05);
 		cursor: pointer;
-		background-color: lightgray;
-		opacity: 0.9;
+		background-color: rgba(211, 211, 211, 0.41);
 	}
 	.folder:not(:last-child) {
 		margin-bottom: 0.1rem;
+	}
+	.chosenFolder {
+		background-color: rgba(211, 211, 211, 0.9);
 	}
 	.new-folder {
 		color: grey;
