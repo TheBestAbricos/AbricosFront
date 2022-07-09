@@ -5,6 +5,8 @@
 	import { Timestamp } from 'firebase/firestore';
 	import { createEventDispatcher } from 'svelte';
 	import MultiSelect from './MultiSelect.svelte';
+	import SaveButton from './shared/SaveButton.svelte';
+	import CancelButton from './shared/CancelButton.svelte';
 	import Tag from './Tag.svelte';
 	const dispatch = createEventDispatcher();
 	export let done = false;
@@ -145,8 +147,10 @@
 			</div>
 		</main>
 		<footer>
-			<button type="submit" on:click={save}>Save</button>
-			<button type="button" on:click={() => dispatch('close')}>Cancel</button>
+			<div class="buttons">
+				<SaveButton on:click={save}/>
+				<CancelButton on:click={() => dispatch('close')}/>
+			</div>
 		</footer>
 	</div>
 </div>
@@ -181,8 +185,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 2rem;
-		box-shadow: 0 2px 5px -4px grey;
+		height: 3rem;
+		border-bottom: 1px solid rgba(0, 0, 0, 28%)
 	}
 	label {
 		display: block;
@@ -227,23 +231,7 @@
 		text-align: center;
 		padding: 1rem 1rem;
 	}
-	footer button {
-		padding: 0.3rem 0.5rem;
-		border-radius: 10px;
-		transition-duration: 200ms;
-	}
-	footer button:hover {
-		box-shadow: 0 0 5px 0px grey;
-		transform: scale(1.05);
-	}
-	footer button[type='submit'] {
-		margin-right: 0.5rem;
-		background-color: aquamarine;
-	}
-	footer button[type='button'] {
-		margin-right: 0.5rem;
-		background-color: indianred;
-	}
+	
 	.tag-tag {
 		display: inline-block;
 		margin-bottom: 0.3rem;
@@ -255,6 +243,7 @@
 	}
 	textarea {
 		box-shadow: 0 0 5px -2px grey;
+		border-radius: 1em;
 		padding: 1rem;
 		height: 10rem;
 		width: 100%;
@@ -269,5 +258,13 @@
 	.tags {
 		height: 6.825rem;
 		box-sizing: border-box;
+	}
+
+	.buttons {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		gap: 2em;
 	}
 </style>

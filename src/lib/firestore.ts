@@ -1,5 +1,5 @@
 import * as fs from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { deleteField, Timestamp } from "firebase/firestore";
 import * as fb from "$lib/firebase"
 import type { Card } from "./types/card";
 import type { Folder } from "./types/folder";
@@ -67,7 +67,9 @@ export async function updateCardInFolder(folderName: string, card: Card): Promis
 export async function getAllUserFolders(): Promise<Folder[]> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
 
-    const foldersDocs = await fs.getDocs(foldersCollection);
+    const foldersDocs = await fs.getDocs(
+        fs.query(foldersCollection, fs.orderBy("creationDate"))
+    );
     return foldersDocs.docs.map((e) => (e.data() as Folder)) as Folder[];
 }
 export async function deleteCard(docId: string): Promise<void> {
@@ -90,8 +92,8 @@ export async function getCardByDocId(docId: string): Promise<Card> {
 }
 export async function updateFolder(folder: Folder): Promise<string> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
-    folder.creationDate = Timestamp.fromMillis(Date.now());
     if (!folder.docId) {
+        folder.creationDate = Timestamp.fromMillis(Date.now());
         const folderDoc = fs.doc(foldersCollection);
         folder.docId = folderDoc.id;
         await fs.setDoc(folderDoc, folder, { merge: true });
@@ -104,10 +106,15 @@ export async function updateFolder(folder: Folder): Promise<string> {
 
 
 }
-export async function setNotificationToken(token: string): Promise<void> {
+export async function setNotificationToken(token?: string): Promise<void> {
     const userCollection = fs.collection(fb.firestore, 'users');
     const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
-    await fs.updateDoc(userDoc, { token });
+    if(token){
+        await fs.updateDoc(userDoc, { token });
+    }
+    else {
+        await fs.updateDoc(userDoc, { token: deleteField() });
+    }
 }
 export async function getNotificationToken(): Promise<string | undefined> {
     const userCollection = fs.collection(fb.firestore, 'users');

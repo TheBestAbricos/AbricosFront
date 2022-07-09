@@ -31,6 +31,11 @@
 		if (!card.docId) return;
 		deleteCard(card.docId);
 	}
+
+	function switchChecked() {
+		card.checked = !card.checked;
+		// changeChecked(card.docId, card.checked);
+	}
 </script>
 
 <div
@@ -58,7 +63,12 @@
 	<main class="py-1">
 		<p>{card.text}</p>
 		<span class="w-5" for=""
-			><input type="checkbox" on:click|preventDefault name="checked" checked={card.checked} /></span
+			><input
+				type="checkbox"
+				on:click|stopPropagation={switchChecked}
+				name="checked"
+				checked={card.checked}
+			/></span
 		>
 	</main>
 	<footer>
