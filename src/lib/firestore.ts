@@ -1,5 +1,6 @@
 import * as fb from "$lib/firebase"
 import * as fs from "firebase/firestore"; 
+import { Timestamp } from "firebase/firestore";
 import type {Card}  from "./types/card";
 import type { Folder } from "./types/folder";
 import type { FirestoreUser } from "./types/user";
@@ -89,16 +90,19 @@ export async function getCardByDocId(docId: string): Promise<Card> {
 
     return await (await fs.getDoc(fs.doc(itemsCollection, docId))).data() as Card;
 }
-export async function updateFolder(folder: Folder) {
+export async function updateFolder(folder: Folder): Promise<string> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
+    folder.creationDate = Timestamp.fromMillis(Date.now());
     if (folder.docId) {
         const folderDoc = fs.doc(foldersCollection);
         folder.docId = folderDoc.id;
         await fs.setDoc(folderDoc, folder, {merge: true}); 
+        return folder.docId;
     }
     else {
         const folderDoc = fs.doc(foldersCollection, folder.docId);
-        await fs.setDoc(folderDoc, folder, {merge: true}); 
+        await fs.setDoc(folderDoc, folder, {merge: true});
+        return folder.docId as string;
     }
 
 }
