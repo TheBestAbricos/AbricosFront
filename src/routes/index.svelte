@@ -40,7 +40,7 @@
 				}
 			);
 			fs.onSnapshot(
-				fs.collection(
+				fs.doc(
 					fs.getFirestore(),
 					'users',
 					getCurrentUser().uid,
