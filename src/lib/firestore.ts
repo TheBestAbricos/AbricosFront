@@ -10,10 +10,11 @@ export async function getCurrentUserInfo(): Promise<FirestoreUser> {
     return (await fs.getDoc(fs.doc(fb.firestore, "users", fb.getCurrentUser().uid))).data() as FirestoreUser;
 }
 
-export async function getCardsInCurrentFolder(): Promise<Card[]> {
+export async function getCardsInCurrentFolder(): Promise<Card[] | undefined> {
 
     const currentFolderId = (await getCurrentUserInfo()).currentFolder;
 
+    if (currentFolderId == "") return undefined;
     const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
         currentFolderId, "items");
 
