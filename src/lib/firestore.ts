@@ -157,7 +157,7 @@ export async function removeTag(tag: TagType): Promise<void> {
     const user = (await fs.getDoc(userDoc)).data() as FirestoreUser;
     let tags = user.tags;
     tags = tags.filter((value: TagType) => {
-        return value != tag
+        return value.text != tag.text
     });
     await fs.updateDoc(userDoc, {tags});
 }
