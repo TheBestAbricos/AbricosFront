@@ -22,13 +22,11 @@
 	};
 
 	export const revealContainer = () => {
-		if (container) {
-			toggledChecked = get(noficationStatus);
+		toggledChecked = get(noficationStatus);
 
-			back.style.display = 'block';
+		back.style.display = 'block';
 
-			clearContainerInput();
-		}
+		clearContainerInput();
 	};
 
 	const clearContainerInput = () => {
@@ -55,14 +53,19 @@
 		noficationStatus.set(true);
 		toggledChecked = true;
 
-		setNotificationToken(input.value);
+		let oldInputValue = input.value;
 
 		hideContainter();
+
+		setNotificationToken(oldInputValue);
 	};
 
 	const sendNotificationStatus = async () => {
 		if (toggledChecked === false) {
-			let res = await fetch(url_server + 'webhooks/unlinkTelegram/' + getNotificationToken() + '/');
+			console.log(await getNotificationToken());
+			let res = await fetch(
+				url_server + 'webhooks/unlinkTelegram/' + (await getNotificationToken()) + '/'
+			);
 			setNotificationToken(undefined);
 		}
 

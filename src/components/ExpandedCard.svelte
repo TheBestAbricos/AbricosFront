@@ -2,6 +2,7 @@
 	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
 
 	import type { TagType, Card } from '$lib/types/card';
+	import { updateNotification } from '$lib/notificationManager';
 	import { Timestamp } from 'firebase/firestore';
 	import { createEventDispatcher } from 'svelte';
 	import MultiSelect from './MultiSelect.svelte';
@@ -12,10 +13,11 @@
 	export let done = false;
 	export let datetime: string | undefined = undefined;
 	export let ts: Timestamp | undefined = undefined;
-	export let description = '';
+	export let description: string;
 	export let chosenTags: TagType[] = [];
 	export let title: string;
 	export let docId: string | undefined = undefined;
+	let oldDescription = description;
 	let tags: TagType[] = [];
 
 	function setDatetime(ts: Timestamp) {
@@ -34,37 +36,12 @@
 	}
 	if (ts) setDatetime(ts);
 
-	const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
-
 	getCurrentUserInfo().then((data) => (tags = data.tags));
 	let isMultiSelectVisible = false;
 	function handleChosenTag(event: { detail: { checked: boolean; tag: TagType } }) {
 		if (event.detail.checked) chosenTags = [...chosenTags, event.detail.tag];
 		else {
 			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
-		}
-	}
-
-	async function sendNotification(datetime: number, docId: number) {
-		const token: string | undefined = await getNotificationToken();
-
-		if (token) {
-			const date = new Date(datetime);
-			const data = {
-				time: `${date.getFullYear()}-${
-					date.getMonth() + 1
-				}-${date.getDate()}T${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-				id: docId,
-				name: description,
-				token: parseInt(token)
-			};
-			fetch(url_server + 'webhooks/schedule/', {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
 		}
 	}
 
@@ -97,9 +74,14 @@
 
 		const userInfo = await getCurrentUserInfo();
 		updateCardInFolder(userInfo.currentFolder, card);
-		dispatch('close');
 
-		if (docId && datetime) await sendNotification(parseInt(datetime), parseInt(docId));
+		console.log(card.docId);
+		console.log(datetime);
+
+		if (card.docId && datetime)
+			await updateNotification(parseInt(datetime), card.docId, description, oldDescription);
+
+		dispatch('close');
 	}
 </script>
 
@@ -148,8 +130,8 @@
 		</main>
 		<footer>
 			<div class="buttons">
-				<SaveButton on:click={save}/>
-				<CancelButton on:click={() => dispatch('close')}/>
+				<SaveButton on:click={save} />
+				<CancelButton on:click={() => dispatch('close')} />
 			</div>
 		</footer>
 	</div>
@@ -186,7 +168,7 @@
 		align-items: center;
 		justify-content: center;
 		height: 3rem;
-		border-bottom: 1px solid rgba(0, 0, 0, 28%)
+		border-bottom: 1px solid rgba(0, 0, 0, 28%);
 	}
 	label {
 		display: block;
@@ -231,7 +213,7 @@
 		text-align: center;
 		padding: 1rem 1rem;
 	}
-	
+
 	.tag-tag {
 		display: inline-block;
 		margin-bottom: 0.3rem;
