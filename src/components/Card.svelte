@@ -23,11 +23,18 @@
 		return '0' + component.toString();
 	}
 
-	let colorDate = card.date
-		? card.date.seconds * 1000 - Date.now() > 0
+	let currentDate = Date.now();
+
+	setInterval(() => {
+		currentDate = Date.now();
+	}, 60000);
+
+	$: colorDate = card.date
+		? card.date.seconds * 1000 - currentDate > 0
 			? 'black'
 			: 'red'
 		: 'black';
+
 	function cardDelete() {
 		if (!card.docId) return;
 		deleteCard(card.docId);
