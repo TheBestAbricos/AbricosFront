@@ -67,7 +67,9 @@ export async function updateCardInFolder(folderName: string, card: Card): Promis
 export async function getAllUserFolders(): Promise<Folder[]> {
     const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
 
-    const foldersDocs = await fs.getDocs(foldersCollection);
+    const foldersDocs = await fs.getDocs(
+        fs.query(foldersCollection, fs.orderBy("creationDate"))
+    );
     return foldersDocs.docs.map((e) => (e.data() as Folder)) as Folder[];
 }
 export async function deleteCard(docId: string): Promise<void> {
