@@ -137,7 +137,7 @@
 		border-radius: 5px;
 		transition-duration: 200ms;
 	}
-	.folder:hover {
+	.folder:not(.chosenFolder):hover {
 		transform: scale(1.05);
 		cursor: pointer;
 		background-color: rgba(211, 211, 211, 0.41);
