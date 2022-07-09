@@ -1,16 +1,10 @@
-import { getNotificationToken } from '$lib/firestore';
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import { getNotificationToken } from "./firestore";
 
-const url_server = 'https://a321-188-130-155-167.eu.ngrok.io/';
 
-export async function updateNotification(
-	datetime: string,
-	docId: string,
-	description: string,
-	oldDescription: string
-) {
-	deleteNotification(docId, oldDescription);
-	setNotification(datetime, docId, description);
-}
+const urlServer = 'https://a321-188-130-155-167.eu.ngrok.io/';
+
+
 
 export async function deleteNotification(docId: string, oldDescription: string) {
 	const token: string | undefined = await getNotificationToken();
@@ -20,10 +14,10 @@ export async function deleteNotification(docId: string, oldDescription: string) 
 	if (token) {
 		const deleteData = {
 			name: oldDescription,
-			token: parseInt(token),
+			token: parseInt(token, 10),
 			id: docId
 		};
-		let res = await fetch(url_server + 'webhooks/deleteSchedule/', {
+		const res = await fetch(`${urlServer}webhooks/deleteSchedule/`, {
 			method: 'DELETE',
 			body: JSON.stringify(deleteData),
 			headers: {
@@ -40,16 +34,16 @@ export async function setNotification(datetime: string, docId: string, descripti
 	console.log(token);
 
 	if (token) {
-		const time = datetime + ':00';
+		const time = `${datetime}:00`;
 		console.log(time);
 		const updateData = {
-			time: time,
+			time,
 			id: docId,
 			name: description,
-			token: parseInt(token)
+			token: parseInt(token, 10)
 		};
 
-		let res = await fetch(url_server + 'webhooks/schedule/', {
+		const res = await fetch(`${urlServer}webhooks/schedule/`, {
 			method: 'POST',
 			body: JSON.stringify(updateData),
 			headers: {
@@ -58,4 +52,14 @@ export async function setNotification(datetime: string, docId: string, descripti
 		});
 		console.log(res.status);
 	}
+}
+
+export async function updateNotification(
+	datetime: string,
+	docId: string,
+	description: string,
+	oldDescription: string
+) {
+	deleteNotification(docId, oldDescription);
+	setNotification(datetime, docId, description);
 }
