@@ -7,8 +7,8 @@
 	import BinIcon from '../shared/BinIcon.svelte'
 import { onMount } from "svelte";
 
-	let T_color: string = "black"	//text color
-	let B_color: string = "red"	//background
+	let T_color: string = "grey"	//text color
+	let B_color: string = "grey"	//background
 
 	let tag_input: HTMLInputElement;
 	let tags: Array<TagType>;
@@ -19,8 +19,13 @@ import { onMount } from "svelte";
 	const tagsMaxCountText = 'Max tags'		// error message for existing tag
 	
 	onMount(() => {
-		tag_input.style.backgroundColor = B_color
-		tag_input.style.color = T_color
+		if (isIninStage) {
+			tag_input.style.backgroundColor = 'white'
+			tag_input.style.color = 'black'
+		} else {
+			tag_input.style.backgroundColor = B_color
+			tag_input.style.color = T_color
+		}
 	})
 
 	getCurrentUserInfo().then(data => {
@@ -77,6 +82,16 @@ import { onMount } from "svelte";
 	}
 
 	const handleAddTagClick = (tag: TagType) => {
+		if (tag.text.trim().length === 0) {
+			tag_input.focus()
+
+			return
+		}
+
+		if (tag.text === tagExistsText) {
+			return
+		}
+
 		if (tags) {
 			if (tags.length > tagsMaxCount) {
 				clearTagInput()
