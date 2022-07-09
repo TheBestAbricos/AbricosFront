@@ -1,13 +1,14 @@
 <script lang="ts">
+	import * as fs from 'firebase/firestore';
 	import { getCurrentUser } from '$lib/firebase';
 	import Tag from './Tag.svelte';
 
-	import * as fs from 'firebase/firestore';
-	import { deleteCard } from '$lib/firestore';
+	import { changeChecked, deleteCard } from '$lib/firestore';
 
 	import type { Card } from '../lib/types/card';
 	import ExpandedCard from './ExpandedCard.svelte';
 	import { deleteNotification } from '$lib/notificationManager';
+
 	export let card: Card;
 
 	let date: Date | null = null;
@@ -20,7 +21,7 @@
 		if (component > 9) {
 			return component.toString();
 		}
-		return '0' + component.toString();
+		return `0${component.toString()}`;
 	}
 
 	let currentDate = Date.now();
@@ -45,12 +46,13 @@
 
 	function switchChecked() {
 		card.checked = !card.checked;
-		// changeChecked(card.docId, card.checked);
+		if (card.docId) changeChecked(card.docId, card.checked);
 	}
 </script>
 
 <div
-	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
+	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300
+			{card.checked ? 'checked' : ''}"
 	data-id={card.docId}
 	on:click={() => (isEditableCardVisible = true)}
 >
@@ -103,6 +105,9 @@
 {/if}
 
 <style>
+	.checked {
+		box-shadow: 0 0 5px -1px greenyellow;
+	}
 	header {
 		display: flex;
 		justify-content: space-between;
