@@ -13,12 +13,14 @@
     .logo_svg {
         margin-right: 10px;
     }
+
     .logo_container{
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
     }
+    
     .logo_text {
         font-weight: 500;
         font-size: 40px;
