@@ -1,38 +1,45 @@
 <script lang="ts">
 	import * as fs from 'firebase/firestore';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { getCurrentUser } from '$lib/firebase';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
-	import { getCurrentUser, logIn } from '$lib/firebase';
-	import { amountTasks } from '$lib/stores';
 	import Card from '../components/Card.svelte';
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import {
-		getAllUserFolders,
-		getCardsInCurrentFolder,
-		getCurrentUserInfo,
-		setNotificationToken
-	} from '$lib/firestore';
+	import { changeCardLocation, getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
+	import type { FilterData } from '$lib/types/filter';
+	import { isFiltered } from '$lib/stores';
 
 	let folders: Folder[];
-	getAllUserFolders().then((data) => {
-		folders = data;
-		console.log(folders);
-	});
+	let cards: CardType.Card[] | undefined;
+	let isInProgress = true;
+	let myFilter: FilterData;
 
-	let countValue: number;
+	function applyfilter(filter: FilterData) {
+		cards = cards?.filter(
+			(card) =>
+				(filter.completed ? card.checked === filter.completed : true) &&
+				(card.date ? (filter.till ? card.date <= filter.till : true) : !filter.till) &&
+				filter.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
+				(filter.text ? card.text.includes(filter.text) : true)
+		);
+		console.log(cards);
+	}
 
-	amountTasks.subscribe((value) => {
-		countValue = value;
-	});
-	let cardsPromise: Promise<CardType.Card[] | undefined>;
-
-	async function init() {
+	onMount(async () => {
 		if (getCurrentUser()) {
 			fs.onSnapshot(fs.doc(fs.getFirestore(), 'users', getCurrentUser().uid), async () => {
-				cardsPromise = getCardsInCurrentFolder();
+				isInProgress = true;
+				getCardsInCurrentFolder().then((data) => {
+					cards = data;
+					if (get(isFiltered)) applyfilter(myFilter);
+					isInProgress = false;
+				});
+				// Current folder exists
 				if ((await getCurrentUserInfo()).currentFolder) {
 					fs.onSnapshot(
 						fs.collection(
@@ -43,41 +50,68 @@
 							(await getCurrentUserInfo()).currentFolder,
 							'items'
 						),
-						(snapshot) => {
-							cardsPromise = getCardsInCurrentFolder();
+						() => {
+							isInProgress = true;
+							getCardsInCurrentFolder().then((data) => {
+								cards = data;
+								if (get(isFiltered)) applyfilter(myFilter);
+								isInProgress = false;
+							});
 						}
 					);
 				}
 			});
+		} else {
+			window.location.href = '/login';
+			return;
 		}
-	}
-	init();
+		cards = await getCardsInCurrentFolder();
+		isInProgress = false;
+		getAllUserFolders().then((data) => {
+			folders = data;
+		});
+	});
+
+	isFiltered.subscribe(async (value) => {
+		if (value) {
+			applyfilter(myFilter);
+			console.log(myFilter);
+		} else cards = await getCardsInCurrentFolder();
+	});
+
+	// TEST
+	myFilter = { completed: true, tags: [] };
+	isFiltered.set(true);
 </script>
 
-{#if getCurrentUser()}
-	<Navbar />
-	{#await getCurrentUserInfo() then data}
-		<FolderPanel {folders} currentFolder={{ docId: data.currentFolder, title: '' }} />
-	{/await}
+<Navbar
+	on:filter={(e) => {
+		myFilter = e.detail;
+	}}
+/>
+{#await getCurrentUserInfo() then data}
+	<FolderPanel {folders} currentFolder={{ docId: data.currentFolder, title: '' }} />
+{/await}
 
-	{#await (cardsPromise = getCardsInCurrentFolder())}
-		<ProgressIndicator />
-	{:then cards}
-		{#if cards}
-			<div class="flex flex-wrap justify-center lg:p-12 mg:p-6 p-3">
-				<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
-					<AddCard on:click />
-				</div>
-				{#each cards as i}
-					<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
-						<Card card={i} />
-					</div>
-				{/each}
+{#if isInProgress}
+	<ProgressIndicator />
+{:else if cards}
+	<div class="flex flex-wrap justify-center lg:p-12 mg:p-6 p-3">
+		<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
+			<AddCard on:click />
+		</div>
+		{#each cards as card}
+			<div class="lg:p-7 md:p-5 p-2 w-72 flex justify-center">
+				<Card {card} />
 			</div>
-		{:else}
-			<div class="card md:p-5 p-2 w-72">Нажми на жопу сверху</div>
-		{/if}
-	{/await}
+		{/each}
+	</div>
 {:else}
-	{(window.location.href = '/login')}
+	<div class="card md:p-5 p-2 w-72">Нажми на жопу сверхуй</div>
 {/if}
+<button
+	style="background-color: red;"
+	on:click={() => {
+		isFiltered.set(!get(isFiltered));
+	}}>CLICK</button
+>

@@ -1,31 +1,53 @@
 import * as fs from "firebase/firestore";
-import { deleteField, Timestamp } from "firebase/firestore";
 import * as fb from "$lib/firebase"
 import type { Card, TagType } from "./types/card";
 import type { Folder } from "./types/folder";
 import type { FirestoreUser } from "./types/user";
 
 
+async function getCurrentFolderId(): Promise<string> {
+    return (await getCurrentUserInfo()).currentFolder;
+}
+
+function getUserCollection(): fs.CollectionReference {
+    return fs.collection(fb.firestore, "users");
+}
+function getUserDocument(): fs.DocumentReference {
+    return fs.doc(getUserCollection(), fb.getCurrentUser().uid);
+}
+
+function getFolderCollection(): fs.CollectionReference {
+    return fs.collection(
+        getUserCollection(), fb.getCurrentUser().uid, "folders"
+    );
+}
+async function getItemsCollection(): Promise<fs.CollectionReference> {
+    return fs.collection(
+        getFolderCollection(), await getCurrentFolderId(), "items"
+    );
+}
+
+
 export async function getCurrentUserInfo(): Promise<FirestoreUser> {
-    return (await fs.getDoc(fs.doc(fb.firestore, "users", fb.getCurrentUser().uid))).data() as FirestoreUser;
+    return (
+        await fs.getDoc(
+            fs.doc(
+                    getUserCollection(),
+                    fb.getCurrentUser().uid
+                )
+            )
+    ).data() as FirestoreUser;
 }
 
 export async function getCardsInCurrentFolder(): Promise<Card[] | undefined> {
 
-    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
-
-    if (currentFolderId == "") return undefined;
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        currentFolderId, "items");
+    if (await getCurrentFolderId() == "") return undefined;
 
     const snapshot = await fs.getDocs(
-        fs.query(itemsCollection)
+        fs.query(await getItemsCollection())
     );
-    const cards: Card[] = [];
-    snapshot.docs.forEach((e) => {
-        const document = e.data() as Card;
-        cards.push(document);
-    });
+    const cards = snapshot.docs.map((e) => e.data() as Card);
+
     return cards.sort((a: Card, b: Card) => {
         if (!a.date) {
             return 1;
@@ -43,85 +65,76 @@ export async function getCardsInCurrentFolder(): Promise<Card[] | undefined> {
     });
 }
 export async function changeChecked(docId: string, checked: boolean) {
-    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        currentFolderId, "items");
 
-    fs.updateDoc(fs.doc(itemsCollection, docId), { checked });
+    fs.updateDoc(
+        fs.doc(await getItemsCollection(), docId),
+        { checked }
+    );
 }
-export async function updateCardInFolder(card: Card): Promise<string> {
-    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
-
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        currentFolderId, "items");
-    if (card.docId) {
-        const newDoc = fs.doc(itemsCollection, card.docId);
-        fs.setDoc(newDoc, card, { merge: true });
-        return card.docId;
+export async function updateCardInFolder(card: Card, folderId: string | undefined = undefined): Promise<string> {
+    let itemsCollection: fs.CollectionReference<fs.DocumentData>;
+    if(folderId) {
+        itemsCollection = fs.collection(getFolderCollection(), folderId, "items");
     }
     else {
-        const newDoc = fs.doc(itemsCollection);
-        card.docId = newDoc.id;
-        fs.setDoc(newDoc, card, { merge: true });
-        return newDoc.id;
+        itemsCollection = await getItemsCollection();
     }
+
+    let newDoc: fs.DocumentReference;
+    if (card.docId) {
+        newDoc = fs.doc(itemsCollection, card.docId);
+    }
+    else {
+        newDoc = fs.doc(itemsCollection);
+        card.docId = newDoc.id;
+    }
+    fs.setDoc(newDoc, card, { merge: true });
+    return card.docId;
 
 }
 export async function getAllUserFolders(): Promise<Folder[]> {
-    const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
 
     const foldersDocs = await fs.getDocs(
-        fs.query(foldersCollection, fs.orderBy("creationDate"))
+        fs.query(getFolderCollection(), fs.orderBy("creationDate"))
     );
     return foldersDocs.docs.map((e) => (e.data() as Folder)) as Folder[];
 }
 export async function deleteCard(docId: string): Promise<void> {
-
-    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        currentFolderId, "items");
-
-    fs.deleteDoc(fs.doc(itemsCollection, docId));
+    fs.deleteDoc(
+        fs.doc(await getItemsCollection(), docId)
+    );
 }
 export async function getCardByDocId(docId: string): Promise<Card> {
-
-    const currentFolderId = (await getCurrentUserInfo()).currentFolder;
-
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        currentFolderId, "items");
-
-
-    return await (await fs.getDoc(fs.doc(itemsCollection, docId))).data() as Card;
+    return (await fs.getDoc(
+        fs.doc(await getItemsCollection(), docId)
+    )).data() as Card;
 }
 export async function updateFolder(folder: Folder): Promise<string> {
-    const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
     if (!folder.docId) {
-        folder.creationDate = Timestamp.fromMillis(Date.now());
-        const folderDoc = fs.doc(foldersCollection);
+        folder.creationDate = fs.Timestamp.fromMillis(Date.now());
+        const folderDoc = fs.doc(getFolderCollection());
         folder.docId = folderDoc.id;
         await fs.setDoc(folderDoc, folder, { merge: true });
         return folder.docId;
     }
 
-    const folderDoc = fs.doc(foldersCollection, folder.docId);
+    const folderDoc = fs.doc(getFolderCollection(), folder.docId);
     await fs.setDoc(folderDoc, folder, { merge: true });
     return folder.docId as string;
 
-
 }
 export async function setNotificationToken(token?: string): Promise<void> {
-    const userCollection = fs.collection(fb.firestore, 'users');
-    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const userDoc = getUserDocument();
     if(token){
         await fs.updateDoc(userDoc, { token });
     }
     else {
-        await fs.updateDoc(userDoc, { token: deleteField() });
+        await fs.updateDoc(userDoc, { token: fs.deleteField() });
     }
 }
 export async function getNotificationToken(): Promise<string | undefined> {
     const userCollection = fs.collection(fb.firestore, 'users');
-    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
+    const userDoc = getUserDocument()
     const data = (await fs.getDoc(userDoc)).data() as FirestoreUser;
     return data.token;
 }
@@ -130,36 +143,51 @@ export async function switchFolder(docId: string): Promise<void> {
     fs.updateDoc(userDoc, { currentFolder: docId });
 }
 export async function deleteFolder(docId: string): Promise<void> {
-    const userCollection = fs.collection(fb.firestore, 'users');
-    const foldersCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders");
-    const itemsCollection = fs.collection(fb.firestore, 'users', fb.getCurrentUser().uid, "folders",
-        docId, "items");
     const docs = await fs.getDocs(
-        fs.query(itemsCollection)
+        fs.query(await getItemsCollection())
     );
     docs.docs.forEach(e => {
         deleteCard(e.id);
     });
-    fs.deleteDoc(fs.doc(foldersCollection, docId));
+    fs.deleteDoc(fs.doc(getFolderCollection(), docId));
 
-    fs.updateDoc(fs.doc(userCollection, fb.getCurrentUser().uid), {currentFolder: ""});
+    fs.updateDoc(getUserDocument(), {currentFolder: ""});
 
 }
 export async function addTag(tag: TagType): Promise<void> {
-    const userCollection = fs.collection(fb.firestore, 'users');
-    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
-    const user = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    const userDoc = getUserDocument();
+    const user = await getCurrentUserInfo();
     const tags = user.tags;
     tags.push(tag);
     await fs.updateDoc(userDoc, {tags});
 }
 export async function removeTag(tag: TagType): Promise<void> {
-    const userCollection = fs.collection(fb.firestore, 'users');
-    const userDoc = fs.doc(userCollection, fb.getCurrentUser().uid);
-    const user = (await fs.getDoc(userDoc)).data() as FirestoreUser;
+    const userDoc = getUserDocument();
+    const user = await getCurrentUserInfo();
     let tags = user.tags;
     tags = tags.filter((value: TagType) => {
         return value.text != tag.text
     });
     await fs.updateDoc(userDoc, {tags});
+}
+export async function changeCardLocation(cardDocId: string, newFolderDocId: string): Promise<void> {
+    const card = await getCardByDocId(cardDocId);
+    if(!card.docId) return;
+
+    const currentItemsCollection = await getItemsCollection();
+    const newItemsCollection = fs.collection(getFolderCollection(), newFolderDocId, "items");
+    
+    await deleteCard(card.docId);
+
+    card.docId = undefined;
+    
+    await updateCardInFolder(card, newFolderDocId);
+}
+export async function setAvatarUrl(url: string): Promise<void> {
+    const userDoc = getUserDocument();
+    await fs.setDoc(userDoc, {avatar: url});
+}
+export async function getAvatarUrl(): Promise<string> {
+    const userDoc = getUserDocument();
+    return (await getCurrentUserInfo()).avatar;
 }
