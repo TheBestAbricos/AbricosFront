@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
-	import { noficationStatus, logoSrc } from '$lib/stores.js';
+	import { noficationStatus, logoSrc } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { logOut } from '$lib/firebase';
 	import { tweened } from 'svelte/motion';
@@ -87,10 +87,9 @@
 		switchNotificationIconTo(status);
 	});
 
-	logoSrc.subscribe(src => {
-		if (logo)
-			logo.style.background = `url('${src}') no-repeat center / cover`;
-	})
+	logoSrc.subscribe((src) => {
+		if (logo) logo.style.background = `url('${src}') no-repeat center / cover`;
+	});
 </script>
 
 <nav class="p-3">
