@@ -60,6 +60,7 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
         email: userCredentaials.user.email,
         firstName: "",
         lastName: "",
+        avatar: "images/profile-images/user-default-logo.png",
         tags: [
             {
                 text: "important",

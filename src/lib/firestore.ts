@@ -183,3 +183,11 @@ export async function changeCardLocation(cardDocId: string, newFolderDocId: stri
     
     await updateCardInFolder(card, newFolderDocId);
 }
+export async function setAvatarUrl(url: string): Promise<void> {
+    const userDoc = getUserDocument();
+    await fs.setDoc(userDoc, {avatar: url});
+}
+export async function getAvatarUrl(): Promise<string> {
+    const userDoc = getUserDocument();
+    return (await getCurrentUserInfo()).avatar;
+}
