@@ -2,38 +2,33 @@
 import { getAllUserCards, getNotificationToken, setNotificationToken } from '$lib/firestore';
 
 // export const urlServer = 'http://127.0.0.1:8000/';
-export const urlServer = 'https://852e-188-130-155-148.eu.ngrok.io/';
-// export const urlServer = 'https://a321-188-130-155-167.eu.ngrok.io/';
+// export const urlServer = 'https://852e-188-130-155-148.eu.ngrok.io/';
+export const urlServer = 'https://a321-188-130-155-167.eu.ngrok.io/';
 
 export async function deleteNotification(docId: string) {
 	const token: string | undefined = await getNotificationToken();
-
-	console.log(token);
 
 	if (token) {
 		const deleteData = {
 			token: parseInt(token, 10),
 			id: docId
 		};
-		const res = await fetch(`${urlServer}webhooks/deleteSchedule/`, {
+		await fetch(`${urlServer}webhooks/deleteSchedule/`, {
 			method: 'DELETE',
 			body: JSON.stringify(deleteData),
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		});
-		console.log(res.status);
+		// console.log(res.status);
 	}
 }
 
 export async function setNotification(datetime: string, docId: string, description: string) {
 	const token: string | undefined = await getNotificationToken();
 
-	console.log(token);
-
 	if (token) {
 		const time = datetime;
-		console.log(time);
 		const updateData = {
 			time,
 			taskID: docId,
