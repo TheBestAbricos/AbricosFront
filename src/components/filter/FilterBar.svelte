@@ -167,7 +167,8 @@
 		transform: rotate(0deg);
 		transition: 0s;
 	}
-	.substring-input * {
-		display: inline-block;
+
+	.substring-input {
+		display: flex;
 	}
 </style>
