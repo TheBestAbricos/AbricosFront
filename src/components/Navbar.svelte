@@ -6,12 +6,12 @@
 	import { logOut } from '$lib/firebase';
 	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
-	import type { FilterData } from '$lib/types/filter'
+	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
 	import Notification from '../components/Notification.svelte';
 
 	const filterRotation = tweened(180);
-	const dispatch = createEventDispatcher()
+	const dispatch = createEventDispatcher();
 
 	let filterIcon: HTMLDivElement;
 	let filterData: FilterData;
@@ -23,17 +23,15 @@
 	let logo: HTMLDivElement;
 
 	let notification: HTMLDivElement;
-	let isNotificationVisible: boolean = false
+	let isNotificationVisible: boolean = false;
 
-
-	onMount(async() => {
-		await checkNotificationStatus()
-		let avatarUrl = await getAvatarUrl()
-		logoSrc.set(avatarUrl)
+	onMount(async () => {
+		await checkNotificationStatus();
+		let avatarUrl = await getAvatarUrl();
+		logoSrc.set(avatarUrl);
 	});
 
-
-	notificationStatus.subscribe(() => checkNotificationStatus())
+	notificationStatus.subscribe(() => checkNotificationStatus());
 
 	//Close filter if Folder appears
 	openedPanel.subscribe((value) => {
@@ -44,13 +42,13 @@
 	});
 
 	function checkNotificationStatus() {
-		getNotificationToken().then(token => {
+		getNotificationToken().then((token) => {
 			if (token === undefined) {
 				switchNotificationIconTo('off');
 			} else {
-				switchNotificationIconTo('on'); 
+				switchNotificationIconTo('on');
 			}
-		})
+		});
 	}
 
 	function handleFilterClick() {
@@ -90,8 +88,8 @@
 	}
 
 	function handleNotificationClick() {
-		checkNotificationStatus()
-		isNotificationVisible = !isNotificationVisible
+		checkNotificationStatus();
+		isNotificationVisible = !isNotificationVisible;
 	}
 
 	function handleProfileClick() {
@@ -147,9 +145,9 @@
 	</div>
 </nav>
 <div class="notification-container">
-	<Notification bind:isVisible={isNotificationVisible}/>
+	<Notification bind:isVisible={isNotificationVisible} />
 </div>
-<FilterBar isActive={isFilterVisible} on:filter={(e) => dispatch('filter', e.detail)}></FilterBar>
+<FilterBar isActive={isFilterVisible} on:filter={(e) => dispatch('filter', e.detail)} />
 
 <style>
 	nav {
@@ -271,6 +269,12 @@
 		}
 		10% {
 			transform: rotate(0deg);
+		}
+	}
+
+	@media (max-width: 500px) {
+		.logo__text {
+			display: none;
 		}
 	}
 </style>
