@@ -2,6 +2,7 @@
 	import * as fs from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
+	import Arrow from '../components/Arrow.svelte';
 	import { getCurrentUser } from '$lib/firebase';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
@@ -112,12 +113,12 @@
 		{/each}
 	</div>
 {:else}
-	<div class="card md:p-5 p-2 w-72">Нажми на жопу сверхуй</div>
+	<Arrow />
 {/if}
-<button
+<!-- <button
 	style="background-color: red;"
 	on:click={() => {
 		myFilter = { tags: [{ text: 'important2' }] };
 		isFiltered.set(!get(isFiltered));
 	}}>CLICK</button
->
+> -->
