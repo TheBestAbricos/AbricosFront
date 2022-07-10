@@ -5,7 +5,7 @@
 	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
 
 	import type { TagType, Card } from '$lib/types/card';
-	import { updateNotification } from '$lib/notificationManager';
+	import { setNotification } from '$lib/notificationManager';
 	import MultiSelect from './MultiSelect.svelte';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
@@ -77,8 +77,7 @@
 		const cardId = await updateCardInFolder(card);
 		dispatch('close');
 
-		if (card.docId && datetime)
-			await updateNotification(datetime, cardId, description, oldDescription);
+		if (card.docId && datetime) await setNotification(datetime, cardId, description);
 
 		dispatch('close');
 	}
