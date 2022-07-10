@@ -5,7 +5,7 @@
 	import PaletteIcon from '../shared/PaletteIcon.svelte'
 	import TletterIcon from '../shared/TletterIcon.svelte'
 	import BinIcon from '../shared/BinIcon.svelte'
-import { onMount } from "svelte";
+	import { onMount } from "svelte";
 
 	let T_color: string = "grey"	//text color
 	let B_color: string = "grey"	//background

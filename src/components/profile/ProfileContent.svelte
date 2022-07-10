@@ -1,17 +1,22 @@
 <script lang="ts">
 	import { logoChoiceMode, logoSrc } from '$lib/stores';
 	import { get } from 'svelte/store';
-	import CancelButton from '../shared/CancelButton.svelte';
-	import SaveButton from '../shared/SaveButton.svelte';
+	import { getAvatarUrl } from '$lib/firestore';
 
 	function hanldeChangeLogoClick() {
 		logoChoiceMode.set(true)
 		console.log(get(logoChoiceMode));
 	}
+
+	let url: string| undefined;
+	
+	getAvatarUrl().then(a => url = a)
 </script>
 
 <div class="container">
-	<img src={get(logoSrc)} alt="user profile"/>
+	{#if url}
+		<img src={url} alt="user profile"/>
+	{/if}
 	<button on:click = {hanldeChangeLogoClick}>
 		Change
 	</button>
