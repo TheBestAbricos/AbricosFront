@@ -74,6 +74,7 @@ import { onMount } from "svelte";
 	}
 	
 	const handleBinClick = (tag: TagType) => {
+		tags = tags.filter(t => t != tag)
 		removeTag(tag).then(() => {
 			getCurrentUserInfo().then(data => {
 				tags = data.tags
@@ -119,6 +120,8 @@ import { onMount } from "svelte";
 			tag.textColor = 'black'
 		}
 
+		// tags.push(tag)
+
 		addTag(tag).then( () => {
 			getCurrentUserInfo().then(data => {
 				tags = data.tags
@@ -138,7 +141,9 @@ import { onMount } from "svelte";
 				{#each tags as tag}
 					<div class='tag-bin'>
 						<div class='tag' style="background-color: {tag.color}; color: {tag.textColor}">{tag.text}</div>
+						<div class='bin-container'>
 						<BinIcon on:click={() => handleBinClick(tag)} color='red'/>
+						</div>
 					</div>
 				{/each}
 			{/if}
@@ -151,12 +156,16 @@ import { onMount } from "svelte";
 	<div class="tools">
 		<div class="tool">
 			<input on:change={handlTextColorPickerChange} type="color" id="t" value="#0000">
-			<label for="t"><TletterIcon bind:color={T_color}/></label>
+			<div class='tool-container'>
+				<label for="t"><TletterIcon bind:color={T_color}/></label>
+			</div>
 		</div>
 
 		<div class="tool">
 			<input on:change={handlBackColorPickerChange} type="color" id="palette" name="head" value="#FFFFFF">
-			<label for="palette"><PaletteIcon bind:color={B_color}/></label>
+			<div class='tool-container'>
+				<label for="palette"><PaletteIcon bind:color={B_color}/></label>
+			</div>
 		</div>
 	</div>
 	<div on:click={() => handleAddTagClick({text: tag_input.value, textColor: T_color, color: B_color})} class='add-tag'>
@@ -202,7 +211,6 @@ import { onMount } from "svelte";
 		width: 12rem;
 		gap: 0.5rem;
 
-		border: 1px solid rgba(0, 0, 0, 28%);
 		border-radius: 1rem;
 	}
 
@@ -218,6 +226,8 @@ import { onMount } from "svelte";
 		border: 1px solid rgba(0, 0, 0, 28%);
 		border-radius: 3rem;
 		text-align: center;
+
+		cursor: default;
 	}
 
 	.tag-bin {
@@ -264,12 +274,49 @@ import { onMount } from "svelte";
 		transform: scale(1.1);
 	}
 
-	.tag-change {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		
-		gap: 1rem;
+	.bin-container:hover {
+		animation: spin 0.2s linear infinite;
 	}
+
+	.tool-container:hover {
+		transform: scale(1.1);
+	}
+
+	.bin-container:active {
+		animation: myAnimation 0.2s linear 1s;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		25% {
+			transform: rotate(-4deg);
+		}
+		50% {
+			transform: rotate(0deg);
+		}
+		75% {
+			transform: rotate(4deg);
+		}
+		100% {
+			transform: rotate(0deg);
+		}
+	}
+
+	@keyframes myAnimation{
+		0%{
+			opacity: 1;
+			transform: rotateX(90deg);
+		}
+		50%{
+			opacity: 0.5;
+			transform: rotateX(0deg);
+		}
+		100%{
+			display: none;
+			opacity: 0;
+			transform: rotateX(90deg);
+		}
+}
 </style>
