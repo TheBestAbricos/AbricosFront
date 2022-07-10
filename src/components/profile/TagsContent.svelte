@@ -1,148 +1,149 @@
 <script lang="ts">
-	import { getCurrentUserInfo } from "$lib/firestore";
-	import type { TagType } from "$lib/types/card";
-	import { addTag, removeTag } from "$lib/firestore";
-	import PaletteIcon from '../shared/PaletteIcon.svelte'
-	import TletterIcon from '../shared/TletterIcon.svelte'
-	import BinIcon from '../shared/BinIcon.svelte'
-	import { onMount } from "svelte";
+	import { getCurrentUserInfo } from '$lib/firestore';
+	import type { TagType } from '$lib/types/card';
+	import { addTag, removeTag } from '$lib/firestore';
+	import PaletteIcon from '../shared/PaletteIcon.svelte';
+	import TletterIcon from '../shared/TletterIcon.svelte';
+	import BinIcon from '../shared/BinIcon.svelte';
+	import { onMount } from 'svelte';
 
-	let T_color: string = "grey"	//text color
-	let B_color: string = "grey"	//background
+	let T_color: string = 'grey'; //text color
+	let B_color: string = 'grey'; //background
 
 	let tag_input: HTMLInputElement;
 	let tags: Array<TagType>;
-	let isIninStage: boolean = true
+	let isIninStage: boolean = true;
 
-	const tagExistsText = 'Tag exists'		// error message for existing tag
-	const tagsMaxCount = 4					// max tags count
-	const tagsMaxCountText = 'Max tags'		// error message for existing tag
-	
+	const tagExistsText = 'Tag exists'; // error message for existing tag
+	const tagsMaxCount = 4; // max tags count
+	const tagsMaxCountText = 'Max tags'; // error message for existing tag
+
 	onMount(() => {
 		if (isIninStage) {
-			tag_input.style.backgroundColor = 'white'
-			tag_input.style.color = 'black'
+			tag_input.style.backgroundColor = 'white';
+			tag_input.style.color = 'black';
 		} else {
-			tag_input.style.backgroundColor = B_color
-			tag_input.style.color = T_color
+			tag_input.style.backgroundColor = B_color;
+			tag_input.style.color = T_color;
 		}
-	})
+	});
 
-	getCurrentUserInfo().then(data => {
-		tags = data.tags
-	})
+	getCurrentUserInfo().then((data) => {
+		tags = data.tags;
+	});
 
 	const resetColorPicker = () => {
-		T_color = "grey"	
-		B_color = "grey"
+		T_color = 'grey';
+		B_color = 'grey';
 
-		isIninStage = true
-	}
+		isIninStage = true;
+	};
 
 	const handlTextColorPickerChange = (e: Event) => {
 		if (tag_input && e.target instanceof HTMLInputElement) {
-			tag_input.style.color = e.target.value
-			T_color = e.target.value
+			tag_input.style.color = e.target.value;
+			T_color = e.target.value;
 
-			isIninStage = false
+			isIninStage = false;
 		}
-	}
+	};
 
 	const handlBackColorPickerChange = (e: Event) => {
 		if (tag_input && e.target instanceof HTMLInputElement) {
-			tag_input.style.backgroundColor = e.target.value
-			B_color = e.target.value
+			tag_input.style.backgroundColor = e.target.value;
+			B_color = e.target.value;
 
-			isIninStage = false
+			isIninStage = false;
 		}
-	}
+	};
 
 	const clearTagInput = () => {
 		if (tag_input) {
-			tag_input.value = ''
-			tag_input.style.color = '#000'
-			tag_input.style.backgroundColor = '#ffffff'
+			tag_input.value = '';
+			tag_input.style.color = '#000';
+			tag_input.style.backgroundColor = '#ffffff';
 		}
-	}
+	};
 
 	const handleTagFocus = () => {
 		if (tag_input) {
 			if (tag_input.value == tagExistsText || tag_input.value == tagsMaxCountText) {
-				clearTagInput()
+				clearTagInput();
 			}
 		}
-	}
-	
+	};
+
 	const handleBinClick = (tag: TagType) => {
-		tags = tags.filter(t => t != tag)
+		tags = tags.filter((t) => t != tag);
 		removeTag(tag).then(() => {
-			getCurrentUserInfo().then(data => {
-				tags = data.tags
-			})
-		})
-	}
+			getCurrentUserInfo().then((data) => {
+				tags = data.tags;
+			});
+		});
+	};
 
 	const handleAddTagClick = (tag: TagType) => {
 		if (tag.text.trim().length === 0) {
-			tag_input.focus()
+			tag_input.focus();
 
-			return
+			return;
 		}
 
 		if (tag.text === tagExistsText) {
-			return
+			return;
 		}
 
 		if (tags) {
 			if (tags.length > tagsMaxCount) {
-				clearTagInput()
-				resetColorPicker()
+				clearTagInput();
+				resetColorPicker();
 
-				tag_input.style.color = 'red'
-				tag_input.value = tagsMaxCountText
-				return
+				tag_input.style.color = 'red';
+				tag_input.value = tagsMaxCountText;
+				return;
 			}
 
-			for(let i = 0; i < tags.length; i++) {
-				let e = tags[i]
+			for (let i = 0; i < tags.length; i++) {
+				let e = tags[i];
 				if (e.text.toLocaleLowerCase() === tag_input.value.toLocaleLowerCase()) {
-					clearTagInput()
-					tag_input.style.color = 'red'
-					tag_input.value = tagExistsText
+					clearTagInput();
+					tag_input.style.color = 'red';
+					tag_input.value = tagExistsText;
 
-					return
+					return;
 				}
 			}
 		}
-		
+
 		if (isIninStage) {
-			tag.color = 'white'
-			tag.textColor = 'black'
+			tag.color = 'white';
+			tag.textColor = 'black';
 		}
 
 		// tags.push(tag)
 
-		addTag(tag).then( () => {
-			getCurrentUserInfo().then(data => {
-				tags = data.tags
-			})
-		})
+		addTag(tag).then(() => {
+			getCurrentUserInfo().then((data) => {
+				tags = data.tags;
+			});
+		});
 
-
-		clearTagInput()
-		resetColorPicker()
-	}
+		clearTagInput();
+		resetColorPicker();
+	};
 </script>
 
 <div class="w-10/12 m-5 flex flex-col gap-4">
-	<div class='container'>
+	<div class="container">
 		<div class="tags">
 			{#if tags}
 				{#each tags as tag}
-					<div class='tag-bin'>
-						<div class='tag' style="background-color: {tag.color}; color: {tag.textColor}">{tag.text}</div>
-						<div class='bin-container'>
-						<BinIcon on:click={() => handleBinClick(tag)} color='red'/>
+					<div class="tag-bin">
+						<div class="tag" style="background-color: {tag.color}; color: {tag.textColor}">
+							{tag.text}
+						</div>
+						<div class="bin-container">
+							<BinIcon on:click={() => handleBinClick(tag)} color="red" />
 						</div>
 					</div>
 				{/each}
@@ -151,39 +152,58 @@
 	</div>
 </div>
 
-<div class='tag-form'>
-	<input bind:this={tag_input} on:focus={handleTagFocus} type="text" name="tag" id="tag" class="new-tag" placeholder="Enter tag" maxlength="10"/>
+<div class="tag-form">
+	<input
+		bind:this={tag_input}
+		on:focus={handleTagFocus}
+		type="text"
+		name="tag"
+		id="tag"
+		class="new-tag"
+		placeholder="Enter tag"
+		maxlength="10"
+	/>
 	<div class="tools">
 		<div class="tool">
-			<input on:change={handlTextColorPickerChange} type="color" id="t" value="#0000">
-			<div class='tool-container'>
-				<label for="t"><TletterIcon bind:color={T_color}/></label>
+			<input on:change={handlTextColorPickerChange} type="color" id="t" value="#0000" />
+			<div class="tool-container">
+				<label for="t"><TletterIcon bind:color={T_color} /></label>
 			</div>
 		</div>
 
 		<div class="tool">
-			<input on:change={handlBackColorPickerChange} type="color" id="palette" name="head" value="#FFFFFF">
-			<div class='tool-container'>
-				<label for="palette"><PaletteIcon bind:color={B_color}/></label>
+			<input
+				on:change={handlBackColorPickerChange}
+				type="color"
+				id="palette"
+				name="head"
+				value="#FFFFFF"
+			/>
+			<div class="tool-container">
+				<label for="palette"><PaletteIcon bind:color={B_color} /></label>
 			</div>
 		</div>
 	</div>
-	<div on:click={() => handleAddTagClick({text: tag_input.value, textColor: T_color, color: B_color})} class='add-tag'>
-		<img src="images/plus.svg" alt="">
+	<div
+		on:click={() =>
+			handleAddTagClick({ text: tag_input.value, textColor: T_color, color: B_color })}
+		class="add-tag"
+	>
+		<img src="images/plus.svg" alt="" />
 	</div>
 </div>
 
 <style>
-	input[type="text"] {
+	input[type='text'] {
 		width: 8em;
 	}
 
-	input[type="color"] {
+	input[type='color'] {
 		opacity: 0%;
 		height: 0em;
 		width: 0em;
 	}
-	
+
 	.container {
 		display: flex;
 
@@ -257,13 +277,13 @@
 		align-items: center;
 		justify-content: center;
 	}
-	
+
 	.add-tag {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
-	
+
 	.add-tag img {
 		width: 2em;
 		height: 2em;
@@ -304,19 +324,19 @@
 		}
 	}
 
-	@keyframes myAnimation{
-		0%{
+	@keyframes myAnimation {
+		0% {
 			opacity: 1;
 			transform: rotateX(90deg);
 		}
-		50%{
+		50% {
 			opacity: 0.5;
 			transform: rotateX(0deg);
 		}
-		100%{
+		100% {
 			display: none;
 			opacity: 0;
 			transform: rotateX(90deg);
 		}
-}
+	}
 </style>
