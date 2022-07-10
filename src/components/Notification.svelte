@@ -52,8 +52,8 @@
 		}
 
 		try {
-			await sendTokenToTgBot(token_input.value);
-			await setNotificationToken(token_input.value); // set token in firebase  for current user
+			// set token in firebase  for current use
+			sendTokenToTgBot(token_input.value);
 
 			isVisible = false;
 		} catch (err) {
