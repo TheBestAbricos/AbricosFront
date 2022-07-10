@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
-	import { onMount } from 'svelte';
-	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
-	import type { Folder } from '$lib/types/folder';
 	import {
 		changeCardLocation,
 		deleteFolder,
@@ -10,7 +6,11 @@
 		switchFolder,
 		updateFolder
 	} from '$lib/firestore';
-	import { get } from 'svelte/store';
+	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
+	import { onMount } from 'svelte';
+	import { slide } from 'svelte/transition';
+
+	import type { Folder } from '$lib/types/folder';
 
 	export let folders: Folder[] = [];
 	export let isVisible = false;
@@ -38,8 +38,6 @@
 			panel.scrollTop = panel.scrollHeight;
 			const newFolder = panel.children[panel.children.length - 2] as HTMLDivElement;
 			newFolder.dispatchEvent(new Event('dblclick'));
-		}, 0);
-		setTimeout(() => {
 			isEditing = false;
 		}, 0);
 	}
@@ -102,11 +100,6 @@
 
 		const cardId = $droppedCard;
 		const folderId = folderDiv.dataset.id;
-
-		// if (folderDiv) console.log(folderDiv.dataset.id);
-		// if (folderDiv) console.log('id' in folderDiv.dataset);
-		// console.log('Card ID: ' + cardId);
-		// console.log('Folder ID: ' + folderId);
 
 		if (folderId && cardId) {
 			changeCardLocation(cardId, folderId);
