@@ -7,7 +7,6 @@
 
 	let colorDate: string;
 
-	import type { Card } from '../lib/types/card';
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
 	import { get } from 'svelte/store';
 
@@ -30,7 +29,7 @@
 
 	setInterval(() => {
 		currentDate = Date.now();
-	}, 60000);
+	}, 10000);
 
 	$: colorDate = card.date
 		? card.date.seconds * 1000 - currentDate > 0
@@ -42,7 +41,7 @@
 		if (!card.docId) return;
 		deleteCard(card.docId);
 		if (card.date) {
-			deleteNotification(card.docId, card.text);
+			deleteNotification(card.docId);
 		}
 	}
 

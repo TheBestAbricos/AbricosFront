@@ -1,141 +1,121 @@
 <script lang="ts">
-    import { get } from 'svelte/store';
-    import { notificationStatus } from '$lib/stores';
-	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
-    import SaveButton from './shared/SaveButton.svelte';
+	import { notificationStatus } from '$lib/stores';
+	import { getAllUserCards, getNotificationToken, setNotificationToken } from '$lib/firestore';
+	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
+	import { deleteTokenFromTgBot, sendTokenToTgBot } from '$lib/notificationManager';
 
-    export let isVisible: boolean = false;
+	export let isVisible: boolean = false;
 
-    $: isVisible, checkNotificationToken()
-
-	const server_url = 'https://a321-188-130-155-167.eu.ngrok.io';
+	$: isVisible, checkNotificationToken();
 	const bot_url = 'https://t.me/inno_frontend_bot';
 
 	let token_input: HTMLInputElement;
-    let notificationState: boolean = false; 
-    let toggleState: boolean = true
+	let notificationState: boolean = false;
+	let toggleState: boolean = true;
 
-    const checkNotificationToken = () => {
-        getNotificationToken().then(token => {
-            if (token === undefined) {
-                toggleState = false
-                notificationState = false
-                notificationStatus.set(false)
-            } else {
-                toggleState = true
-                notificationState = true
-                notificationStatus.set(true)
-            }
-        })
-    }
+	const checkNotificationToken = () => {
+		getNotificationToken().then((token) => {
+			if (token === undefined) {
+				toggleState = false;
+				notificationState = false;
+				notificationStatus.set(false);
+			} else {
+				toggleState = true;
+				notificationState = true;
+				notificationStatus.set(true);
+			}
+		});
+	};
 
 	const botImgClickHandler = (): void => {
-        // redirect to tg bot
-        window.open(bot_url, '_blank')!.focus();
-    }
+		// redirect to tg bot
+		window.open(bot_url, '_blank')!.focus();
+	};
 
-    const backClickHanlder = (): void => {
-        // hide notification form
-        isVisible = false
-    }
+	const backClickHanlder = (): void => {
+		// hide notification form
+		isVisible = false;
+	};
 
-    const cancelButtonClickHandler = () => {
-        isVisible = false
+	const cancelButtonClickHandler = () => {
+		isVisible = false;
 
-        if (token_input)
-            token_input.value = ''
-    }
+		if (token_input) token_input.value = '';
+	};
 
-    const saveButtonInitClickHanlder = async() => {              
-        if (!token_input.value) {
+	const saveButtonInitClickHanlder = async () => {
+		if (!token_input.value) {
 			token_input.focus();
 			return;
 		}
 
-        try {
-            await sendTokenToTgBot()       
-            await setNotificationToken(token_input.value)   // set token in firebase  for current user    
+		try {
+			await sendTokenToTgBot(token_input.value);
+			await setNotificationToken(token_input.value); // set token in firebase  for current user
 
-            isVisible = false
-        } catch (err) {            
-            token_input.value = '';
+			isVisible = false;
+		} catch (err) {
+			token_input.value = '';
 			token_input.placeholder = 'Wrong token';
-        }
-    }
-
-    const saveButtonToggleClickHanlder = async() => {
-        if (!toggleState) {
-            await deleteTokenFromTgBot()
-            await setNotificationToken(undefined)   // delete token from firebase for current user
-        }
-
-        isVisible = false
-    }
-
-	const sendTokenToTgBot = async () => {
-        let token = token_input.value
-		let response = await fetch(`${server_url}/webhooks/verifyToken/${token}/`);
-
-		if (!response.ok) {            
-			throw Error('Invalid token')
 		}
-
-        await setNotificationToken(token)
 	};
 
-    const deleteTokenFromTgBot = async() => {
-        let token = await getNotificationToken()
+	const saveButtonToggleClickHanlder = async () => {
+		if (!toggleState) {
+			await deleteTokenFromTgBot();
+			await setNotificationToken(undefined); // delete token from firebase for current user
+		}
 
-        let res = await fetch(`${server_url}/webhooks/unlinkTelegram/${token}`)
-        console.log(res);
-    }
+		isVisible = false;
+	};
 </script>
 
 {#if isVisible}
-    <div on:click|stopPropagation={backClickHanlder} class="back">
-        <div on:click|stopPropagation class="container select-none">
-            <div class="label">
-                <p>Notifications</p>
-            </div>
+	<div on:click|stopPropagation={backClickHanlder} class="back">
+		<div on:click|stopPropagation class="container select-none">
+			<div class="label">
+				<p>Notifications</p>
+			</div>
 
-            <div class="body mt-8">
-                {#if !notificationState}
-                    <img
-                        class="pulse cursor-pointer mt-3 mb-3"
-                        on:click={botImgClickHandler}
-                        src="images/tg-bot.svg"
-                        alt="tg-bot"
-                    />
+			<div class="body mt-8">
+				{#if !notificationState}
+					<img
+						class="pulse cursor-pointer mt-3 mb-3"
+						on:click={botImgClickHandler}
+						src="images/tg-bot.svg"
+						alt="tg-bot"
+					/>
 
-                    <input bind:this={token_input} type="text" placeholder="Enter code" />
+					<input bind:this={token_input} type="text" placeholder="Enter code" />
 
-                    <div class="buttons">
-                        <SaveButton on:click={saveButtonInitClickHanlder} />
-                        <CancelButton on:click={cancelButtonClickHandler} />
-                    </div>
-                {:else}
-                    <div class="notification-status">
-                        {#if toggleState}
-                            Notification enabled
-                        {:else}
-                            Notification will be disabled
-                        {/if}
+					<div class="buttons">
+						<SaveButton on:click={saveButtonInitClickHanlder} />
+						<CancelButton on:click={cancelButtonClickHandler} />
+					</div>
+				{:else}
+					<div class="notification-status">
+						{#if toggleState}
+							Notification enabled
+						{:else}
+							Notification will be disabled
+						{/if}
 
-                        <ToggleSwitch
-                            bind:checked={toggleState} on:change = {() => toggleState = !toggleState}
-                        />
-                    </div>
+						<ToggleSwitch
+							bind:checked={toggleState}
+							on:change={() => (toggleState = !toggleState)}
+						/>
+					</div>
 
-                    <div class="buttons">
-                        <SaveButton on:click={saveButtonToggleClickHanlder} />
-                        <CancelButton on:click={cancelButtonClickHandler} />
-                    </div>
-                {/if}
-            </div>
-        </div>
-    </div>
+					<div class="buttons">
+						<SaveButton on:click={saveButtonToggleClickHanlder} />
+						<CancelButton on:click={cancelButtonClickHandler} />
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style>
