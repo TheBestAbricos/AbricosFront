@@ -93,13 +93,13 @@
 {#if isActive}
 	<div transition:slide class="lg:absolute w-full flex flex-wrap border-b border-gray-400 p-1">
 		<DropDown label="Tags">
-			<MultiSelect isVisible={true} bind:tags={tags} bind:chosenTags={chosenTags} on:handleChosenTag={sendFilterData}/>
+			<MultiSelect isVisible={true} tags={tags} chosenTags={chosenTags} on:handleChosenTag={handleChosenTag}/>
 		</DropDown>
 		<DropDown label="Next">
-			<SingleSelect items={times} bind:chosenItem={chosenTime} on:chose={choseHanlder}/>
+			<SingleSelect items={times} chosenItem={chosenTime} on:chose={choseHanlder}/>
 		</DropDown>
 		
-		<CheckBoxFilter text="Completed" bind:checked={checked} on:checked={checkedHandler}/>
+		<CheckBoxFilter text="Completed" checked={checked} on:checked={checkedHandler}/>
 
 		<input type="text" placeholder="Enter text seach" maxlength=30 bind:value={substring}>
 		<div class='cancel'>
