@@ -28,7 +28,7 @@
 	function applyfilter(f: FilterData) {
 		cards = cards?.filter(
 			(card) =>
-				(f.checked ? card.checked === f.checked : true) &&
+				(f.completed ? card.checked === f.completed : true) &&
 				(card.date ? (f.till ? card.date <= f.till : true) : !f.till) &&
 				f.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
 				(f.text ? card.text.includes(f.text) : true)
