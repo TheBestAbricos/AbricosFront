@@ -1,16 +1,23 @@
 <script lang="ts">
 	import { tweened } from 'svelte/motion';
+	import { createEventDispatcher } from 'svelte';
 
-	let visible = false;
-	const dropdownRotation = tweened(0);
-
+	export let visible = false;
 	export let label: string;
 
+	const dropdownRotation = tweened(0);
+	const dispatch = createEventDispatcher()
+
 	function handleDropdownClick() {
+
 		visible = !visible;
 		if (visible) dropdownRotation.set(180);
 		else dropdownRotation.set(0);
+
+		dispatch('changeVisible', {visible: visible})
 	}
+
+
 </script>
 
 <div class="relative inline-block text-center my-2 mx-8">

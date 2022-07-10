@@ -13,6 +13,9 @@
 
 	const dispatch = createEventDispatcher()
 
+	let tagsDropDownVisible: boolean = false
+	let nextDropDownVisible: boolean = false
+
 	let substring: string | undefined
 
 	let checked: boolean | undefined;
@@ -86,16 +89,27 @@
 		substring = undefined
 		chosenTags = [];
 
+		nextDropDownVisible = false
+		tagsDropDownVisible = false
+
 		sendFilterData()
+	}
+
+	const handleTagsDropVis = (e: {detail: {visible: any}}) => {
+		tagsDropDownVisible = e.detail.visible
+	}
+
+	const handleNextDropVis = (e: {detail: {visible: any}}) => {
+		nextDropDownVisible = e.detail.visible
 	}
 </script>
 
 {#if isActive}
 	<div transition:slide class="lg:absolute w-full flex flex-wrap border-b border-gray-400 p-1">
-		<DropDown label="Tags">
+		<DropDown label="Tags" visible={tagsDropDownVisible} on:changeVisible={handleTagsDropVis} >
 			<MultiSelect isVisible={true} tags={tags} chosenTags={chosenTags} on:handleChosenTag={handleChosenTag}/>
 		</DropDown>
-		<DropDown label="Next">
+		<DropDown label="Next" visible={nextDropDownVisible} on:changeVisible={handleNextDropVis}>
 			<SingleSelect items={times} chosenItem={chosenTime} on:chose={choseHanlder}/>
 		</DropDown>
 		
