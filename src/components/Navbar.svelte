@@ -4,7 +4,7 @@
 	import { get } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
 	import { logOut } from '$lib/firebase';
-	import { getNotificationToken } from '$lib/firestore';
+	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter'
 	import FilterBar from './filter/FilterBar.svelte';
@@ -28,7 +28,10 @@
 
 	onMount(async() => {
 		await checkNotificationStatus()
+		let avatarUrl = await getAvatarUrl()
+		logoSrc.set(avatarUrl)
 	});
+
 
 	notificationStatus.subscribe(() => checkNotificationStatus())
 
@@ -205,7 +208,6 @@
 		width: 6em;
 		height: 80%;
 
-		background: url('images/profile-images/user-default-logo.png') no-repeat center / cover;
 		border-radius: 50%;
 	}
 

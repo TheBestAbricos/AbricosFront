@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { setAvatarUrl } from "$lib/firestore";
     import { logoSrc, logoChoiceMode } from "$lib/stores";
 
     const handleImgClick = (e: Event) => {
         if (e.target instanceof HTMLImageElement) {
             logoSrc.set(e.target.src)
             logoChoiceMode.set(false)
+
+            setAvatarUrl(e.target.src)
         }
     }
 </script>
