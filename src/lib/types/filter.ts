@@ -4,5 +4,5 @@ export interface FilterData {
     till?: Date;
     tags: TagType[];
     text?: string;
-    completed?: boolean;
+    checked?: boolean;
 }

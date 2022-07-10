@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import Arrow from '../components/Arrow.svelte';
-	import { getCurrentUser } from '$lib/firebase';
+	import { getCurrentUser, logIn } from '$lib/firebase';
 	import Navbar from '../components/Navbar.svelte';
 	import ProgressIndicator from '../components/ProgressIndicator.svelte';
 	import Card from '../components/Card.svelte';
@@ -28,7 +28,7 @@
 	function applyfilter(f: FilterData) {
 		cards = cards?.filter(
 			(card) =>
-				(f.completed ? card.checked === f.completed : true) &&
+				(f.checked ? card.checked === f.checked : true) &&
 				(card.date ? (f.till ? card.date <= f.till : true) : !f.till) &&
 				f.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
 				(f.text ? card.text.includes(f.text) : true)
@@ -79,11 +79,11 @@
 
 	isFiltered.subscribe(async (value) => {
 		if (value) {
+			cards = await getCardsInCurrentFolder();
 			console.log('Turn on filter');
 			applyfilter(myFilter);
 		} else {
 			console.log('Turn off filter');
-			cards = await getCardsInCurrentFolder();
 		}
 	});
 </script>
@@ -115,10 +115,3 @@
 {:else}
 	<Arrow />
 {/if}
-<!-- <button
-	style="background-color: red;"
-	on:click={() => {
-		myFilter = { tags: [{ text: 'important2' }] };
-		isFiltered.set(!get(isFiltered));
-	}}>CLICK</button
-> -->

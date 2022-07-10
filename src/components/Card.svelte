@@ -1,15 +1,15 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import { changeChecked, deleteCard } from '$lib/firestore';
 	import { deleteNotification } from '$lib/notificationManager';
 	import type * as CardType from '$lib/types/card';
 	import ExpandedCard from './ExpandedCard.svelte';
 	import Tag from './Tag.svelte';
 
-	let colorDate: string;
-
 	import type { Card } from '../lib/types/card';
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
-	import { get } from 'svelte/store';
+
+	let colorDate: string;
 
 	export let card: CardType.Card;
 
@@ -65,10 +65,9 @@
 
 	function onMouseDown(e: MouseEvent) {
 		setTimeout(() => {
-			// const tgt = eleme.target;
 			if (cardHeader) {
-				const computed = window.getComputedStyle(cardHeader)['cursor'];
-				if (computed == 'move') openedPanel.set('folder');
+				const computed = window.getComputedStyle(cardHeader).cursor;
+				if (computed === 'move') openedPanel.set('folder');
 			}
 		}, 500);
 		moving = true;
@@ -97,7 +96,7 @@
 
 <div
 	bind:this={cardComponent}
-	class:draggable={moving == true}
+	class:draggable={moving === true}
 	style="left: {left}px; top: {top}px;"
 	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300
 			{card.checked ? 'checked' : ''}"
