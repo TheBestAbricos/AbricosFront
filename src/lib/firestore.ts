@@ -185,7 +185,7 @@ export async function changeCardLocation(cardDocId: string, newFolderDocId: stri
 }
 export async function setAvatarUrl(url: string): Promise<void> {
     const userDoc = getUserDocument();
-    await fs.setDoc(userDoc, {avatar: url});
+    await fs.setDoc(userDoc, {avatar: url}, {merge: true});
 }
 export async function getAvatarUrl(): Promise<string> {
     const userDoc = getUserDocument();
