@@ -3,6 +3,8 @@
 	import { getCurrentUserInfo, updateCardInFolder } from "$lib/firestore";
 	import { slide } from 'svelte/transition';
 	import type { TagType } from "$lib/types/card";
+	import type { FilterData } from "$lib/types/filter";
+	import { Timestamp } from "firebase/firestore";
 	import CheckBoxFilter from './CheckBoxFilter.svelte';
 	import DropDown from './DropDown.svelte';
 	import MultiSelect from '../MultiSelect.svelte'
@@ -23,9 +25,8 @@
 	let tags: Array<TagType> = [];
 	let chosenTags: Array<TagType> = [];
 	
-	let time_stamp: Date | undefined
+	let time_stamp: Timestamp | undefined
 	let chosenTime: string | undefined;
-	let times: Array<String> = ['30 minutes', 'hour', 'day', 'week', 'mounth', 'year'];
 	let times_seconds = new Map([
 		['30 minutes', 1800],
 		['hour', 3600],
@@ -41,17 +42,20 @@
 	$: substring, (() => {
 		if (substring?.trim().length === 0)
 			substring = undefined
-		
-		sendFilterData()
+
+		raiseFilterEvent()
 	})()
 
-	const sendFilterData = () => {
-		dispatch('filter', {
+	const raiseFilterEvent = () => {
+		let data: FilterData = {
 			tags: chosenTags,
-			checked: checked,
 			till: time_stamp,
-			text: substring
-		})
+			text: substring,
+			completed: checked,
+		}
+		console.log(data);
+		
+		dispatch('filter', data)
 	}
 
 	const handleChosenTag = (event: { detail: { checked: boolean; tag: TagType } }) => {
@@ -62,28 +66,32 @@
 			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
 		}
 
-		sendFilterData()
+		raiseFilterEvent()
 	}
 
 	const choseHanlder = (event: {detail: {choseItem: string | undefined}}) => {
 		if (event.detail.choseItem != undefined) {
 			chosenTime = event.detail.choseItem
-			
-			time_stamp = new Date(Date.now()/1000 + times_seconds.get(chosenTime)!)
+
+			let ms = Date.now() + times_seconds.get(chosenTime!)! * 1000
+			time_stamp = Timestamp.fromDate(
+				new Date(ms)
+			) 
 		} else {
 			time_stamp = undefined
 		}
-
-		sendFilterData()
+		console.log(times_seconds.get(chosenTime!)!);
+		
+		raiseFilterEvent()
 	}
 
 	const checkedHandler = (event: {detail: {checked: boolean}}) => {
 		checked = event.detail.checked
-		sendFilterData()
+		raiseFilterEvent()
 	}
 
 	const handleCancelClick = () => {
-		checked = false;
+		checked = undefined;
 		time_stamp = undefined
 		chosenTime = undefined
 		substring = undefined
@@ -92,7 +100,7 @@
 		nextDropDownVisible = false
 		tagsDropDownVisible = false
 
-		sendFilterData()
+		raiseFilterEvent()
 	}
 
 	const handleTagsDropVis = (e: {detail: {visible: any}}) => {
@@ -106,19 +114,25 @@
 
 {#if isActive}
 	<div transition:slide class="lg:absolute w-full flex flex-wrap border-b border-gray-400 p-1">
+		<!-- Tags filter -->
 		<DropDown label="Tags" visible={tagsDropDownVisible} on:changeVisible={handleTagsDropVis} >
 			<MultiSelect isVisible={true} tags={tags} chosenTags={chosenTags} on:handleChosenTag={handleChosenTag}/>
 		</DropDown>
+
+		<!-- Next filter -->
 		<DropDown label="Next" visible={nextDropDownVisible} on:changeVisible={handleNextDropVis}>
-			<SingleSelect items={times} chosenItem={chosenTime} on:chose={choseHanlder}/>
+			<SingleSelect items={Array.from(times_seconds.keys())} chosenItem={chosenTime} on:chose={choseHanlder}/>
 		</DropDown>
 		
+		<!-- Checked filter -->
 		<CheckBoxFilter text="Completed" checked={checked} on:checked={checkedHandler}/>
 
+		<!-- Substring filter -->
 		<input type="text" placeholder="Enter text seach" maxlength=30 bind:value={substring}>
 		<div class='cancel'>
 			<CancelIcon on:click={handleCancelClick}></CancelIcon>
 		</div>
+
 	</div>
 {/if}
 
