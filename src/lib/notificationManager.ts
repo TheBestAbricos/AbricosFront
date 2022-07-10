@@ -17,6 +17,7 @@ export async function deleteNotification(docId: string) {
 		};
 		const res = await fetch(`${urlServer}webhooks/deleteSchedule/`, {
 			method: 'DELETE',
+			mode: "no-cors",
 			body: JSON.stringify(deleteData),
 			headers: {
 				'Content-Type': 'application/json'
@@ -43,6 +44,7 @@ export async function setNotification(datetime: string, docId: string, descripti
 
 		const res = await fetch(`${urlServer}webhooks/schedule/`, {
 			method: 'POST',
+			mode: "no-cors",
 			body: JSON.stringify(updateData),
 			headers: {
 				'Content-Type': 'application/json'
@@ -54,7 +56,9 @@ export async function setNotification(datetime: string, docId: string, descripti
 
 export const sendTokenToTgBot = async (token: string) => {
 	// let token = token_input.value;
-	let response = await fetch(`${urlServer}webhooks/verifyToken/${token}/`);
+	let response = await fetch(`${urlServer}webhooks/verifyToken/${token}/`, {
+		mode: "no-cors",
+	});
 
 	if (!response.ok) {
 		throw Error('Invalid token');
@@ -76,6 +80,8 @@ export const sendTokenToTgBot = async (token: string) => {
 export const deleteTokenFromTgBot = async () => {
 	let token = await getNotificationToken();
 
-	let res = await fetch(`${urlServer}webhooks/unlinkTelegram/${token}`);
+	let res = await fetch(`${urlServer}webhooks/unlinkTelegram/${token}`, {
+		mode: "no-cors",
+	});
 	// console.log(res);
 };

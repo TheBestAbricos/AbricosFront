@@ -46,17 +46,10 @@ export const getCurrentUser = () : fbAuth.User => {
 }
 
 async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
-
     const userDoc = fs.doc(fs.collection(firestore, "users"), userCredentaials.user.uid); 
-    const folderDoc = fs.doc(fs.collection(userDoc, "folders"))
-    const folderData = {
-        title: "Main",
-        docId: folderDoc.id,
-        creationDate: Timestamp.fromMillis(Date.now())
-    }
     const userData = {
         UID: userCredentaials.user.uid,
-        currentFolder: folderDoc.id,
+        currentFolder: "",
         email: userCredentaials.user.email,
         firstName: "",
         lastName: "",
@@ -70,6 +63,5 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
         ]
     }
     await fs.setDoc(userDoc, userData);
-    await fs.setDoc(folderDoc, folderData);
 }
 

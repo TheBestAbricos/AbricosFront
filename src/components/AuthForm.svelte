@@ -36,14 +36,19 @@
             errorMessage = (codes as any)[fbError.code] ?? fbError.code;
         }
     }
+    function onEnterClick(e: KeyboardEvent) {
+        if(e.key == "Enter") {
+            onLoginClick();
+        }
+    }
 </script>
 
 <div class="login_box">
     <div class="form_container">
         <Logo withText={true}/>
         <form class="auth_form">
-            <input type="text" class="auth_input" placeholder="Email" bind:value={email}>
-            <input type="password" class="auth_input" placeholder="Password" bind:value={password}>
+            <input type="text" class="auth_input" placeholder="Email" on:keypress={onEnterClick} bind:value={email}>
+            <input type="password" class="auth_input" placeholder="Password"  on:keypress={onEnterClick} bind:value={password}>
         </form>
         <div class="error_message">
             {#if errorMessage !== ""}
@@ -51,12 +56,8 @@
             {/if}
         </div>
         <div class="auth_buttons_section">
-            {#if !isRegister}
-                <button class="auth_button auth_button_login" on:click={onLoginClick}>Sign in</button>
-                <button class="auth_button auth_button_signup" on:click={() => isRegister = !isRegister}>Sign up</button>
-            {:else}
-                <button class="auth_button auth_button_signup" on:click={onRegisterClick}>Register</button>
-            {/if}
+            <button class="auth_button auth_button_login" data-auth="signin" on:click={onLoginClick}>Sign in</button>
+            <button class="auth_button auth_button_signup" data-auth="signup" on:click={onRegisterClick}>Register</button>
         </div>
     </div>
 </div>
