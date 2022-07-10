@@ -72,6 +72,7 @@
 	}
 
 	function handleFolderClick() {
+		if (get(openedPanel) === 'folder') isFolderVisible = true;
 		isFolderVisible = !isFolderVisible;
 		if (isFolderVisible) {
 			openedPanel.set('folder');
