@@ -68,7 +68,6 @@
 		const initialText = div.innerText;
 		div.onblur = async () => {
 			div.contentEditable = 'false';
-			div.classList.add('gradient-border');
 			if (!initialText) {
 				console.log(initialText);
 				div.style.display = 'none';
