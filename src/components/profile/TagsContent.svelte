@@ -6,6 +6,7 @@
 	import TletterIcon from '../shared/TletterIcon.svelte';
 	import BinIcon from '../shared/BinIcon.svelte';
 	import { onMount } from 'svelte';
+	import Tag from '../Tag.svelte';
 
 	let T_color: string = 'grey'; //text color
 	let B_color: string = 'grey'; //background
@@ -139,9 +140,7 @@
 			{#if tags}
 				{#each tags as tag}
 					<div class="tag-bin">
-						<div class="tag" style="background-color: {tag.color}; color: {tag.textColor}">
-							{tag.text}
-						</div>
+						<Tag {tag} />
 						<div class="bin-container">
 							<BinIcon on:click={() => handleBinClick(tag)} color="red" />
 						</div>
@@ -236,18 +235,6 @@
 
 	#tag {
 		width: 11em;
-	}
-
-	.tag {
-		padding-left: 0.4rem;
-		padding-right: 0.4rem;
-		display: inline;
-
-		border: 1px solid rgba(0, 0, 0, 28%);
-		border-radius: 3rem;
-		text-align: center;
-
-		cursor: default;
 	}
 
 	.tag-bin {
