@@ -128,11 +128,6 @@
 			isDroppedCardScaled.set(false);
 		}
 	}
-
-	function doScrolling(elementY : number) {
-		var startingY = window.pageYOffset;
-		var diff = elementY - startingY;
-	}
 </script>
 
 {#if isVisible}
