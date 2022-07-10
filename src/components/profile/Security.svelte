@@ -1,8 +1,16 @@
 <script lang='ts'>
+import { getCurrentUser } from "$lib/firebase";
 
+    import { onMount } from "svelte";
+
+    let email: string; 
+
+    onMount(async () => {
+        email = getCurrentUser().email!;
+    });
 </script>
 <div class='container'>
-    <p>Will be added later</p>
+    <p>Email: {email}!</p>
 </div>
 
 <style>
