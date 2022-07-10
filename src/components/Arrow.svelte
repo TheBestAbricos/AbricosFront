@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	// eslint-disable-next-line import/no-unresolved, import/extensions
 	import { openedPanel } from '$lib/stores';
 
 	let arrows: HTMLDivElement;

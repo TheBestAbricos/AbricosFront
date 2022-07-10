@@ -43,22 +43,22 @@
 			e.preventDefault();
 			div.onblur = null;
 			div.contentEditable = 'false';
-			if (div.innerText === '') {
+			if (div.innerText.trim() === '') {
 				deleteFolder(div.getAttribute('data-id') as string);
 				div.style.display = 'none';
 				console.log('Enter with empty', div);
 				return;
 			}
-			const temp = div.style.boxShadow;
-			div.style.boxShadow = '0 0 5px 0px green';
+			const temp = div.style.backgroundColor;
+			div.style.backgroundColor = 'rgb(20 221 65 / 45%)';
 			if (div.getAttribute('data-id'))
-				updateFolder({ docId: div.getAttribute('data-id') as string, title: div.innerText });
+				updateFolder({ docId: div.getAttribute('data-id') as string, title: div.innerText.trim() });
 			else {
-				const text = div.innerText;
+				const text = div.innerText.trim();
 				updateFolder({ title: text }).then((data) => div.setAttribute('data-id', data));
 			}
 			setTimeout(() => {
-				div.style.boxShadow = temp;
+				div.style.backgroundColor = temp;
 			}, 1000);
 		}
 	}
@@ -68,6 +68,7 @@
 		const initialText = div.innerText;
 		div.onblur = async () => {
 			div.contentEditable = 'false';
+			div.classList.add('gradient-border');
 			if (!initialText) {
 				console.log(initialText);
 				div.style.display = 'none';
@@ -181,6 +182,7 @@
 		box-shadow: 0 0 5px -3px grey, 0 0 10px -10px grey;
 		border-radius: 5px;
 		transition-duration: 200ms;
+		/* outline: none; */
 	}
 	.folder:not(.chosenFolder):hover {
 		transform: scale(1.05);
