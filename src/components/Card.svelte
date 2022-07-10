@@ -7,6 +7,10 @@
 
 	let colorDate: string;
 
+	import type { Card } from '../lib/types/card';
+	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
+	import { get } from 'svelte/store';
+
 	export let card: CardType.Card;
 
 	let date: Date | null = null;
@@ -46,15 +50,60 @@
 		card.checked = !card.checked;
 		if (card.docId) changeChecked(card.docId, card.checked);
 	}
+
+	function handleCardClick() {
+		isEditableCardVisible = true;
+	}
+
+	let cardComponent: HTMLDivElement;
+	let cardHeader: HTMLElement;
+
+	let left: number;
+	let top: number;
+
+	let moving = false;
+
+	function onMouseDown(e: MouseEvent) {
+		setTimeout(() => {
+			// const tgt = eleme.target;
+			if (cardHeader) {
+				const computed = window.getComputedStyle(cardHeader)['cursor'];
+				if (computed == 'move') openedPanel.set('folder');
+			}
+		}, 500);
+		moving = true;
+		left = cardComponent.getBoundingClientRect().left;
+		top = cardComponent.getBoundingClientRect().top;
+		if (card.docId) droppedCard.set(card.docId);
+	}
+
+	function onMouseMove(e: MouseEvent) {
+		if (moving) {
+			if (get(isDroppedCardScaled)) {
+				left = e.clientX - 40;
+				top = e.clientY - 30;
+			} else {
+				left = e.clientX + 5;
+				top = e.clientY + 5;
+			}
+		}
+	}
+
+	function onMouseUp() {
+		moving = false;
+		droppedCard.set('');
+	}
 </script>
 
 <div
+	bind:this={cardComponent}
+	class:draggable={moving == true}
+	style="left: {left}px; top: {top}px;"
 	class="card text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900 hover:ring-2 hover:ring-gray-300
 			{card.checked ? 'checked' : ''}"
 	data-id={card.docId}
-	on:click={() => (isEditableCardVisible = true)}
 >
-	<header>
+	<header on:mousedown={(e) => onMouseDown(e)} bind:this={cardHeader}>
 		<div class="date-div" style="color:{colorDate};">
 			<div class="date">
 				{date
@@ -71,7 +120,7 @@
 			<img on:click|stopPropagation={cardDelete} class="w-4" alt="delete" src="images/x.svg" />
 		</div>
 	</header>
-	<main class="py-1">
+	<main class="py-1" on:click={handleCardClick}>
 		<p>{card.text}</p>
 		<span class="w-5" for=""
 			><input
@@ -82,7 +131,7 @@
 			/></span
 		>
 	</main>
-	<footer>
+	<footer on:click={handleCardClick}>
 		{#each card.tags as tag}
 			<div class="tag-wrapper">
 				<Tag {tag} />
@@ -105,7 +154,17 @@
 	/>
 {/if}
 
+<svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
+
 <style>
+	.draggable {
+		user-select: none;
+		cursor: move;
+		border: solid 1px gray;
+		position: absolute;
+		background-color: white;
+		z-index: 100000;
+	}
 	.checked {
 		box-shadow: 0 0 5px -1px greenyellow;
 	}

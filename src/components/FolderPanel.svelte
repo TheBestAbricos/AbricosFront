@@ -1,9 +1,16 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	import { openedPanel } from '$lib/stores';
+	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
 	import type { Folder } from '$lib/types/folder';
-	import { deleteFolder, getAllUserFolders, switchFolder, updateFolder } from '$lib/firestore';
+	import {
+		changeCardLocation,
+		deleteFolder,
+		getAllUserFolders,
+		switchFolder,
+		updateFolder
+	} from '$lib/firestore';
+	import { get } from 'svelte/store';
 
 	export let folders: Folder[] = [];
 	export let isVisible = false;
@@ -80,12 +87,50 @@
 		div.classList.add('chosenFolder');
 		console.log('Switched to', div.innerText, currentFolder);
 	}
+
+	function onMouseUp(e: MouseEvent, folderId: string | undefined) {
+		const cardId = $droppedCard;
+		if (folderId && cardId) {
+			changeCardLocation(cardId, folderId);
+			const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+			console.log(element);
+			if (element) {
+				element.style.display = 'none';
+				isDroppedCardScaled.set(false);
+			}
+		}
+	}
+
+	function onMouseEnter() {
+		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+		console.log(element);
+		if (element) {
+			element.style.transform = 'scale(0.6)';
+			element.style.filter = 'brightness(0.95)';
+			isDroppedCardScaled.set(true);
+		}
+	}
+
+	function onMouseLeave() {
+		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
+		console.log(element);
+		if (element) {
+			element.style.transform = 'scale(1)';
+			element.style.filter = 'brightness(1)';
+			isDroppedCardScaled.set(false);
+		}
+	}
 </script>
 
 {#if isVisible}
 	<div transition:slide class="panel" bind:this={panel}>
 		{#each folders as folder}
 			<div
+				on:mouseup={(e) => onMouseUp(e, folder.docId)}
+				on:mouseenter={() => {
+					onMouseEnter();
+				}}
+				on:mouseleave={onMouseLeave}
 				data-id={folder.docId}
 				class="folder {currentFolder.docId === folder.docId ? 'chosenFolder' : ''}"
 				on:dblclick|preventDefault|stopPropagation={startEditing}

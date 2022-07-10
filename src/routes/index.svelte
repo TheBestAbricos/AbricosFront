@@ -70,7 +70,6 @@
 		getAllUserFolders().then((data) => {
 			folders = data;
 		});
-		changeCardLocation("GwRrwqR7gL6nsMgyZL8Y", "UqFa5TUcSSj4XV7t8w2A");
 	});
 
 	isFiltered.subscribe(async (value) => {
