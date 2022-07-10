@@ -88,12 +88,20 @@
 		console.log('Switched to', div.innerText, currentFolder);
 	}
 
-	function onMouseUp(e: MouseEvent, folderId: string | undefined) {
+	function onMouseUp(e: MouseEvent) {
+		const folderDiv = e.target as HTMLDivElement;
+
 		const cardId = $droppedCard;
+		const folderId = folderDiv.dataset.id;
+
+		// if (folderDiv) console.log(folderDiv.dataset.id);
+		// if (folderDiv) console.log('id' in folderDiv.dataset);
+		// console.log('Card ID: ' + cardId);
+		// console.log('Folder ID: ' + folderId);
+
 		if (folderId && cardId) {
 			changeCardLocation(cardId, folderId);
 			const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
-			console.log(element);
 			if (element) {
 				element.style.display = 'none';
 				isDroppedCardScaled.set(false);
@@ -103,7 +111,6 @@
 
 	function onMouseEnter() {
 		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
-		console.log(element);
 		if (element) {
 			element.style.transform = 'scale(0.6)';
 			element.style.filter = 'brightness(0.95)';
@@ -113,12 +120,17 @@
 
 	function onMouseLeave() {
 		const element = document.querySelector(`[data-id="${$droppedCard}"]`) as HTMLDivElement;
-		console.log(element);
+		// console.log(element);
 		if (element) {
 			element.style.transform = 'scale(1)';
 			element.style.filter = 'brightness(1)';
 			isDroppedCardScaled.set(false);
 		}
+	}
+
+	function doScrolling(elementY : number) {
+		var startingY = window.pageYOffset;
+		var diff = elementY - startingY;
 	}
 </script>
 
@@ -126,7 +138,7 @@
 	<div transition:slide class="panel" bind:this={panel}>
 		{#each folders as folder}
 			<div
-				on:mouseup={(e) => onMouseUp(e, folder.docId)}
+				on:mouseup={(e) => onMouseUp(e)}
 				on:mouseenter={() => {
 					onMouseEnter();
 				}}
