@@ -15,7 +15,10 @@
 	export let folders: Folder[] = [];
 	export let isVisible = false;
 	export let currentFolder: Folder;
+
 	let panel: HTMLDivElement;
+	let isEditing = false;
+
 	onMount(() => {
 		openedPanel.subscribe((value) => {
 			if (value === 'folder') {
@@ -36,6 +39,9 @@
 			const newFolder = panel.children[panel.children.length - 2] as HTMLDivElement;
 			newFolder.dispatchEvent(new Event('dblclick'));
 		}, 0);
+		setTimeout(() => {
+			isEditing = false;
+		}, 0);
 	}
 	async function changeFolder(e: KeyboardEvent) {
 		const div = e.target as HTMLDivElement;
@@ -43,6 +49,7 @@
 			e.preventDefault();
 			div.onblur = null;
 			div.contentEditable = 'false';
+			isEditing = false;
 			if (div.innerText.trim() === '') {
 				deleteFolder(div.getAttribute('data-id') as string);
 				div.style.display = 'none';
@@ -66,8 +73,10 @@
 		const div = e.target as HTMLDivElement;
 		div.focus();
 		const initialText = div.innerText;
+		isEditing = true;
 		div.onblur = async () => {
 			div.contentEditable = 'false';
+			isEditing = false;
 			if (!initialText) {
 				console.log(initialText);
 				div.style.display = 'none';
@@ -130,7 +139,7 @@
 </script>
 
 {#if isVisible}
-	<div transition:slide class="panel" bind:this={panel}>
+	<div transition:slide id="panel" class="panel" bind:this={panel}>
 		{#each folders as folder}
 			<div
 				on:mouseup={(e) => onMouseUp(e)}
@@ -140,6 +149,7 @@
 				on:mouseleave={onMouseLeave}
 				data-id={folder.docId}
 				class="folder {currentFolder.docId === folder.docId ? 'chosenFolder' : ''}"
+				class:isEditing={isEditing && currentFolder.docId === folder.docId}
 				on:dblclick|preventDefault|stopPropagation={startEditing}
 				on:keypress={changeFolder}
 				on:click|preventDefault={toAnotherFolder}
@@ -203,5 +213,69 @@
 	}
 	.new-folder {
 		color: grey;
+	}
+	.isEditing {
+		padding: 0.6em 2em;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		position: relative;
+		z-index: 0;
+		border-radius: 10px;
+		user-select: none;
+		-webkit-user-select: none;
+		touch-action: manipulation;
+	}
+
+	.isEditing:before {
+		content: '';
+		background: linear-gradient(
+			45deg,
+			#ff0000,
+			#ff7300,
+			#fffb00,
+			#48ff00,
+			#00ffd5,
+			#002bff,
+			#7a00ff,
+			#ff00c8,
+			#ff0000
+		);
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		background-size: 400%;
+		z-index: -1;
+		filter: blur(5px);
+		-webkit-filter: blur(5px);
+		width: calc(100% + 4px);
+		height: calc(100% + 4px);
+		animation: glowing-button-85 20s linear infinite;
+		transition: opacity 0.3s ease-in-out;
+		border-radius: 10px;
+	}
+
+	@keyframes glowing-button-85 {
+		0% {
+			background-position: 0 0;
+		}
+		50% {
+			background-position: 400% 0;
+		}
+		100% {
+			background-position: 0 0;
+		}
+	}
+
+	.isEditing:after {
+		z-index: -1;
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: rgba(211, 211, 211, 0.9);
+		left: 0;
+		top: 0;
+		border-radius: 10px;
 	}
 </style>
