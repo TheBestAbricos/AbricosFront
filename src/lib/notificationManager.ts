@@ -1,7 +1,8 @@
 // eslint-disable-next-line import/no-unresolved, import/extensions
 import { getAllUserCards, getNotificationToken, setNotificationToken } from '$lib/firestore';
 
-export const urlServer = 'https://a321-188-130-155-167.eu.ngrok.io/';
+// export const urlServer = 'https://a321-188-130-155-167.eu.ngrok.io/';
+export const urlServer = 'https://852e-188-130-155-148.eu.ngrok.io/';
 // export const urlServer = 'https://5e8b-188-130-155-154.eu.ngrok.io/';
 
 export async function deleteNotification(docId: string) {
