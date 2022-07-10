@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher } from 'svelte';
 
 	export let text: string;
-	export let checked: boolean | undefined = false;  
+	export let checked: boolean | undefined = false;
 
-	let dispatch = createEventDispatcher()
-
+	let dispatch = createEventDispatcher();
 </script>
 
-<div class="flex items-center my-3 mx-8">
+<div class="flex items-center sm:my-3 sm:mx-8 mx-auto my-4">
 	<input
-		bind:checked={checked}
-		on:change={() => dispatch('checked', {checked: checked})}
+		bind:checked
+		on:change={() => dispatch('checked', { checked: checked })}
 		id="checkbox"
 		type="checkbox"
 		value=""

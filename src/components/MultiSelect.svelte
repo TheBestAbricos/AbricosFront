@@ -22,6 +22,7 @@
 		{#each tags as tag}
 			<div class="tag-item">
 				<input
+					class="w-4 h-4 cursor-pointer"
 					on:click={(e) => {
 						changeTagAsChosen(tag, e);
 					}}
@@ -30,7 +31,7 @@
 					id={tag.text}
 					checked={chosenTags.some((item) => item.text === tag.text)}
 				/>
-				<label for={tag.text}> <Tag {tag} /></label>
+				<label for={tag.text} class="cursor-pointer"> <Tag {tag} /></label>
 			</div>
 		{/each}
 	</div>

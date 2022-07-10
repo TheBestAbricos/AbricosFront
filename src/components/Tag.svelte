@@ -4,7 +4,7 @@
 </script>
 
 <div
-	class="tag rounded-2xl hover:text-gray-900 hover:ring-2 hover:ring-gray-300"
+	class="tag rounded-2xl hover:text-gray-900 hover:ring-2 hover:ring-gray-300 select-none"
 	style="background-color:{tag.color ? tag.color : '#fff'};color:{tag.textColor
 		? tag.textColor
 		: '#000'}"

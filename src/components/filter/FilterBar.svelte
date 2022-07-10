@@ -113,24 +113,26 @@
 {#if isActive}
 	<div transition:slide class="lg:absolute w-full flex flex-wrap border-b border-gray-400 p-1">
 		<!-- Tags filter -->
-		<DropDown label="Tags" visible={tagsDropDownVisible} on:changeVisible={handleTagsDropVis}>
-			<MultiSelect isVisible={true} {tags} {chosenTags} on:handleChosenTag={handleChosenTag} />
-		</DropDown>
+		<div class="md:m-0 my-0.5 mx-auto sm:mx-0">
+			<DropDown label="Tags" visible={tagsDropDownVisible} on:changeVisible={handleTagsDropVis}>
+				<MultiSelect isVisible={true} {tags} {chosenTags} on:handleChosenTag={handleChosenTag} />
+			</DropDown>
 
-		<!-- Next filter -->
-		<DropDown label="Next" visible={nextDropDownVisible} on:changeVisible={handleNextDropVis}>
-			<SingleSelect
-				items={Array.from(times_seconds.keys())}
-				chosenItem={chosenTime}
-				on:chose={choseHanlder}
-			/>
-		</DropDown>
+			<!-- Next filter -->
+			<DropDown label="Next" visible={nextDropDownVisible} on:changeVisible={handleNextDropVis}>
+				<SingleSelect
+					items={Array.from(times_seconds.keys())}
+					chosenItem={chosenTime}
+					on:chose={choseHanlder}
+				/>
+			</DropDown>
+		</div>
 
 		<!-- Checked filter -->
 		<CheckBoxFilter text="Completed" {checked} on:checked={checkedHandler} />
 
 		<!-- Substring filter -->
-		<div class="substring-input">
+		<div class="substring-input flex items-center md:ml-0 sm:ml-12 md:my-0 my-0.5 mx-auto">
 			<input type="text" placeholder="Enter text seach" maxlength="30" bind:value={substring} />
 			<div class="cancel">
 				<CancelIcon on:click={handleCancelClick} />
@@ -141,7 +143,7 @@
 
 <style>
 	input {
-		height: 3rem;
+		height: 2rem;
 		border: 1px solid rgba(0, 0, 0, 28%);
 		border-radius: 1rem;
 		padding: 1rem;
