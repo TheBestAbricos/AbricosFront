@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
 	import { tweened } from 'svelte/motion';
 
 	let visible = false;
 	const dropdownRotation = tweened(0);
 
 	export let label: string;
-	export let options: string[];
 
 	function handleDropdownClick() {
 		visible = !visible;
@@ -44,25 +42,16 @@
 	</div>
 
 	{#if visible}
+	
 		<div
-			transition:slide
-			class="z-10 absolute left-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+			class="z-10 absolute left-0 mt-2 w-32 rounded-full shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby="menu-button"
 			tabindex="-1"
 		>
-			<div class="py-1" role="none">
-				{#each options as option}
-					<a
-						href="/"
-						class="text-left text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-item-0">{option}</a
-					>
-				{/each}
-			</div>
+			<slot>
+			</slot>
 		</div>
 	{/if}
 </div>

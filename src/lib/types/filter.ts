@@ -1,8 +1,7 @@
-import type { Timestamp } from "firebase/firestore";
 import type { TagType } from "./card";
 
 export interface FilterData {
-    till?: Timestamp;
+    till?: Date;
     tags: TagType[];
     text?: string;
     completed?: boolean;

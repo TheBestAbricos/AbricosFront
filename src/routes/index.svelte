@@ -88,6 +88,8 @@
 <Navbar
 	on:filter={(e) => {
 		myFilter = e.detail;
+		console.log(myFilter);
+		
 	}}
 />
 {#await getCurrentUserInfo() then data}

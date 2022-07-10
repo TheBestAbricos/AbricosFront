@@ -1,16 +1,20 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
 	import { logOut } from '$lib/firebase';
 	import { getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
+	import type { FilterData } from '$lib/types/filter'
 	import FilterBar from './filter/FilterBar.svelte';
 	import Notification from '../components/Notification.svelte';
 
 	const filterRotation = tweened(180);
+	const dispatch = createEventDispatcher()
 
 	let filterIcon: HTMLDivElement;
+	let filterData: FilterData;
 	let isFilterVisible = false;
 	let isFolderVisible = false;
 	let isForbidden: boolean = false;
@@ -142,7 +146,7 @@
 <div class="notification-container">
 	<Notification bind:isVisible={isNotificationVisible}/>
 </div>
-<FilterBar isActive={isFilterVisible}/>
+<FilterBar isActive={isFilterVisible} on:filter={(e) => dispatch('filter', e.detail)}></FilterBar>
 
 <style>
 	nav {
