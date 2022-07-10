@@ -9,7 +9,12 @@
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '../components/AddCard.svelte';
 	import FolderPanel from '../components/FolderPanel.svelte';
-	import { changeCardLocation, getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
+	import {
+		changeCardLocation,
+		getAllUserFolders,
+		getCardsInCurrentFolder,
+		getCurrentUserInfo
+	} from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 	import type { FilterData } from '$lib/types/filter';
 	import { isFiltered } from '$lib/stores';
@@ -19,15 +24,14 @@
 	let isInProgress = true;
 	let myFilter: FilterData;
 
-	function applyfilter(filter: FilterData) {
+	function applyfilter(f: FilterData) {
 		cards = cards?.filter(
 			(card) =>
-				(filter.completed ? card.checked === filter.completed : true) &&
-				(card.date ? (filter.till ? card.date <= filter.till : true) : !filter.till) &&
-				filter.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
-				(filter.text ? card.text.includes(filter.text) : true)
+				(f.completed ? card.checked === f.completed : true) &&
+				(card.date ? (f.till ? card.date <= f.till : true) : !f.till) &&
+				f.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
+				(f.text ? card.text.includes(f.text) : true)
 		);
-		console.log(cards);
 	}
 
 	onMount(async () => {
@@ -74,21 +78,20 @@
 
 	isFiltered.subscribe(async (value) => {
 		if (value) {
+			console.log('Turn on filter');
 			applyfilter(myFilter);
-			console.log(myFilter);
-		} else cards = await getCardsInCurrentFolder();
+		} else {
+			console.log('Turn off filter');
+			cards = await getCardsInCurrentFolder();
+		}
 	});
-
-	// TEST
-	myFilter = { completed: true, tags: [] };
-	isFiltered.set(true);
 </script>
 
 <Navbar
 	on:filter={(e) => {
 		myFilter = e.detail;
-		console.log(myFilter);
-		
+		isFiltered.set(false);
+		isFiltered.set(true);
 	}}
 />
 {#await getCurrentUserInfo() then data}
@@ -114,6 +117,7 @@
 <button
 	style="background-color: red;"
 	on:click={() => {
+		myFilter = { tags: [{ text: 'important2' }] };
 		isFiltered.set(!get(isFiltered));
 	}}>CLICK</button
 >
