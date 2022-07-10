@@ -11,6 +11,11 @@
     const itemClickHandler = (e: Event) => {
         if (chosenDiv) {
             chosenDiv.style.backgroundColor = 'white'
+        }
+        
+        
+        if (e.target instanceof HTMLElement) {
+            chosenDiv = e.target
             
             if (chosenDiv.innerText == chosenItem) {
                 chosenItem = undefined
@@ -18,11 +23,7 @@
 
                 return
             }
-        }
-        
-        
-        if (e.target instanceof HTMLElement) {
-            chosenDiv = e.target
+
             chosenItem = e.target.innerText
             e.target.style.backgroundColor = '#64CAA5'            
             dispatcher('chose', {choseItem: e.target.innerText})
