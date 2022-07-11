@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { getCurrentUserInfo } from '$lib/firestore';
+	import { onMount } from 'svelte';
+	import { getCurrentUserInfo, addTag, removeTag } from '$lib/firestore';
 	import type { TagType } from '$lib/types/card';
-	import { addTag, removeTag } from '$lib/firestore';
+
 	import PaletteIcon from '../shared/PaletteIcon.svelte';
 	import TletterIcon from '../shared/TletterIcon.svelte';
 	import BinIcon from '../shared/BinIcon.svelte';
-	import { onMount } from 'svelte';
 	import Tag from '../Tag.svelte';
 
-	let T_color: string = 'grey'; //text color
-	let B_color: string = 'grey'; //background
+	let T_color = 'grey'; // text color
+	let B_color = 'grey'; // background
 
 	let tag_input: HTMLInputElement;
 	let tags: Array<TagType>;
-	let isIninStage: boolean = true;
+	let isIninStage = true;
 
 	const tagExistsText = 'Tag exists'; // error message for existing tag
 	const tagsMaxCount = 4; // max tags count
@@ -105,7 +105,7 @@
 			}
 
 			for (let i = 0; i < tags.length; i++) {
-				let e = tags[i];
+				const e = tags[i];
 				if (e.text.toLocaleLowerCase() === tag_input.value.toLocaleLowerCase()) {
 					clearTagInput();
 					tag_input.style.color = 'red';
@@ -188,7 +188,7 @@
 			handleAddTagClick({ text: tag_input.value, textColor: T_color, color: B_color })}
 		class="add-tag"
 	>
-		<img src="images/plus.svg" alt="" />
+		<img src="/images/plus.svg" alt="" />
 	</div>
 </div>
 

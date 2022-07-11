@@ -115,7 +115,7 @@
 			</div>
 		</div>
 		<div class="image">
-			<img on:click|stopPropagation={cardDelete} class="w-4" alt="delete" src="images/x.svg" />
+			<img on:click|stopPropagation={cardDelete} class="w-4" alt="delete" src="/images/x.svg" />
 		</div>
 	</header>
 	<main class="py-1" on:click={handleCardClick}>

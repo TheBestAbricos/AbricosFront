@@ -6,14 +6,14 @@
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
 	import { deleteTokenFromTgBot, sendTokenToTgBot } from '$lib/notificationManager';
 
-	export let isVisible: boolean = false;
+	export let isVisible = false;
 
 	$: isVisible, checkNotificationToken();
 	const bot_url = 'https://t.me/inno_frontend_bot';
 
 	let token_input: HTMLInputElement;
-	let notificationState: boolean = false;
-	let toggleState: boolean = true;
+	let notificationState = false;
+	let toggleState = true;
 
 	const checkNotificationToken = () => {
 		getNotificationToken().then((token) => {
@@ -84,7 +84,7 @@
 					<img
 						class="pulse cursor-pointer mt-3 mb-3"
 						on:click={botImgClickHandler}
-						src="images/tg-bot.svg"
+						src="/images/tg-bot.svg"
 						alt="tg-bot"
 					/>
 

@@ -102,7 +102,7 @@
 		if (status !== 'off' && status !== 'on') new Error('Incorrect notification status');
 
 		if (notification)
-			notification.style.background = `url('images/notification-${status}.svg') no-repeat center / cover`;
+			notification.style.background = `url('/images/notification-${status}.svg') no-repeat center / cover`;
 	}
 
 	async function signOut() {
@@ -226,7 +226,7 @@
 		width: 3em;
 		height: 3em;
 
-		background: url('images/abricos.svg') no-repeat center / 90%;
+		background: url('/images/abricos.svg') no-repeat center / 90%;
 	}
 
 	.spinner {
