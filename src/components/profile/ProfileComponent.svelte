@@ -4,8 +4,8 @@
 	import ProfileContent from './ProfileContent.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
 	import TagsContent from './TagsContent.svelte';
-	import LogoChoice from './LogoChoice.svelte'
-	import Security from './Security.svelte'
+	import LogoChoice from './LogoChoice.svelte';
+	import Security from './Security.svelte';
 
 	let contentType: String = 'profile';
 
@@ -14,9 +14,9 @@
 	}
 </script>
 
-<div class="flex mt-4 w-full justify-center p-10">
+<div class="flex sm:flex-row flex-col-reverse mt-3 w-full justify-center p-10">
 	<ProfileMenu on:message={handleMessage} />
-	<div class="container w-96 h-96">
+	<div class="container  sm:w-96 sm:h-96 h-72 mx-auto sm:mx-0 mb-5">
 		<div class="label">
 			<p class="select-none">{contentType}</p>
 		</div>
@@ -24,12 +24,12 @@
 			{#if !$logoChoiceMode}
 				<ProfileContent />
 			{:else}
-				<LogoChoice/>
+				<LogoChoice />
 			{/if}
 		{:else if contentType.toLowerCase() == 'security'}
-			<Security/>
+			<Security />
 		{:else if contentType.toLowerCase() == 'tags'}
-			<TagsContent/>
+			<TagsContent />
 		{/if}
 	</div>
 </div>
