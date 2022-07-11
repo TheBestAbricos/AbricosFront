@@ -20,12 +20,12 @@ export const firestore = fs.getFirestore();
 
 
 let isSetPersistance : boolean;
-const initPersistance = async () : Promise<void> => {
+export const initPersistance = async () : Promise<void> => {
     await fbAuth.setPersistence(auth, fbAuth.browserSessionPersistence);
     isSetPersistance = true;
 }
 
-await initPersistance();
+// await initPersistance();
 
 export const createAccount = async (email: string, password: string) : Promise<fbAuth.UserCredential> => {
     const userCredentaials = await fbAuth.createUserWithEmailAndPassword(auth, email, password);
@@ -41,9 +41,7 @@ export const logIn = async (email: string, password: string) : Promise<fbAuth.Us
 
 export const logOut = async () : Promise<void> => await fbAuth.signOut(auth);
 
-export const getCurrentUser = () : fbAuth.User => {
-    return auth.currentUser!;
-}
+export const getCurrentUser = () : fbAuth.User => auth.currentUser!
 
 async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
     const userDoc = fs.doc(fs.collection(firestore, "users"), userCredentaials.user.uid); 

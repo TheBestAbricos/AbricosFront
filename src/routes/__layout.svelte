@@ -1,6 +1,8 @@
-<script lang="ts">
+<script async lang="ts">
 	import * as fb from '$lib/firebase';
 	import '../app.css';
 </script>
 
-<slot />
+{#await fb.initPersistance() then}
+	<slot />
+{/await}

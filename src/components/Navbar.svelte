@@ -192,15 +192,15 @@
 	}
 
 	#filter {
-		background: url('images/filter.svg') no-repeat center / cover;
+		background: url('/images/filter.svg') no-repeat center / cover;
 	}
 
 	#notification {
-		background: url('images/notification-off.svg') no-repeat center / cover;
+		background: url('/images/notification-off.svg') no-repeat center / cover;
 	}
 
 	#logout {
-		background: url('images/logout.svg') no-repeat center / cover;
+		background: url('/images/logout.svg') no-repeat center / cover;
 	}
 
 	.user-logo {
