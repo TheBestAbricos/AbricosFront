@@ -63,7 +63,8 @@ export const sendTokenToTgBot = async (token: string) => {
 	const cards = await getAllUserCards();
 
 	cards.forEach((card) => {
-		if (card.date && card.docId) {
+		const time = card.date ? card.date.seconds * 1000 - Date.now() > 0 : undefined;
+		if (time && card.docId && card.date) {
 			const stringDate: string = new Date(card.date.seconds * 1000).toISOString();
 			setNotification(stringDate, card.docId, card.text);
 			// console.log(card.docId, stringDate);
