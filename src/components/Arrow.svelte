@@ -20,7 +20,7 @@
 </script>
 
 {#if isArrowsVisible}
-	<div transition:fade id="arrowAnim" bind:this={arrows}>
+	<div transition:fade class="mr-3" id="arrowAnim" bind:this={arrows}>
 		<div class="arrowSliding">
 			<div class="arrow">
 				<img src="/images/arrow.png" alt="arrow" />
