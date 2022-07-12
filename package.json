@@ -2,7 +2,7 @@
 	"name": "abricos",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev",
+		"dev": "vite dev",
 		"build": "svelte-kit build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
@@ -19,9 +19,11 @@
 		"@typescript-eslint/parser": "^5.27.0",
 		"autoprefixer": "^10.4.7",
 		"eslint": "^8.19.0",
+		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-config-airbnb-typescript": "^17.0.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"postcss": "^8.4.14",
 		"prettier": "^2.7.1",
@@ -29,16 +31,15 @@
 		"svelte-check": "^2.7.1",
 		"tailwindcss": "^3.1.4",
 		"tslib": "^2.3.1",
-		"typescript": "^4.7.2",
-		"eslint-config-airbnb-base": "^15.0.0",
-		"eslint-plugin-prettier": "^4.2.1"
+		"typescript": "^4.7.2"
 	},
 	"type": "module",
 	"dependencies": {
-		"svelte-preprocess": "^4.10.7",
 		"@sveltejs/adapter-static": "^1.0.0-next.35",
 		"firebase": "^9.8.4",
-		"svelte": "^3.49.0"
+		"svelte": "^3.49.0",
+		"svelte-preprocess": "^4.10.7",
+		"vite": "^2.9.14"
 	},
 	"eslintConfig": {
 		"extends": "@sveltejs"

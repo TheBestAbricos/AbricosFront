@@ -50,13 +50,10 @@ export async function setNotification(datetime: string, docId: string, descripti
 }
 
 export const sendTokenToTgBot = async (token: string) => {
-	// let token = tokenInput.value;
 	const response = await fetch(`${urlServer}webhooks/verifyToken/${token}/`);
-
-	// console.log(response.status);
-
+	
 	if (!response.ok) {
-		// console.log(response.status);
+		
 		throw Error('Invalid token');
 	}
 
