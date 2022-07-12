@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import { getAllUserCards, getNotificationToken, setNotificationToken } from '$lib/firestore';
 
 // export const urlServer = 'http://127.0.0.1:8000/';
