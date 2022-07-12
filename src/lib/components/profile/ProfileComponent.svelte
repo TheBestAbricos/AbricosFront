@@ -1,12 +1,16 @@
-<script lang="ts">
-	declare let $logoChoiceMode: Parameters<Parameters<typeof logoChoiceMode.subscribe>[0]>[0];
+<script lang="ts" context="module">
 	import { logoChoiceMode } from '$lib/stores';
+
 	import ProfileContent from './ProfileContent.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
 	import TagsContent from './TagsContent.svelte';
 	import LogoChoice from './LogoChoice.svelte';
 	import Security from './Security.svelte';
 
+	declare let $logoChoiceMode: Parameters<Parameters<typeof logoChoiceMode.subscribe>[0]>[0];
+</script>
+
+<script lang="ts">
 	let contentType = 'profile';
 
 	function handleMessage(event: CustomEvent) {

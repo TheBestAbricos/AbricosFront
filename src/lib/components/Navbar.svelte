@@ -1,47 +1,37 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
 	import { logOut } from '$lib/firebase';
 	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
-	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
 	import Notification from '$lib/components/Notification.svelte';
-	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
+</script>
 
+<script lang="ts">
 	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
 
 	const filterRotation = tweened(180);
 	const dispatch = createEventDispatcher();
 
 	let filterIcon: HTMLDivElement;
-	let filterData: FilterData;
 	let isFilterVisible = false;
 	let isFolderVisible = false;
 	let isForbidden = false;
-	let isTutorialOn: boolean = window.location.pathname == '/';
+	let isTutorialOn: boolean = window.location.pathname === '/';
 
 	let logo: HTMLDivElement;
 
 	let notification: HTMLDivElement;
 	let isNotificationVisible = false;
 
-	onMount(async () => {
-		await checkNotificationStatus();
-		const avatarUrl = await getAvatarUrl();
-		logoSrc.set(avatarUrl);
-	});
+	function switchNotificationIconTo(status: string) {
+		if (status !== 'off' && status !== 'on') Error('Incorrect notification status');
 
-	notificationStatus.subscribe(() => checkNotificationStatus());
-
-	// Close filter if Folder appears
-	openedPanel.subscribe((value) => {
-		if (value == 'folder') {
-			isFilterVisible = false;
-			filterRotation.set(180);
-		}
-	});
+		if (notification)
+			notification.style.background = `url('/images/notification-${status}.svg') no-repeat center / cover`;
+	}
 
 	function checkNotificationStatus() {
 		getNotificationToken().then((token) => {
@@ -53,12 +43,31 @@
 		});
 	}
 
+	onMount(async () => {
+		await checkNotificationStatus();
+		const avatarUrl = await getAvatarUrl();
+		logoSrc.set(avatarUrl);
+	});
+
+	notificationStatus.subscribe(() => checkNotificationStatus());
+
+	// Close filter if Folder appears
+	openedPanel.subscribe((value) => {
+		if (value === 'folder') {
+			isFilterVisible = false;
+			filterRotation.set(180);
+		}
+	});
+
 	function handleFilterClick() {
 		const loc = window.location.pathname;
-		if (loc != '/') {
+		if (loc !== '/') {
 			if (filterIcon) {
 				isForbidden = true;
-				setTimeout(() => (isForbidden = false), 300);
+				setTimeout(() => {
+					isForbidden = false;
+					return false;
+				}, 300);
 			}
 			return;
 		}
@@ -83,7 +92,7 @@
 		}
 
 		const loc = window.location.pathname;
-		if (loc != '/') {
+		if (loc !== '/') {
 			window.location.href = '/';
 		} else {
 			isTutorialOn = false;
@@ -97,14 +106,7 @@
 
 	function handleProfileClick() {
 		const loc = window.location.pathname;
-		if (loc != '/profile') window.location.href = '/profile';
-	}
-
-	function switchNotificationIconTo(status: string) {
-		if (status !== 'off' && status !== 'on') new Error('Incorrect notification status');
-
-		if (notification)
-			notification.style.background = `url('/images/notification-${status}.svg') no-repeat center / cover`;
+		if (loc !== '/profile') window.location.href = '/profile';
 	}
 
 	async function signOut() {
@@ -120,7 +122,7 @@
 <nav class="p-3">
 	<div class="nav__el left">
 		<div on:click={handleFolderClick} class="logo cursor-pointer">
-			<div class:spinner={isTutorialOn == true} class="logo__img" />
+			<div class:spinner={isTutorialOn === true} class="logo__img" />
 			<span class="logo__text select-none">ABRICOS</span>
 		</div>
 	</div>
@@ -130,7 +132,7 @@
 			<div
 				on:click={handleFilterClick}
 				bind:this={filterIcon}
-				class:reverse-spinner={isForbidden == true}
+				class:reverse-spinner={isForbidden === true}
 				class="menu__el cursor-pointer"
 				id="filter"
 				style="transform: rotate({$filterRotation}deg);"
