@@ -39,7 +39,7 @@ export const logIn = async (email: string, password: string): Promise<fbAuth.Use
 	return userCredentaials;
 };
 
-export const logOut = async (): Promise<void> => await fbAuth.signOut(auth);
+export const logOut = async (): Promise<void> => fbAuth.signOut(auth);
 
 export const getCurrentUser = (): fbAuth.User => auth.currentUser!;
 
