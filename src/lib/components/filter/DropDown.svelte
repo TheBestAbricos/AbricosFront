@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { tweened } from 'svelte/motion';// eslint-disable-line
+	
+	
 	import { tweened } from 'svelte/motion';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte'; declare let $dropdownRotation:Parameters<Parameters<typeof dropdownRotation.subscribe>[0]>[0];
+	
 	declare let $dropdownRotation: Parameters<Parameters<typeof dropdownRotation.subscribe>[0]>[0];
 
 	export let visible = false;

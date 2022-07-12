@@ -3,7 +3,7 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	extends: [
 		'airbnb-base',
-		'airbnb-typescript/base',
+		// 'airbnb-typescript/base',
 		'plugin:@typescript-eslint/recommended',
 		'prettier',
 	],
@@ -15,7 +15,7 @@ module.exports = {
 	},
 	parserOptions: {
 		sourceType: 'module',
-		project: './tsconfig.json',
+		// project: './tsconfig.json',
 		ecmaVersion: 2020,
 	},
 	env: {
@@ -31,11 +31,10 @@ module.exports = {
 			'error',
 			'ignorePackages',
 			{
-				'': 'never',
 				js: 'never',
 				jsx: 'never',
-				ts: 'never',
-				tsx: 'never',
+				ts: 'always',
+				tsx: 'always',
 			},
 		],
 	},

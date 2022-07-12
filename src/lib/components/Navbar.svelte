@@ -6,8 +6,19 @@
 	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter';
+	import FilterBar from './filter/FilterBar.svelte';// eslint-disable-line
+	
+	
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { tweened } from 'svelte/motion';
+	import { logOut } from '$lib/firebase';
+	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
+	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
+	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification from '$lib/components/Notification.svelte';
+	import Notification from '$lib/components/Notification.svelte'; declare let $filterRotation:Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
+	
 	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
 
 	const filterRotation = tweened(180);
@@ -52,7 +63,7 @@
 	}
 
 	function handleFilterClick() {
-		let loc = window.location.pathname;
+		const loc = window.location.pathname;
 		if (loc != '/') {
 			if (filterIcon) {
 				isForbidden = true;
@@ -80,7 +91,7 @@
 			openedPanel.set('');
 		}
 
-		let loc = window.location.pathname;
+		const loc = window.location.pathname;
 		if (loc != '/') {
 			window.location.href = '/';
 		} else {
@@ -94,7 +105,7 @@
 	}
 
 	function handleProfileClick() {
-		let loc = window.location.pathname;
+		const loc = window.location.pathname;
 		if (loc != '/profile') window.location.href = '/profile';
 	}
 
