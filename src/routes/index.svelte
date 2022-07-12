@@ -3,19 +3,14 @@
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import Arrow from '$lib/components/Arrow.svelte';
-	import { getCurrentUser, logIn } from '$lib/firebase';
+	import { getCurrentUser } from '$lib/firebase';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import ProgressIndicator from '$lib/components/ProgressIndicator.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import type * as CardType from '$lib/types/card';
 	import AddCard from '$lib/components/AddCard.svelte';
 	import FolderPanel from '$lib/components/FolderPanel.svelte';
-	import {
-		changeCardLocation,
-		getAllUserFolders,
-		getCardsInCurrentFolder,
-		getCurrentUserInfo,
-	} from '$lib/firestore';
+	import { getAllUserFolders, getCardsInCurrentFolder, getCurrentUserInfo } from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 	import type { FilterData } from '$lib/types/filter';
 	import { isFiltered } from '$lib/stores';
@@ -80,10 +75,10 @@
 	isFiltered.subscribe(async (value) => {
 		if (value) {
 			cards = await getCardsInCurrentFolder();
-			console.log('Turn on filter');
+			// console.log('Turn on filter');
 			applyfilter(myFilter);
 		} else {
-			console.log('Turn off filter');
+			// console.log('Turn off filter');
 		}
 	});
 </script>
