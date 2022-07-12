@@ -79,7 +79,7 @@ export async function updateCardInFolder(
 }
 export async function getAllUserFolders(): Promise<Folder[]> {
 	const foldersDocs = await fs.getDocs(fs.query(getFolderCollection(), fs.orderBy('creationDate')));
-	return foldersDocs.docs.map((e) => e.data() as Folder) ;
+	return foldersDocs.docs.map((e) => e.data() as Folder);
 }
 
 export async function getAllUserCards(): Promise<Card[]> {
@@ -111,7 +111,7 @@ export async function updateFolder(folder: Folder): Promise<string> {
 
 	const folderDoc = fs.doc(getFolderCollection(), folder.docId);
 	await fs.setDoc(folderDoc, folder, { merge: true });
-	return folder.docId ;
+	return folder.docId;
 }
 export async function setNotificationToken(token?: string): Promise<void> {
 	const userDoc = getUserDocument();
