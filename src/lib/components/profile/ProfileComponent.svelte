@@ -1,8 +1,4 @@
-// eslint-disable-line
-	
-	
-	import { getCurrentUserInfo } from '$lib/firestore'; declare let $logoChoiceMode:Parameters<Parameters<typeof logoChoiceMode.subscribe>[0]>[0];
-	
+<script lang="ts">
 	declare let $logoChoiceMode: Parameters<Parameters<typeof logoChoiceMode.subscribe>[0]>[0];
 	import { logoChoiceMode } from '$lib/stores';
 	import ProfileContent from './ProfileContent.svelte';

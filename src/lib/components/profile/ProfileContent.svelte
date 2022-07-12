@@ -1,16 +1,18 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
-	import { logoChoiceMode, logoSrc } from '$lib/stores';
+	import { logoChoiceMode } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/firestore';
 
 	function hanldeChangeLogoClick() {
 		logoChoiceMode.set(true);
-		console.log(get(logoChoiceMode));
+		// console.log(get(logoChoiceMode));
 	}
 
 	let url: string | undefined;
 
-	getAvatarUrl().then((a) => (url = a));
+	getAvatarUrl().then((a) => {
+		url = a;
+		return url;
+	});
 </script>
 
 <div class="container">

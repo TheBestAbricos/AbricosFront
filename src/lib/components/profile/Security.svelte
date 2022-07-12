@@ -5,7 +5,8 @@
 	let email: string;
 
 	onMount(async () => {
-		email = getCurrentUser().email!;
+		const userEmail = getCurrentUser().email;
+		if (userEmail) email = userEmail;
 	});
 </script>
 

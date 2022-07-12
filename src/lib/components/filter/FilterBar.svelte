@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { Timestamp } from 'firebase/firestore';
-	import { getCurrentUserInfo, updateCardInFolder } from '$lib/firestore';
+	import { getCurrentUserInfo } from '$lib/firestore';
 	import type { TagType } from '$lib/types/card';
 	import type { FilterData } from '$lib/types/filter';
 	import CheckBoxFilter from './CheckBoxFilter.svelte';
@@ -25,15 +25,26 @@
 	let tags: Array<TagType> = [];
 	let chosenTags: Array<TagType> = [];
 
-	let time_stamp: Timestamp | undefined;
+	let timeStamp: Timestamp | undefined;
 	let chosenTime: string | undefined;
-	const times_seconds = new Map([
+	const timesSeconds = new Map([
 		['30 minutes', 1800],
 		['hour', 3600],
 		['day', 86400],
 		['week', 2592000],
 		['mounth', 946080000],
 	]);
+
+	const raiseFilterEvent = () => {
+		const data: FilterData = {
+			tags: chosenTags,
+			till: timeStamp,
+			text: substring,
+			completed: checked,
+		};
+
+		dispatch('filter', data);
+	};
 
 	$: isActive,
 		getCurrentUserInfo().then((data) => {
@@ -47,38 +58,31 @@
 			raiseFilterEvent();
 		})();
 
-	const raiseFilterEvent = () => {
-		const data: FilterData = {
-			tags: chosenTags,
-			till: time_stamp,
-			text: substring,
-			completed: checked,
-		};
-		console.log(data);
-
-		dispatch('filter', data);
-	};
-
 	const handleChosenTag = (event: { detail: { checked: boolean; tag: TagType } }) => {
 		if (event.detail.checked) {
 			chosenTags = [...chosenTags, event.detail.tag];
 		} else {
-			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
+			chosenTags = chosenTags.filter((item) => item.text !== event.detail.tag.text);
 		}
 
 		raiseFilterEvent();
 	};
 
 	const choseHanlder = (event: { detail: { choseItem: string | undefined } }) => {
-		if (event.detail.choseItem != undefined) {
+		if (event.detail.choseItem !== undefined) {
 			chosenTime = event.detail.choseItem;
 
-			const ms = Date.now() + times_seconds.get(chosenTime!)! * 1000;
-			time_stamp = Timestamp.fromDate(new Date(ms));
+			if (chosenTime) {
+				const timeSec = timesSeconds.get(chosenTime);
+				if (timeSec) {
+					const ms = Date.now() + timeSec * 1000;
+					timeStamp = Timestamp.fromDate(new Date(ms));
+				}
+			}
 		} else {
-			time_stamp = undefined;
+			timeStamp = undefined;
 		}
-		console.log(times_seconds.get(chosenTime!)!);
+		// console.log(timesSeconds.get(chosenTime!)!);
 
 		raiseFilterEvent();
 	};
@@ -90,7 +94,7 @@
 
 	const handleCancelClick = () => {
 		checked = undefined;
-		time_stamp = undefined;
+		timeStamp = undefined;
 		chosenTime = undefined;
 		substring = undefined;
 		chosenTags = [];
@@ -101,11 +105,11 @@
 		raiseFilterEvent();
 	};
 
-	const handleTagsDropVis = (e: { detail: { visible: any } }) => {
+	const handleTagsDropVis = (e: { detail: { visible: boolean } }) => {
 		tagsDropDownVisible = e.detail.visible;
 	};
 
-	const handleNextDropVis = (e: { detail: { visible: any } }) => {
+	const handleNextDropVis = (e: { detail: { visible: boolean } }) => {
 		nextDropDownVisible = e.detail.visible;
 	};
 </script>
@@ -121,7 +125,7 @@
 			<!-- Next filter -->
 			<DropDown label="Next" visible={nextDropDownVisible} on:changeVisible={handleNextDropVis}>
 				<SingleSelect
-					items={Array.from(times_seconds.keys())}
+					items={Array.from(timesSeconds.keys())}
 					chosenItem={chosenTime}
 					on:chose={choseHanlder}
 				/>
