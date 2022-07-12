@@ -1,7 +1,12 @@
 module.exports = {
 	root: true,
 	parser: '@typescript-eslint/parser',
-	extends: ['airbnb-base', 'airbnb-typescript/base', 'plugin:@typescript-eslint/recommended', 'prettier'],
+	extends: [
+		'airbnb-base',
+		'airbnb-typescript/base',
+		'plugin:@typescript-eslint/recommended',
+		'prettier',
+	],
 	plugins: ['svelte3', '@typescript-eslint', 'prettier'],
 	ignorePatterns: ['*.cjs'],
 	overrides: [{ files: ['**/*.svelte'], processor: 'svelte3/svelte3' }],
@@ -22,16 +27,16 @@ module.exports = {
 	rules: {
 		'import/prefer-default-export': 'off',
 		'import/no-unresolved': ['off', { ignore: ['$\\w/'] }],
-		"import/extensions": [
-			"error",
-			"ignorePackages",
+		'import/extensions': [
+			'error',
+			'ignorePackages',
 			{
-			"": "never",
-			  "js": "never",
-			  "jsx": "never",
-			  "ts": "never",
-			  "tsx": "never"
-			}
-		 ]
+				'': 'never',
+				js: 'never',
+				jsx: 'never',
+				ts: 'never',
+				tsx: 'never',
+			},
+		],
 	},
 };
