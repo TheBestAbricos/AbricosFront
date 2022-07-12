@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { notificationStatus } from '$lib/stores';
-	import { getAllUserCards, getNotificationToken, setNotificationToken } from '$lib/firestore';
+	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
@@ -11,7 +11,7 @@
 	$: isVisible, checkNotificationToken();
 	const bot_url = 'https://t.me/inno_frontend_bot';
 
-	let token_input: HTMLInputElement;
+	let tokenInput: HTMLInputElement;
 	let notificationState = false;
 	let toggleState = true;
 
@@ -42,23 +42,23 @@
 	const cancelButtonClickHandler = () => {
 		isVisible = false;
 
-		if (token_input) token_input.value = '';
+		if (tokenInput) tokenInput.value = '';
 	};
 
 	const saveButtonInitClickHanlder = async () => {
-		if (!token_input.value) {
-			token_input.focus();
+		if (!tokenInput.value) {
+			tokenInput.focus();
 			return;
 		}
 
 		try {
 			// set token in firebase  for current use
-			sendTokenToTgBot(token_input.value);
+			sendTokenToTgBot(tokenInput.value);
 
 			isVisible = false;
 		} catch (err) {
-			token_input.value = '';
-			token_input.placeholder = 'Wrong token';
+			tokenInput.value = '';
+			tokenInput.placeholder = 'Wrong token';
 		}
 	};
 
@@ -88,7 +88,7 @@
 						alt="tg-bot"
 					/>
 
-					<input bind:this={token_input} type="text" placeholder="Enter code" />
+					<input bind:this={tokenInput} type="text" placeholder="Enter code" />
 
 					<div class="buttons">
 						<SaveButton on:click={saveButtonInitClickHanlder} />

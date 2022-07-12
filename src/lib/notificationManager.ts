@@ -47,7 +47,7 @@ export async function setNotification(datetime: string, docId: string, descripti
 }
 
 export const sendTokenToTgBot = async (token: string) => {
-	// let token = token_input.value;
+	// let token = tokenInput.value;
 	const response = await fetch(`${urlServer}webhooks/verifyToken/${token}/`);
 
 	// console.log(response.status);

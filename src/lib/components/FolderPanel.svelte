@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import {
 		changeCardLocation,
 		deleteFolder,
@@ -6,11 +8,9 @@
 		switchFolder,
 		updateFolder,
 	} from '$lib/firestore';
-	declare let $droppedCard: Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
 
 	declare let $droppedCard: Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
-	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
 	import type { Folder } from '$lib/types/folder';
@@ -29,7 +29,6 @@
 			} else {
 				isVisible = false;
 				getAllUserFolders().then((data) => {
-					console.log(folders);
 					folders = data;
 				});
 			}
@@ -55,11 +54,9 @@
 			if (div.innerText.trim() === '' && div.getAttribute('data-id')) {
 				deleteFolder(div.getAttribute('data-id') as string);
 				div.style.display = 'none';
-				console.log('Enter with empty', div);
 				return;
 			}
 			if (div.innerText.trim() === '' && !div.getAttribute('data-id')) {
-				console.log('123');
 				div.style.display = 'none';
 				return;
 			}
@@ -86,7 +83,6 @@
 			div.contentEditable = 'false';
 			isEditing = false;
 			if (!initialText) {
-				console.log(initialText);
 				div.style.display = 'none';
 			} else {
 				div.innerText = initialText;
@@ -102,7 +98,6 @@
 		currentFolder.docId = div.getAttribute('data-id') as string;
 		document.querySelectorAll('.chosenFolder').forEach((el) => el.classList.remove('chosenFolder'));
 		div.classList.add('chosenFolder');
-		console.log('Switched to', div.innerText, currentFolder);
 	}
 
 	function onMouseUp(e: MouseEvent) {
