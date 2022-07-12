@@ -4,22 +4,20 @@
 	import { getAvatarUrl } from '$lib/firestore';
 
 	function hanldeChangeLogoClick() {
-		logoChoiceMode.set(true)
+		logoChoiceMode.set(true);
 		console.log(get(logoChoiceMode));
 	}
 
-	let url: string| undefined;
-	
-	getAvatarUrl().then(a => url = a)
+	let url: string | undefined;
+
+	getAvatarUrl().then((a) => (url = a));
 </script>
 
 <div class="container">
 	{#if url}
-		<img src={url} alt="user profile"/>
+		<img class="w-28 h-28" src={url} alt="user profile" />
 	{/if}
-	<button on:click = {hanldeChangeLogoClick}>
-		Change
-	</button>
+	<button class="hover:ring-2 ring-purple-400" on:click={hanldeChangeLogoClick}> Change </button>
 </div>
 
 <style>
@@ -31,8 +29,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		
-		gap: 1em;
+
+		gap: 2em;
 	}
 
 	button {
@@ -42,13 +40,10 @@
 		border-radius: 30px;
 		border: 1px solid rgba(0, 0, 0, 28%);
 
-		background: #CFA7E7;
+		background: #cfa7e7;
 	}
 
 	img {
-		width: 10em;
-		height: 10em;
-
 		border-radius: 50%;
 	}
 </style>

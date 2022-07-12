@@ -21,7 +21,7 @@
 	}
 </script>
 
-<div class="w-60 h-48 mr-10 border border-gray-300 rounded-3xl">
+<div class="w-60 h-48 sm:mr-10 sm:mx-0 mx-auto border border-gray-300 rounded-3xl">
 	<ul
 		class="settings select-none w-full h-full flex flex-col justify-evenly text-center align-middle cursor-pointer"
 	>
@@ -29,13 +29,16 @@
 			on:click={handleClickProfile}
 			class="menu-item h-1/3 flex justify-center flex-col border-b-2"
 		>
-			<span class="menu-item"> Profile </span>
+			<span> Profile </span>
 		</li>
-		<li on:click={handleClickSecurity} class="h-1/3 flex justify-center flex-col border-b-2">
-			<span class="menu-item"> Security </span>
+		<li
+			on:click={handleClickSecurity}
+			class="h-1/3 flex justify-center flex-col border-b-2 menu-item"
+		>
+			<span> Security </span>
 		</li>
 		<li on:click={handleClickTag} class="menu-item h-1/3 flex justify-center flex-col">
-			<span class="menu-item"> Tags</span>
+			<span> Tags</span>
 		</li>
 	</ul>
 </div>
