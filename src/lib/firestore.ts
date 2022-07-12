@@ -143,14 +143,14 @@ export async function deleteFolder(docId: string): Promise<void> {
 export async function addTag(tag: TagType): Promise<void> {
 	const userDoc = getUserDocument();
 	const user = await getCurrentUserInfo();
-	const {tags} = user;
+	const { tags } = user;
 	tags.push(tag);
 	await fs.updateDoc(userDoc, { tags });
 }
 export async function removeTag(tag: TagType): Promise<void> {
 	const userDoc = getUserDocument();
 	const user = await getCurrentUserInfo();
-	let {tags} = user;
+	let { tags } = user;
 	tags = tags.filter((value: TagType) => value.text != tag.text);
 	await fs.updateDoc(userDoc, { tags });
 }

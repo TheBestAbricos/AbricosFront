@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TagType } from '$lib/types/card';
-	
+
 	export let tag: TagType;
 </script>
 

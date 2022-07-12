@@ -1,13 +1,12 @@
-// eslint-disable-line
-	
-	
+<script lang="ts">
 	import {
 		changeCardLocation,
 		deleteFolder,
 		getAllUserFolders,
 		switchFolder,
 		updateFolder,
-	} from '$lib/firestore'; declare let $droppedCard:Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
+	} from '$lib/firestore';
+	declare let $droppedCard: Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
