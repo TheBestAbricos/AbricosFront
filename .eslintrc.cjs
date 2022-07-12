@@ -21,5 +21,10 @@ module.exports = {
 	rules: {
 		'import/prefer-default-export': 'off',
 		'import/no-unresolved': ['off', { ignore: ['$\\w/'] }],
+		'import/extensions': [
+			'error',
+			'ignorePackages',
+			{ js: 'never', jsx: 'never', ts: 'never', tsx: 'never' },
+		],
 	},
 };
