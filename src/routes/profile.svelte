@@ -1,6 +1,6 @@
 <script>
-	import ProfileComponent from '../components/profile/ProfileComponent.svelte';
-	import Navbar from '../components/Navbar.svelte';
+	import ProfileComponent from '$lib/components/profile/ProfileComponent.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 </script>
 
 <Navbar />

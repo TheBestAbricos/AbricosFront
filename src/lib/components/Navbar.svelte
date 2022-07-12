@@ -8,7 +8,7 @@
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification from '../components/Notification.svelte';
+	import Notification from '$lib/components/Notification.svelte';
 
 	const filterRotation = tweened(180);
 	const dispatch = createEventDispatcher();

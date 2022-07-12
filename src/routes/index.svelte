@@ -2,14 +2,14 @@
 	import * as fs from 'firebase/firestore';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
-	import Arrow from '../components/Arrow.svelte';
+	import Arrow from '$lib/components/Arrow.svelte';
 	import { getCurrentUser, logIn } from '$lib/firebase';
-	import Navbar from '../components/Navbar.svelte';
-	import ProgressIndicator from '../components/ProgressIndicator.svelte';
-	import Card from '../components/Card.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import ProgressIndicator from '$lib/components/ProgressIndicator.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import type * as CardType from '$lib/types/card';
-	import AddCard from '../components/AddCard.svelte';
-	import FolderPanel from '../components/FolderPanel.svelte';
+	import AddCard from '$lib/components/AddCard.svelte';
+	import FolderPanel from '$lib/components/FolderPanel.svelte';
 	import {
 		changeCardLocation,
 		getAllUserFolders,
