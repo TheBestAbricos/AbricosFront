@@ -3,7 +3,7 @@ import { getAllUserCards, getNotificationToken, setNotificationToken } from '$li
 // export const urlServer = 'http://127.0.0.1:8000/';
 // export const urlServer = 'https://852e-188-130-155-148.eu.ngrok.io/';
 // export const urlServer = 'https://80e2-188-130-155-152.eu.ngrok.io/';
-export const urlServer = 'https://08a6-188-130-155-152.eu.ngrok.io/';
+export const urlServer = 'https://34bf-188-130-155-152.eu.ngrok.io/';
 
 
 
