@@ -48,10 +48,16 @@
 			div.onblur = null;
 			div.contentEditable = 'false';
 			isEditing = false;
-			if (div.innerText.trim() === '') {
+
+			if (div.innerText.trim() === '' && div.getAttribute('data-id')) {
 				deleteFolder(div.getAttribute('data-id') as string);
 				div.style.display = 'none';
 				console.log('Enter with empty', div);
+				return;
+			}
+			if (div.innerText.trim() === '' && !div.getAttribute('data-id')) {
+				console.log('123');
+				div.style.display = 'none';
 				return;
 			}
 			const temp = div.style.backgroundColor;
@@ -69,6 +75,7 @@
 	}
 	function startEditing(e: MouseEvent) {
 		const div = e.target as HTMLDivElement;
+		if (div.contentEditable === 'true') return;
 		div.focus();
 		const initialText = div.innerText;
 		isEditing = true;
