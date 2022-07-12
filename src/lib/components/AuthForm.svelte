@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { User } from 'firebase/auth';
 	import type * as fbApp from 'firebase/app';
 	import Logo from './shared/Logo.svelte';
 	import { logIn, createAccount } from '$lib/firebase';
@@ -9,7 +8,7 @@
 	let password: string;
 	let errorMessage = '';
 	async function onLoginClick(): Promise<void> {
-		if (email.length == 0 || password.length == 0) return;
+		if (email.length === 0 || password.length === 0) return;
 		try {
 			const user = await logIn(email, password);
 			if (user.user) {
@@ -21,7 +20,7 @@
 		}
 	}
 	async function onRegisterClick(): Promise<void> {
-		if (email.length == 0 || password.length == 0) return;
+		if (email.length === 0 || password.length === 0) return;
 		try {
 			const user = await createAccount(email, password);
 			if (user.user) {
@@ -33,7 +32,7 @@
 		}
 	}
 	function onEnterClick(e: KeyboardEvent) {
-		if (e.key == 'Enter') {
+		if (e.key === 'Enter') {
 			onLoginClick();
 		}
 	}
