@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import * as fbAuth from 'firebase/auth';
 import * as fs from 'firebase/firestore';
-import { Timestamp } from 'firebase/firestore';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyBzusLOWN7a_sSCbm2TvzO0G3rkNGDnYlE',
@@ -16,32 +15,6 @@ initializeApp(firebaseConfig);
 
 export const auth = fbAuth.getAuth();
 export const firestore = fs.getFirestore();
-
-let isSetPersistance: boolean;
-export const initPersistance = async (): Promise<void> => {
-	await fbAuth.setPersistence(auth, fbAuth.browserSessionPersistence);
-	isSetPersistance = true;
-};
-
-// await initPersistance();
-
-export const createAccount = async (
-	email: string,
-	password: string,
-): Promise<fbAuth.UserCredential> => {
-	const userCredentaials = await fbAuth.createUserWithEmailAndPassword(auth, email, password);
-	await createUserDocument(userCredentaials);
-	return userCredentaials;
-};
-
-export const logIn = async (email: string, password: string): Promise<fbAuth.UserCredential> => {
-	const userCredentaials = await fbAuth.signInWithEmailAndPassword(auth, email, password);
-	return userCredentaials;
-};
-
-export const logOut = async (): Promise<void> => await fbAuth.signOut(auth);
-
-export const getCurrentUser = (): fbAuth.User => auth.currentUser!;
 
 async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
 	const userDoc = fs.doc(fs.collection(firestore, 'users'), userCredentaials.user.uid);
@@ -62,3 +35,28 @@ async function createUserDocument(userCredentaials: fbAuth.UserCredential) {
 	};
 	await fs.setDoc(userDoc, userData);
 }
+
+export const initPersistance = async (): Promise<void> => {
+	await fbAuth.setPersistence(auth, fbAuth.browserSessionPersistence);
+};
+
+// await initPersistance();
+
+export const createAccount = async (
+	email: string,
+	password: string,
+): Promise<fbAuth.UserCredential> => {
+	const userCredentaials = await fbAuth.createUserWithEmailAndPassword(auth, email, password);
+	await createUserDocument(userCredentaials);
+	return userCredentaials;
+};
+
+export const logIn = async (email: string, password: string): Promise<fbAuth.UserCredential> => {
+	const userCredentaials = await fbAuth.signInWithEmailAndPassword(auth, email, password);
+	return userCredentaials;
+};
+
+export const logOut = async (): Promise<void> => {
+	await fbAuth.signOut(auth);
+};
+export const getCurrentUser = (): fbAuth.User => auth.currentUser as fbAuth.User;
