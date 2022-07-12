@@ -37,5 +37,6 @@ module.exports = {
 				tsx: 'always',
 			},
 		],
+		'no-param-reassign': [2, { props: false }],
 	},
 };

@@ -6,9 +6,8 @@
 	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter';
-	import FilterBar from './filter/FilterBar.svelte';// eslint-disable-line
-	
-	
+	import FilterBar from './filter/FilterBar.svelte'; // eslint-disable-line
+
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { tweened } from 'svelte/motion';
@@ -17,8 +16,9 @@
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification from '$lib/components/Notification.svelte'; declare let $filterRotation:Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
-	
+	import Notification from '$lib/components/Notification.svelte';
+	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
+
 	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
 
 	const filterRotation = tweened(180);
