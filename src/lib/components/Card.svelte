@@ -62,7 +62,7 @@
 
 	let moving = false;
 
-	function onMouseDown(e: MouseEvent) {
+	function onMouseDown() {
 		setTimeout(() => {
 			if (cardHeader) {
 				const computed = window.getComputedStyle(cardHeader).cursor;

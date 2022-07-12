@@ -1,9 +1,11 @@
-<script lang="ts">
-	import { Timestamp } from 'firebase/firestore';
+<script context="module">
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { getCurrentUserInfo, getNotificationToken, updateCardInFolder } from '$lib/firestore';
+	import { Timestamp } from 'firebase/firestore';
+	import { getCurrentUserInfo, updateCardInFolder } from '$lib/firestore';
+</script>
 
+<script lang="ts">
 	import type { TagType, Card } from '$lib/types/card';
 	import { setNotification } from '$lib/notificationManager';
 	import MultiSelect from './MultiSelect.svelte';
@@ -19,47 +21,45 @@
 	export let chosenTags: TagType[] = [];
 	export let title: string;
 	export let docId: string | undefined;
-	const oldDescription = description;
 	let tags: TagType[] = [];
 
-	function setDatetime(ts: Timestamp) {
-		const date = new Date(ts.seconds * 1000);
+	function setDatetime(timeSt: Timestamp) {
+		const date = new Date(timeSt.seconds * 1000);
 		const year = `${date.getFullYear()}`;
 		let month = `${date.getMonth() + 1}`;
-		if (month.length == 1) month = `0${month}`;
+		if (month.length === 1) month = `0${month}`;
 		let days = `${date.getDate()}`;
-		if (days.length == 1) days = `0${days}`;
+		if (days.length === 1) days = `0${days}`;
 		let hours = `${date.getHours()}`;
-		if (hours.length == 1) hours = `0${hours}`;
+		if (hours.length === 1) hours = `0${hours}`;
 		let minutes = `${date.getMinutes()}`;
-		if (minutes.length == 1) minutes = `0${minutes}`;
-		console.log(`${year}-${month}-${days}T${hours}:${minutes}`);
+		if (minutes.length === 1) minutes = `0${minutes}`;
 		datetime = `${year}-${month}-${days}T${hours}:${minutes}`;
 	}
 	if (ts) setDatetime(ts);
 
-	getCurrentUserInfo().then((data) => (tags = data.tags));
+	getCurrentUserInfo().then((data) => {
+		tags = data.tags;
+	});
 	let isMultiSelectVisible = false;
 	function handleChosenTag(event: { detail: { checked: boolean; tag: TagType } }) {
 		if (event.detail.checked) chosenTags = [...chosenTags, event.detail.tag];
 		else {
-			chosenTags = chosenTags.filter((item) => item.text != event.detail.tag.text);
+			chosenTags = chosenTags.filter((item) => item.text !== event.detail.tag.text);
 		}
 	}
 
 	async function save() {
-		let ts: Timestamp | undefined;
+		let timeSt: Timestamp | undefined;
 		if (!description) return;
 		const card: Card = {
 			checked: done,
 			text: description,
 			tags: chosenTags,
 		};
-		console.log('save', datetime);
 		if (datetime) {
 			const date = new Date(datetime);
-			console.log(`Date: ${date}`);
-			ts = Timestamp.fromDate(
+			timeSt = Timestamp.fromDate(
 				new Date(
 					date.getFullYear(),
 					date.getMonth(),
@@ -69,10 +69,8 @@
 				),
 			);
 		}
-		if (ts) card.date = ts;
+		if (timeSt) card.date = timeSt;
 		if (docId) card.docId = docId;
-
-		console.log(JSON.stringify(card));
 
 		const cardId = await updateCardInFolder(card);
 		dispatch('close');
@@ -109,7 +107,9 @@
 				<img
 					alt="plus"
 					src="images/plus.svg"
-					on:click|stopPropagation={() => (isMultiSelectVisible = !isMultiSelectVisible)}
+					on:click|stopPropagation={() => {
+						isMultiSelectVisible = !isMultiSelectVisible;
+					}}
 				/>
 				<div class="multiselect">
 					<MultiSelect
