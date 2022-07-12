@@ -1,6 +1,5 @@
 <script lang="ts" context="module">
 	import { tweened } from 'svelte/motion';
-
 	import { createEventDispatcher } from 'svelte';
 
 	declare let $dropdownRotation: Parameters<Parameters<typeof dropdownRotation.subscribe>[0]>[0];

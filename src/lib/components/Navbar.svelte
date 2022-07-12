@@ -10,8 +10,7 @@
 </script>
 
 <script lang="ts">
-	declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
-
+	// declare let $filterRotation: Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
 	const filterRotation = tweened(180);
 	const dispatch = createEventDispatcher();
 

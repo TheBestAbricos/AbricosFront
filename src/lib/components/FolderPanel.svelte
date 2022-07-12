@@ -1,5 +1,6 @@
-<script lang="ts">
+<script context="module">
 	import { onMount } from 'svelte';
+	import { slide } from 'svelte/transition';
 
 	import {
 		changeCardLocation,
@@ -8,11 +9,11 @@
 		switchFolder,
 		updateFolder,
 	} from '$lib/firestore';
-
-	declare let $droppedCard: Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
 	import { droppedCard, isDroppedCardScaled, openedPanel } from '$lib/stores';
-	import { slide } from 'svelte/transition';
+	// declare let $droppedCard: Parameters<Parameters<typeof droppedCard.subscribe>[0]>[0];
+</script>
 
+<script lang="ts">
 	import type { Folder } from '$lib/types/folder';
 
 	export let folders: Folder[] = [];

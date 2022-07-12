@@ -10,7 +10,6 @@
 <script lang="ts">
 	export let isVisible = false;
 
-	$: isVisible, checkNotificationToken();
 	const BOT_URL = 'https://t.me/inno_frontend_bot';
 
 	let tokenInput: HTMLInputElement;
@@ -30,6 +29,8 @@
 			}
 		});
 	};
+
+	$: isVisible, checkNotificationToken();
 
 	const botImgClickHandler = (): void => {
 		// redirect to tg bot
