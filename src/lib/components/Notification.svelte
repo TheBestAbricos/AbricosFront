@@ -1,15 +1,17 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import { notificationStatus } from '$lib/stores';
 	import { getNotificationToken, setNotificationToken } from '$lib/firestore';
 	import SaveButton from './shared/SaveButton.svelte';
 	import CancelButton from './shared/CancelButton.svelte';
 	import ToggleSwitch from './shared/ToggleSwitch.svelte';
 	import { deleteTokenFromTgBot, sendTokenToTgBot } from '$lib/notificationManager';
+</script>
 
+<script lang="ts">
 	export let isVisible = false;
 
 	$: isVisible, checkNotificationToken();
-	const bot_url = 'https://t.me/inno_frontend_bot';
+	const BOT_URL = 'https://t.me/inno_frontend_bot';
 
 	let tokenInput: HTMLInputElement;
 	let notificationState = false;
@@ -31,7 +33,7 @@
 
 	const botImgClickHandler = (): void => {
 		// redirect to tg bot
-		window.open(bot_url, '_blank')!.focus();
+		window.open(BOT_URL, '_blank');
 	};
 
 	const backClickHanlder = (): void => {
@@ -104,7 +106,10 @@
 
 						<ToggleSwitch
 							bind:checked={toggleState}
-							on:change={() => (toggleState = !toggleState)}
+							on:change={() => {
+								toggleState = !toggleState;
+								return toggleState;
+							}}
 						/>
 					</div>
 
