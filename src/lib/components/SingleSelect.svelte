@@ -16,7 +16,7 @@
 		if (e.target instanceof HTMLElement) {
 			chosenDiv = e.target;
 
-			if (chosenDiv.innerText == chosenItem) {
+			if (chosenDiv.innerText === chosenItem) {
 				chosenItem = undefined;
 				dispatcher('chose', { choseItem: undefined });
 
@@ -34,7 +34,7 @@
 	{#each items as item}
 		<div
 			class="option"
-			style={chosenItem && chosenItem == item ? 'background-color: #64CAA5;' : ''}
+			style={chosenItem && chosenItem === item ? 'background-color: #64CAA5;' : ''}
 			on:click={itemClickHandler}
 		>
 			{item}

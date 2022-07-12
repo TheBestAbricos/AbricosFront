@@ -20,15 +20,15 @@
 		<div class="label">
 			<p class="select-none">{contentType}</p>
 		</div>
-		{#if contentType.toLowerCase() == 'profile'}
+		{#if contentType.toLowerCase() === 'profile'}
 			{#if !$logoChoiceMode}
 				<ProfileContent />
 			{:else}
 				<LogoChoice />
 			{/if}
-		{:else if contentType.toLowerCase() == 'security'}
+		{:else if contentType.toLowerCase() === 'security'}
 			<Security />
-		{:else if contentType.toLowerCase() == 'tags'}
+		{:else if contentType.toLowerCase() === 'tags'}
 			<TagsContent />
 		{/if}
 	</div>
