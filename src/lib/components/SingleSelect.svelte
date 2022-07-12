@@ -3,7 +3,7 @@
 	import { slide } from 'svelte/transition';
 
 	export let items: Array<any>;
-	export let chosenItem: any;
+	export let chosenItem: string | undefined;
 	let chosenDiv: HTMLElement;
 
 	const dispatcher = createEventDispatcher();
