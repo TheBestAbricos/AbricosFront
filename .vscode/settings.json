@@ -8,5 +8,6 @@
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
 	},
+	"eslint.validate": ["typescript", "javascript", "svelte"],
 	"cSpell.words": ["datetime", "firestore"]
 }
