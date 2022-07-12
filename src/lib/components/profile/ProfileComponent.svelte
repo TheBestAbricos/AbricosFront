@@ -1,5 +1,7 @@
-<script lang="ts">
-	import { getCurrentUserInfo } from '$lib/firestore';
+// eslint-disable-line
+	
+	
+	import { getCurrentUserInfo } from '$lib/firestore'; declare let $logoChoiceMode:Parameters<Parameters<typeof logoChoiceMode.subscribe>[0]>[0];
 	import { logoChoiceMode } from '$lib/stores';
 	import ProfileContent from './ProfileContent.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
@@ -7,7 +9,7 @@
 	import LogoChoice from './LogoChoice.svelte';
 	import Security from './Security.svelte';
 
-	let contentType: String = 'profile';
+	let contentType: string = 'profile';
 
 	function handleMessage(event: CustomEvent) {
 		contentType = event.detail.text;

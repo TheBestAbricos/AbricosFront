@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Logo from './shared/Logo.svelte';
-	import { logIn, createAccount } from '$lib/firebase';
 	import type { User } from 'firebase/auth';
 	import type * as fbApp from 'firebase/app';
+	import Logo from './shared/Logo.svelte';
+	import { logIn, createAccount } from '$lib/firebase';
 	import { codes } from '$lib/errorCodeTranslator';
 
 	let email: string;
 	let password: string;
-	let errorMessage: string = '';
+	let errorMessage = '';
 	async function onLoginClick(): Promise<void> {
 		if (email.length == 0 || password.length == 0) return;
 		try {
@@ -16,7 +16,7 @@
 				window.location.href = '/';
 			}
 		} catch (e) {
-			let fbError = e as fbApp.FirebaseError;
+			const fbError = e as fbApp.FirebaseError;
 			errorMessage = (codes as any)[fbError.code] ?? fbError.code;
 		}
 	}
@@ -28,7 +28,7 @@
 				window.location.href = '/';
 			}
 		} catch (e) {
-			let fbError = e as fbApp.FirebaseError;
+			const fbError = e as fbApp.FirebaseError;
 			errorMessage = (codes as any)[fbError.code] ?? fbError.code;
 		}
 	}

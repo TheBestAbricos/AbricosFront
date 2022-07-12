@@ -1,4 +1,14 @@
 <script lang="ts">
+	import { createEventDispatcher , onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { tweened } from 'svelte/motion';
+	import { logOut } from '$lib/firebase';
+	import { getAvatarUrl, getNotificationToken } from '$lib/firestore';
+	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
+	import type { FilterData } from '$lib/types/filter';
+	import FilterBar from './filter/FilterBar.svelte';// eslint-disable-line
+	
+	
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
@@ -8,7 +18,7 @@
 	import { openedPanel, notificationStatus, logoSrc } from '$lib/stores';
 	import type { FilterData } from '$lib/types/filter';
 	import FilterBar from './filter/FilterBar.svelte';
-	import Notification from '$lib/components/Notification.svelte';
+	import Notification from '$lib/components/Notification.svelte'; declare let $filterRotation:Parameters<Parameters<typeof filterRotation.subscribe>[0]>[0];
 
 	const filterRotation = tweened(180);
 	const dispatch = createEventDispatcher();
@@ -17,23 +27,23 @@
 	let filterData: FilterData;
 	let isFilterVisible = false;
 	let isFolderVisible = false;
-	let isForbidden: boolean = false;
+	let isForbidden = false;
 	let isTutorialOn: boolean = window.location.pathname == '/';
 
 	let logo: HTMLDivElement;
 
 	let notification: HTMLDivElement;
-	let isNotificationVisible: boolean = false;
+	let isNotificationVisible = false;
 
 	onMount(async () => {
 		await checkNotificationStatus();
-		let avatarUrl = await getAvatarUrl();
+		const avatarUrl = await getAvatarUrl();
 		logoSrc.set(avatarUrl);
 	});
 
 	notificationStatus.subscribe(() => checkNotificationStatus());
 
-	//Close filter if Folder appears
+	// Close filter if Folder appears
 	openedPanel.subscribe((value) => {
 		if (value == 'folder') {
 			isFilterVisible = false;
@@ -52,7 +62,7 @@
 	}
 
 	function handleFilterClick() {
-		var loc = window.location.pathname;
+		let loc = window.location.pathname;
 		if (loc != '/') {
 			if (filterIcon) {
 				isForbidden = true;
@@ -80,7 +90,7 @@
 			openedPanel.set('');
 		}
 
-		var loc = window.location.pathname;
+		let loc = window.location.pathname;
 		if (loc != '/') {
 			window.location.href = '/';
 		} else {
@@ -94,7 +104,7 @@
 	}
 
 	function handleProfileClick() {
-		var loc = window.location.pathname;
+		let loc = window.location.pathname;
 		if (loc != '/profile') window.location.href = '/profile';
 	}
 

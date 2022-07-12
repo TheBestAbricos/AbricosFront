@@ -1,7 +1,7 @@
 <script lang="ts">
-	export let color: string = 'black';
-	export let width: string = '1.5em';
-	export let height: string = '1.5em';
+	export let color = 'black';
+	export let width = '1.5em';
+	export let height = '1.5em';
 </script>
 
 <svg on:click fill={color} {width} {height} viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"

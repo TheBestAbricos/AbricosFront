@@ -32,7 +32,7 @@
 		['hour', 3600],
 		['day', 86400],
 		['week', 2592000],
-		['mounth', 946080000]
+		['mounth', 946080000],
 	]);
 
 	$: isActive,
@@ -52,7 +52,7 @@
 			tags: chosenTags,
 			till: time_stamp,
 			text: substring,
-			completed: checked
+			completed: checked,
 		};
 		console.log(data);
 

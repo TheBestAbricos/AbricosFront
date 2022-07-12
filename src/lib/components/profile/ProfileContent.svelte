@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { logoChoiceMode, logoSrc } from '$lib/stores';
 	import { get } from 'svelte/store';
+	import { logoChoiceMode, logoSrc } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/firestore';
 
 	function hanldeChangeLogoClick() {

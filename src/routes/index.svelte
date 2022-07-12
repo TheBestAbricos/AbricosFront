@@ -14,7 +14,7 @@
 		changeCardLocation,
 		getAllUserFolders,
 		getCardsInCurrentFolder,
-		getCurrentUserInfo
+		getCurrentUserInfo,
 	} from '$lib/firestore';
 	import type { Folder } from '$lib/types/folder';
 	import type { FilterData } from '$lib/types/filter';
@@ -31,7 +31,7 @@
 				(f.completed ? card.checked === f.completed : true) &&
 				(card.date ? (f.till ? card.date <= f.till : true) : !f.till) &&
 				f.tags.every((tag) => card.tags.some((item) => item.text === tag.text)) &&
-				(f.text ? card.text.includes(f.text) : true)
+				(f.text ? card.text.includes(f.text) : true),
 		);
 	}
 
@@ -53,7 +53,7 @@
 							getCurrentUser().uid,
 							'folders',
 							(await getCurrentUserInfo()).currentFolder,
-							'items'
+							'items',
 						),
 						() => {
 							isInProgress = true;
@@ -62,7 +62,7 @@
 								if (get(isFiltered)) applyfilter(myFilter);
 								isInProgress = false;
 							});
-						}
+						},
 					);
 				}
 			});

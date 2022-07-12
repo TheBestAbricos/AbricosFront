@@ -5,18 +5,18 @@
 
 	function handleClickProfile() {
 		dispatch('message', {
-			text: 'Profile'
+			text: 'Profile',
 		});
 	}
 	function handleClickSecurity() {
 		dispatch('message', {
-			text: 'Security'
+			text: 'Security',
 		});
 	}
 
 	function handleClickTag() {
 		dispatch('message', {
-			text: 'Tags'
+			text: 'Tags',
 		});
 	}
 </script>

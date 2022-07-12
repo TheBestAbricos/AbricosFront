@@ -1,23 +1,23 @@
 <script lang="ts">
+	import { tweened } from 'svelte/motion';// eslint-disable-line
+	
+	
 	import { tweened } from 'svelte/motion';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte'; declare let $dropdownRotation:Parameters<Parameters<typeof dropdownRotation.subscribe>[0]>[0];
 
 	export let visible = false;
 	export let label: string;
 
 	const dropdownRotation = tweened(0);
-	const dispatch = createEventDispatcher()
+	const dispatch = createEventDispatcher();
 
 	function handleDropdownClick() {
-
 		visible = !visible;
 		if (visible) dropdownRotation.set(180);
 		else dropdownRotation.set(0);
 
-		dispatch('changeVisible', {visible: visible})
+		dispatch('changeVisible', { visible });
 	}
-
-
 </script>
 
 <div class="relative inline-block text-center my-2 mx-8">
@@ -49,7 +49,6 @@
 	</div>
 
 	{#if visible}
-	
 		<div
 			class="z-10 absolute left-0 mt-2 w-32 rounded-full shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
 			role="menu"
@@ -57,8 +56,7 @@
 			aria-labelledby="menu-button"
 			tabindex="-1"
 		>
-			<slot>
-			</slot>
+			<slot />
 		</div>
 	{/if}
 </div>

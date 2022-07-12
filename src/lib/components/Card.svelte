@@ -106,7 +106,7 @@
 			<div class="date">
 				{date
 					? `${parseComponent(date.getDate())}.${parseComponent(
-							date.getMonth() + 1
+							date.getMonth() + 1,
 					  )}.${parseComponent(date.getFullYear())}`
 					: 'Date'}
 			</div>

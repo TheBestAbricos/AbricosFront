@@ -53,7 +53,7 @@
 		const card: Card = {
 			checked: done,
 			text: description,
-			tags: chosenTags
+			tags: chosenTags,
 		};
 		console.log('save', datetime);
 		if (datetime) {
@@ -65,8 +65,8 @@
 					date.getMonth(),
 					date.getDate(),
 					date.getHours(),
-					date.getMinutes()
-				)
+					date.getMinutes(),
+				),
 			);
 		}
 		if (ts) card.date = ts;

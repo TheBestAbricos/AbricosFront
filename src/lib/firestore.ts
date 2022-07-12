@@ -58,7 +58,7 @@ export async function changeChecked(docId: string, checked: boolean) {
 }
 export async function updateCardInFolder(
 	card: Card,
-	folderId: string | undefined = undefined
+	folderId: string | undefined = undefined,
 ): Promise<string> {
 	let itemsCollection: fs.CollectionReference<fs.DocumentData>;
 	if (folderId) {
@@ -85,7 +85,7 @@ export async function getAllUserFolders(): Promise<Folder[]> {
 export async function getAllUserCards(): Promise<Card[]> {
 	const folders = await getAllUserFolders();
 	let cards: Card[] = [];
-	for (let folder of folders) {
+	for (const folder of folders) {
 		if (folder.docId) {
 			const snapshot = await fs.getDocs(fs.query(await getSpecificItemsCollection(folder.docId)));
 			const folderCards = snapshot.docs.map((e) => e.data() as Card);
@@ -143,17 +143,15 @@ export async function deleteFolder(docId: string): Promise<void> {
 export async function addTag(tag: TagType): Promise<void> {
 	const userDoc = getUserDocument();
 	const user = await getCurrentUserInfo();
-	const tags = user.tags;
+	const {tags} = user;
 	tags.push(tag);
 	await fs.updateDoc(userDoc, { tags });
 }
 export async function removeTag(tag: TagType): Promise<void> {
 	const userDoc = getUserDocument();
 	const user = await getCurrentUserInfo();
-	let tags = user.tags;
-	tags = tags.filter((value: TagType) => {
-		return value.text != tag.text;
-	});
+	let {tags} = user;
+	tags = tags.filter((value: TagType) => value.text != tag.text);
 	await fs.updateDoc(userDoc, { tags });
 }
 export async function changeCardLocation(cardDocId: string, newFolderDocId: string): Promise<void> {

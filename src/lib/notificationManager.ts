@@ -11,14 +11,14 @@ export async function deleteNotification(docId: string) {
 	if (token) {
 		const deleteData = {
 			token: parseInt(token, 10),
-			id: docId
+			id: docId,
 		};
 		await fetch(`${urlServer}webhooks/deleteSchedule/`, {
 			method: 'DELETE',
 			body: JSON.stringify(deleteData),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		});
 		// console.log(res.status);
 	}
@@ -33,15 +33,15 @@ export async function setNotification(datetime: string, docId: string, descripti
 			time,
 			taskID: docId,
 			description,
-			token: parseInt(token, 10)
+			token: parseInt(token, 10),
 		};
 
 		await fetch(`${urlServer}webhooks/schedule/`, {
 			method: 'POST',
 			body: JSON.stringify(updateData),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		});
 		// console.log(res.status);
 	}

@@ -4,13 +4,13 @@
 	export let text: string;
 	export let checked: boolean | undefined = false;
 
-	let dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 </script>
 
 <div class="flex items-center sm:my-3 sm:mx-8 mx-auto my-4">
 	<input
 		bind:checked
-		on:change={() => dispatch('checked', { checked: checked })}
+		on:change={() => dispatch('checked', { checked })}
 		id="checkbox"
 		type="checkbox"
 		value=""
