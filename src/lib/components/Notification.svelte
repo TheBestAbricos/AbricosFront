@@ -56,7 +56,7 @@
 
 		try {
 			// set token in firebase  for current use
-			sendTokenToTgBot(tokenInput.value);
+			await sendTokenToTgBot(tokenInput.value);
 
 			isVisible = false;
 		} catch (err) {
