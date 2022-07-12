@@ -8,10 +8,10 @@
 	import BinIcon from '../shared/BinIcon.svelte';
 	import Tag from '../Tag.svelte';
 
-	let T_color = 'grey'; // text color
-	let B_color = 'grey'; // background
+	let tColor = 'grey'; // text color
+	let bColor = 'grey'; // background
 
-	let tag_input: HTMLInputElement;
+	let tagInput: HTMLInputElement;
 	let tags: Array<TagType>;
 	let isIninStage = true;
 
@@ -21,11 +21,11 @@
 
 	onMount(() => {
 		if (isIninStage) {
-			tag_input.style.backgroundColor = 'white';
-			tag_input.style.color = 'black';
+			tagInput.style.backgroundColor = 'white';
+			tagInput.style.color = 'black';
 		} else {
-			tag_input.style.backgroundColor = B_color;
-			tag_input.style.color = T_color;
+			tagInput.style.backgroundColor = bColor;
+			tagInput.style.color = tColor;
 		}
 	});
 
@@ -34,48 +34,48 @@
 	});
 
 	const resetColorPicker = () => {
-		T_color = 'grey';
-		B_color = 'grey';
+		tColor = 'grey';
+		bColor = 'grey';
 
 		isIninStage = true;
 	};
 
 	const handlTextColorPickerChange = (e: Event) => {
-		if (tag_input && e.target instanceof HTMLInputElement) {
-			tag_input.style.color = e.target.value;
-			T_color = e.target.value;
+		if (tagInput && e.target instanceof HTMLInputElement) {
+			tagInput.style.color = e.target.value;
+			tColor = e.target.value;
 
 			isIninStage = false;
 		}
 	};
 
 	const handlBackColorPickerChange = (e: Event) => {
-		if (tag_input && e.target instanceof HTMLInputElement) {
-			tag_input.style.backgroundColor = e.target.value;
-			B_color = e.target.value;
+		if (tagInput && e.target instanceof HTMLInputElement) {
+			tagInput.style.backgroundColor = e.target.value;
+			bColor = e.target.value;
 
 			isIninStage = false;
 		}
 	};
 
 	const clearTagInput = () => {
-		if (tag_input) {
-			tag_input.value = '';
-			tag_input.style.color = '#000';
-			tag_input.style.backgroundColor = '#ffffff';
+		if (tagInput) {
+			tagInput.value = '';
+			tagInput.style.color = '#000';
+			tagInput.style.backgroundColor = '#ffffff';
 		}
 	};
 
 	const handleTagFocus = () => {
-		if (tag_input) {
-			if (tag_input.value == tagExistsText || tag_input.value == tagsMaxCountText) {
+		if (tagInput) {
+			if (tagInput.value === tagExistsText || tagInput.value === tagsMaxCountText) {
 				clearTagInput();
 			}
 		}
 	};
 
 	const handleBinClick = (tag: TagType) => {
-		tags = tags.filter((t) => t != tag);
+		tags = tags.filter((t) => t !== tag);
 		removeTag(tag).then(() => {
 			getCurrentUserInfo().then((data) => {
 				tags = data.tags;
@@ -85,7 +85,7 @@
 
 	const handleAddTagClick = (tag: TagType) => {
 		if (tag.text.trim().length === 0) {
-			tag_input.focus();
+			tagInput.focus();
 
 			return;
 		}
@@ -99,17 +99,17 @@
 				clearTagInput();
 				resetColorPicker();
 
-				tag_input.style.color = 'red';
-				tag_input.value = tagsMaxCountText;
+				tagInput.style.color = 'red';
+				tagInput.value = tagsMaxCountText;
 				return;
 			}
 
-			for (let i = 0; i < tags.length; i++) {
+			for (let i = 0; i < tags.length; i += 1) {
 				const e = tags[i];
-				if (e.text.toLocaleLowerCase() === tag_input.value.toLocaleLowerCase()) {
+				if (e.text.toLocaleLowerCase() === tagInput.value.toLocaleLowerCase()) {
 					clearTagInput();
-					tag_input.style.color = 'red';
-					tag_input.value = tagExistsText;
+					tagInput.style.color = 'red';
+					tagInput.value = tagExistsText;
 
 					return;
 				}
@@ -153,7 +153,7 @@
 
 <div class="tag-form">
 	<input
-		bind:this={tag_input}
+		bind:this={tagInput}
 		on:focus={handleTagFocus}
 		type="text"
 		name="tag"
@@ -166,7 +166,7 @@
 		<div class="tool">
 			<input on:change={handlTextColorPickerChange} type="color" id="t" value="#0000" />
 			<div class="tool-container">
-				<label for="t"><TletterIcon bind:color={T_color} /></label>
+				<label for="t"><TletterIcon bind:color={tColor} /></label>
 			</div>
 		</div>
 
@@ -179,13 +179,12 @@
 				value="#FFFFFF"
 			/>
 			<div class="tool-container">
-				<label for="palette"><PaletteIcon bind:color={B_color} /></label>
+				<label for="palette"><PaletteIcon bind:color={bColor} /></label>
 			</div>
 		</div>
 	</div>
 	<div
-		on:click={() =>
-			handleAddTagClick({ text: tag_input.value, textColor: T_color, color: B_color })}
+		on:click={() => handleAddTagClick({ text: tagInput.value, textColor: tColor, color: bColor })}
 		class="add-tag"
 	>
 		<img src="/images/plus.svg" alt="" />
